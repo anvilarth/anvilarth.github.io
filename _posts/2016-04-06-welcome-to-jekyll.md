@@ -6,8 +6,6 @@
 
  subtitle: "This is the post subtitle."
 
- date: YYYY-MM-DD HH:MM:SS
-
 ---
  
  Link: https://arxiv.org/pdf/1902.03545.pdf
