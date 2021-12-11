@@ -17,11 +17,13 @@
 $$
 \Delta KL(p_{w'}(y|x) || p_{w}(y|x)) = \delta w F \delta w + o(||\delta w||^2),
 $$
+
 где $F$ - матрица Фишера:
 
 $$
 F=\mathbb{E}_{x, y \sim \hat{p}(x) p_{w}(y \mid x)}\left[\nabla_{w} \log p_{w}(y \mid x) \nabla_{w} \log p_{w}(y \mid x)^{T}\right]
 $$
+
 градиент тут берется по весам encoder и получается матрица num_params encoder $\times$ num_params encoder.
 
 В качестве векторного представления авторы и предлагают использовать матрицу Фишера. 
