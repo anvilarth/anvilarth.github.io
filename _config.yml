@@ -17,6 +17,7 @@ google_analytics:   UA-XXXXXXXXX-X # out your google-analytics code
 
 # Build settings
 markdown:           kramdown
+mathjax:            true
 paginate:           5
 paginate_path:      "/posts/page:num/"
 plugins:
