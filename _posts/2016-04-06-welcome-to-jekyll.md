@@ -3,9 +3,8 @@
  layout: post
 
  title: "Post Title"
-
  subtitle: "This is the post subtitle."
-
+ usemathjax: true
 ---
  
  Link: https://arxiv.org/pdf/1902.03545.pdf
