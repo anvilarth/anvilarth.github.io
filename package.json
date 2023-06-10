@@ -1,37 +1,52 @@
 {
-    "title": "Clean Blog Jekyll",
-    "name": "startbootstrap-clean-blog-jekyll",
-    "version": "4.0.12",
-    "description": "Clean Blog is a Medium inspired blog theme for Bootstrap.",
-    "keywords": [
-        "css",
-        "sass",
-        "html",
-        "responsive",
-        "theme",
-        "template"
+  "name": "cleanfolio",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://anvilarth.github.io",
+  "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/user-event": "^13.2.1",
+    "gh-pages": "^3.2.3",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "uniqid": "^5.4.0",
+    "web-vitals": "^2.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start --openssl-legacy-provider",
+    "build": "react-scripts build --openssl-legacy-provider",
+    "test": "react-scripts test --openssl-legacy-provider",
+    "eject": "react-scripts eject --openssl-legacy-provider",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
+    "deploy": "gh-pages -d build"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ],
-    "homepage": "https://startbootstrap.com/themes/clean-blog-jekyll",
-    "bugs": {
-        "url": "https://github.com/StartBootstrap/startbootstrap-clean-blog-jekyll/issues",
-        "email": "feedback@startbootstrap.com"
-    },
-    "license": "MIT",
-    "author": "Start Bootstrap",
-    "contributors": [
-        "David Miller (http://davidmiller.io/)"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/StartBootstrap/startbootstrap-clean-blog-jekyll.git"
-    },
-    "dependencies": {
-        "bootstrap": "4.6.0",
-        "font-awesome": "4.7.0",
-        "jquery": "3.6.0",
-        "startbootstrap-clean-blog": "5.1.0"
-    },
-    "devDependencies": {
-        "browser-sync": "2.26.14"
-    }
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.3.2"
+  }
 }
