@@ -2,12 +2,44 @@
   padding: 3em 0;
   margin-top: 4em;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
-.footer__link {
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--clr-card-border), transparent);
+}
+
+.footer__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.footer__text {
   font-size: 0.9rem;
-  font-weight: 600;
   color: var(--clr-fg);
+}
+
+.footer__name {
+  font-weight: 600;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.footer__year {
+  font-size: 0.85rem;
+  color: var(--clr-fg);
+  opacity: 0.6;
 }
 
 @media (max-width: 600px) {

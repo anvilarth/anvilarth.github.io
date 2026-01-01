@@ -1,8 +1,31 @@
 {
-  "name": "cleanfolio",
-  "version": "0.1.0",
+  "name": "andrei-filatov-portfolio",
+  "version": "2.0.0",
+  "description": "Personal portfolio website for Andrei Filatov - Research Scientist specializing in ML/DL, NLP, and Computer Vision",
+  "author": {
+    "name": "Andrei Filatov",
+    "email": "filatovandreiv@gmail.com",
+    "url": "https://anvilarth.github.io"
+  },
+  "license": "MIT",
   "private": true,
   "homepage": "https://anvilarth.github.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anvilarth/anvilarth.github.io"
+  },
+  "keywords": [
+    "portfolio",
+    "react",
+    "machine-learning",
+    "deep-learning",
+    "research",
+    "personal-website"
+  ],
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
@@ -13,18 +36,21 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
-    "uniqid": "^5.4.0",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start --openssl-legacy-provider",
-    "build": "react-scripts build --openssl-legacy-provider",
-    "test": "react-scripts test --openssl-legacy-provider",
-    "eject": "react-scripts eject --openssl-legacy-provider",
-    "lint": "eslint .",
-    "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "test:ci": "CI=true react-scripts test --coverage",
+    "eject": "react-scripts eject",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,json,css,md}\"",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "browserslist": {
     "production": [

@@ -1,33 +1,205 @@
 .project {
-  padding: 2em;
-  margin: 0 auto;
-  text-align: center;
-  box-shadow: var(--shadow);
-  transition: transform 0.2s linear;
+  position: relative;
+  padding: 2.5em;
+  background: var(--clr-card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--clr-card-border);
+  border-radius: 24px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: scaleIn 0.6s ease-out forwards;
+}
+
+.project__glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-card);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.project::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-text);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
 }
 
 .project:hover {
-  transform: translateY(-7px);
+  transform: translateY(-12px);
+  border-color: var(--clr-primary);
+  box-shadow: 
+    0 25px 50px var(--clr-glow),
+    0 0 0 1px var(--clr-primary);
+}
+
+.project:hover .project__glow {
+  opacity: 1;
+}
+
+.project:hover::before {
+  transform: scaleX(1);
+}
+
+.project__number {
+  position: absolute;
+  top: 1.5em;
+  right: 1.5em;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--clr-card-border);
+  line-height: 1;
+  transition: all 0.4s ease;
+  z-index: 0;
+}
+
+.project:hover .project__number {
+  color: var(--clr-primary);
+  opacity: 0.3;
+  transform: scale(1.1);
+}
+
+.project__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5em;
+  position: relative;
+  z-index: 1;
+}
+
+.project__icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--clr-glow);
+  border-radius: 16px;
+  color: var(--clr-primary);
+  transition: all 0.4s ease;
+}
+
+.project:hover .project__icon {
+  transform: rotate(-10deg) scale(1.1);
+  box-shadow: 0 8px 20px var(--clr-glow);
+}
+
+.project__links {
+  display: flex;
+  gap: 0.6em;
+}
+
+.project__link {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-fg);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  background: var(--clr-bg);
+  border: 1px solid transparent;
+}
+
+.project__link:hover {
+  background: var(--clr-glow);
+  color: var(--clr-primary);
+  transform: translateY(-3px);
+  border-color: var(--clr-primary);
+}
+
+.project__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--clr-fg-alt);
+  margin-bottom: 0.8em;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.project:hover .project__title {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .project__description {
-  margin-top: 1em;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--clr-fg);
+  flex-grow: 1;
+  margin-bottom: 1.5em;
+  position: relative;
+  z-index: 1;
 }
 
 .project__stack {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  margin: 1.2em 0;
+  gap: 0.6em;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .project__stack-item {
-  margin: 0.5em;
-  font-weight: 500;
+  padding: 0.5em 1em;
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-card-border);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
-  color: var(--clr-fg-alt);
+  font-weight: 500;
+  color: var(--clr-primary);
+  transition: all 0.3s ease;
 }
 
-.project .link--icon {
-  margin-left: 0.5em;
+.project:hover .project__stack-item {
+  border-color: var(--clr-primary);
+  box-shadow: 0 4px 12px var(--clr-glow);
+}
+
+@media (max-width: 600px) {
+  .project {
+    padding: 2em;
+    border-radius: 20px;
+  }
+  
+  .project__title {
+    font-size: 1.2rem;
+  }
+  
+  .project__description {
+    font-size: 0.95rem;
+  }
+  
+  .project__number {
+    font-size: 2.5rem;
+    top: 1em;
+    right: 1em;
+  }
+  
+  .project__icon {
+    width: 48px;
+    height: 48px;
+  }
 }

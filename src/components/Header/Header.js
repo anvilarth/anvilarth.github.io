@@ -3,19 +3,25 @@ import Navbar from '../Navbar/Navbar'
 import './Header.css'
 
 const Header = () => {
-  const { homepage, title } = header
+  const { homepage } = header
 
   return (
     <header className='header center'>
-      <h3>
+      <div className='header__logo'>
         {homepage ? (
-          <a href={homepage} className='link'>
-            {title}
+          <a href={homepage} className='header__logo'>
+            <span className='header__logo-dot' />
+            <span>andrei</span>
+            <span className='header__logo-accent'>filatov</span>
           </a>
         ) : (
-          title
+          <>
+            <span className='header__logo-dot' />
+            <span>andrei</span>
+            <span className='header__logo-accent'>filatov</span>
+          </>
         )}
-      </h3>
+      </div>
       <Navbar />
     </header>
   )

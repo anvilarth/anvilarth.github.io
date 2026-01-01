@@ -1,19 +1,29 @@
 import { useContext } from 'react'
 import { ThemeContext } from './contexts/theme'
-import Header from './components/Header/Header'
-import About from './components/About/About'
-import Projects from './components/Projects/Projects'
-import Skills from './components/Skills/Skills'
-import ScrollToTop from './components/ScrollToTop/ScrollToTop'
-import Contact from './components/Contact/Contact'
-import Footer from './components/Footer/Footer'
+import { SECTIONS } from './constants'
+import {
+  Header,
+  About,
+  Projects,
+  Skills,
+  Contact,
+  Footer,
+  ScrollToTop,
+  CursorGlow,
+} from './components'
 import './App.css'
 
 const App = () => {
   const [{ themeName }] = useContext(ThemeContext)
 
   return (
-    <div id='top' className={`${themeName} app`}>
+    <div id={SECTIONS.TOP} className={`${themeName} app`}>
+      {/* Cursor glow effect - optimized with refs */}
+      <CursorGlow />
+      
+      {/* Noise texture overlay */}
+      <div className='noise-overlay' />
+      
       <Header />
 
       <main>

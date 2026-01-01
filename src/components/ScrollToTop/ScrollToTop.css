@@ -1,12 +1,40 @@
 .scroll-top {
   position: fixed;
   bottom: 2em;
-  right: 4em;
-  background-color: transparent;
+  right: 2em;
+  z-index: 100;
+}
+
+.scroll-top a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--clr-card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--clr-card-border);
+  border-radius: 50%;
+  color: var(--clr-fg);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow);
+}
+
+.scroll-top a:hover {
+  transform: translateY(-4px);
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+  box-shadow: 0 10px 30px var(--clr-glow);
 }
 
 @media (max-width: 900px) {
   .scroll-top {
-    display: none;
+    bottom: 1.5em;
+    right: 1.5em;
+  }
+  
+  .scroll-top a {
+    width: 42px;
+    height: 42px;
   }
 }
