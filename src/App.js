@@ -5,6 +5,7 @@ import {
   Header,
   About,
   Projects,
+  Blog,
   Skills,
   Contact,
   Footer,
@@ -29,6 +30,7 @@ const App = () => {
       <main>
         <About />
         <Projects />
+        <Blog />
         <Skills />
         <Contact />
       </main>

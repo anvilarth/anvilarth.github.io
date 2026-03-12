@@ -53,4 +53,14 @@ const contact = {
   email: 'filatovandreiv@gmail.com',
 }
 
-export { header, about, projects, skills, contact }
+const blogPosts = [
+  {
+    title: 'Realtime Video Generation Calculator',
+    description:
+      'First-principles compute estimator for diffusion and AR streaming video models. Adjust model size, steps, VAE compression, sparse attention, hardware, and precision to see if realtime generation is achievable.',
+    tags: ['Video Generation', 'Compute', 'Interactive'],
+    link: '/realtime-video-calculator.html',
+  },
+]
+
+export { header, about, projects, skills, contact, blogPosts }

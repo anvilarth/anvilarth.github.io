@@ -38,6 +38,7 @@ export const SOCIAL_PLATFORMS = {
 export const SECTIONS = {
   TOP: 'top',
   PROJECTS: 'projects',
+  BLOG: 'blog',
   SKILLS: 'skills',
   CONTACT: 'contact',
 }
