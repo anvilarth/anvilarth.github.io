@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Realtime Video Generation Calculator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fafafa;
+    --fg: #1a1a1a;
+    --gray: #888;
+    --light: #e0e0e0;
+    --lighter: #f0f0f0;
+    --green: #2d6a4f;
+    --yellow: #b08600;
+    --red: #9d0208;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.5;
+    padding: 2rem 1rem;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+  .section {
+    background: white;
+    border: 1px solid var(--light);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+  }
+  .section h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .field {
+    margin-bottom: 0.9rem;
+  }
+  .field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    color: var(--fg);
+  }
+  .field select, .field input[type="range"] {
+    width: 100%;
+  }
+  select {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--light);
+    border-radius: 4px;
+    background: var(--lighter);
+    color: var(--fg);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    padding-right: 2rem;
+  }
+  select:focus { outline: 2px solid var(--fg); outline-offset: 1px; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    height: 4px;
+    background: var(--light);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    background: var(--fg);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .range-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--gray);
+  }
+
+  .toggle-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .toggle-row label { font-size: 0.82rem; font-weight: 500; margin-bottom: 0; }
+  .toggle-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--light);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .toggle-btn.active {
+    background: var(--fg);
+    color: white;
+    border-color: var(--fg);
+  }
+
+  /* ── Result ── */
+  .result {
+    background: white;
+    border: 2px solid var(--fg);
+    border-radius: 8px;
+    padding: 1.5rem 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .result-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .result-unit {
+    font-size: 1rem;
+    color: var(--gray);
+    font-weight: 400;
+  }
+  .result-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 0.3rem;
+  }
+  .result-badge {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.8rem;
+    border-radius: 20px;
+    margin-top: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-rt { background: var(--green); color: white; }
+  .badge-usable { background: var(--yellow); color: white; }
+  .badge-slow { background: var(--red); color: white; }
+
+  .result-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--light);
+    text-align: center;
+  }
+  .detail-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .detail-label {
+    font-size: 0.72rem;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .when-rt {
+    background: var(--lighter);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    font-size: 0.9rem;
+    color: var(--fg);
+    margin-bottom: 1.5rem;
+  }
+  .when-rt strong { font-weight: 700; }
+
+  .footer {
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.78rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--light);
+  }
+  .footer a { color: var(--fg); }
+</style>
+</head>
+<body>
+
+<h1>Realtime Video Generation Calculator</h1>
+<p class="subtitle">First principles estimate — adjust parameters, get concrete numbers</p>
+
+<div id="result" class="result">
+  <div class="result-time" id="r-time">—</div>
+  <div class="result-label" id="r-label">per 1 second of video</div>
+  <div id="r-badge"></div>
+  <div class="result-details">
+    <div><div class="detail-val" id="r-tokens">—</div><div class="detail-label">Tokens</div></div>
+    <div><div class="detail-val" id="r-pflops">—</div><div class="detail-label">PFLOP/step</div></div>
+    <div><div class="detail-val" id="r-ratio">—</div><div class="detail-label">Realtime ratio</div></div>
+  </div>
+</div>
+
+<div id="when-rt" class="when-rt" style="display:none;"></div>
+
+<div class="grid">
+  <!-- Model -->
+  <div class="section">
+    <h2>Model</h2>
+    <div class="field">
+      <label>Approach</label>
+      <div class="toggle-row" id="approach-toggle">
+        <button class="toggle-btn active" data-val="diffusion">Diffusion</button>
+        <button class="toggle-btn" data-val="ar">AR Streaming</button>
+      </div>
+    </div>
+    <div id="diffusion-params">
+      <div class="field">
+        <label>Parameters</label>
+        <select id="model-size">
+          <option value="1.3">1.3B</option>
+          <option value="5">5B</option>
+          <option value="14" selected>14B</option>
+          <option value="30">30B</option>
+          <option value="72">72B</option>
+          <option value="200">200B</option>
+        </select>
+      </div>
+      <div class="field">
+        <label style="display:flex; justify-content:space-between; align-items:center;">
+          Steps
+          <span style="font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:700; color:var(--fg);" id="steps-val">4</span>
+        </label>
+        <input type="range" id="steps" min="1" max="50" value="4">
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-top:0.2rem;">
+          <span>1</span><span>25</span><span>50</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>VAE Compression</label>
+        <select id="vae">
+          <option value="8">8×8 (Wan2.1)</option>
+          <option value="16" selected>16×16 (Wan2.2)</option>
+          <option value="32">32×32 (future)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sparse Attention</label>
+        <select id="sparse">
+          <option value="1">Off</option>
+          <option value="2">2×</option>
+          <option value="4" selected>4×</option>
+          <option value="6">6×</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>CFG</label>
+        <div class="toggle-row" id="cfg-toggle">
+          <button class="toggle-btn" data-val="on">On (×2)</button>
+          <button class="toggle-btn active" data-val="off">Off</button>
+        </div>
+      </div>
+    </div>
+    <div id="ar-params" style="display:none;">
+      <div class="field">
+        <label>Base: LongLive 1.3B</label>
+        <select id="ar-quant">
+          <option value="fp16">FP16 (20.7 FPS on H100)</option>
+          <option value="fp8" selected>FP8 (24.8 FPS on H100)</option>
+          <option value="int8">INT8 (mobile)</option>
+          <option value="int4">INT4 (mobile)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hardware -->
+  <div class="section">
+    <h2>Hardware</h2>
+    <div class="field">
+      <label>Platform</label>
+      <div class="toggle-row" id="platform-toggle">
+        <button class="toggle-btn active" data-val="server">Server GPU</button>
+        <button class="toggle-btn" data-val="mobile">Mobile NPU</button>
+      </div>
+    </div>
+    <div id="server-params">
+      <div class="field">
+        <label>GPU</label>
+        <select id="gpu">
+          <option value="h100" selected>H100 (2023)</option>
+          <option value="b200">B200 (2025)</option>
+          <option value="b300">B300 (H2 2025)</option>
+          <option value="rubin">Rubin (2026)</option>
+          <option value="rubin_ultra">Rubin Ultra (2027)</option>
+          <option value="feynman">Feynman (2028)</option>
+          <option value="feynman_ultra">Feynman Ultra (2029)</option>
+          <option value="next">Next Gen (2030)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Precision</label>
+        <select id="precision">
+          <option value="fp16">FP16</option>
+          <option value="fp8" selected>FP8</option>
+          <option value="fp4">FP4 (Blackwell+)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label style="display:flex; justify-content:space-between; align-items:center;">
+          GPU Count
+          <span style="font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:700; color:var(--fg);" id="gpu-count-val">1</span>
+        </label>
+        <input type="range" id="gpu-count" min="1" max="8" value="1">
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-top:0.2rem;">
+          <span>1</span><span>4</span><span>8</span>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-params" style="display:none;">
+      <div class="field">
+        <label style="display:flex; justify-content:space-between; align-items:center;">
+          NPU TOPS
+          <span style="font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:700; color:var(--fg);" id="tops-val">80</span>
+        </label>
+        <input type="range" id="tops" min="20" max="1500" value="80" step="10">
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-top:0.2rem;">
+          <span>20</span><span>750</span><span>1500</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Video -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h2>Target Video</h2>
+  <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+    <div class="field" style="flex:1; min-width: 140px;">
+      <label>Resolution</label>
+      <select id="resolution">
+        <option value="480">480p</option>
+        <option value="720" selected>720p</option>
+        <option value="1080">1080p</option>
+      </select>
+    </div>
+    <div class="field" style="flex:1; min-width: 140px;">
+      <label>FPS</label>
+      <select id="fps">
+        <option value="12">12</option>
+        <option value="16" selected>16</option>
+        <option value="24">24</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Based on <a href="https://github.com/Wan-Video/Wan2.1">Wan2.1</a> architecture, calibrated against real benchmarks.
+  <br>All estimates assume 40% MFU. Actual performance may vary.
+</div>
+
+<script>
+// ── GPU specs ──
+const GPUS = {
+  h100:          { fp16: 989,   fp8: 1979,  fp4: 0,      mem: 80,  bw: 3350,  year: 2023 },
+  b200:          { fp16: 2250,  fp8: 4500,  fp4: 9000,   mem: 192, bw: 8000,  year: 2025 },
+  b300:          { fp16: 3000,  fp8: 6000,  fp4: 12000,  mem: 288, bw: 10000, year: 2025.5 },
+  rubin:         { fp16: 5000,  fp8: 10000, fp4: 20000,  mem: 288, bw: 13000, year: 2026.5 },
+  rubin_ultra:   { fp16: 8000,  fp8: 16000, fp4: 32000,  mem: 384, bw: 16000, year: 2027 },
+  feynman:       { fp16: 12500, fp8: 25000, fp4: 50000,  mem: 512, bw: 20000, year: 2028 },
+  feynman_ultra: { fp16: 18000, fp8: 36000, fp4: 72000,  mem: 768, bw: 26000, year: 2029 },
+  next:          { fp16: 25000, fp8: 50000, fp4: 100000, mem: 1024,bw: 32000, year: 2030 },
+};
+
+const MFU = 0.4;
+const SCALING_EFF = 0.7;
+
+// ── Resolution configs ──
+const RES = {
+  480:  { h: 480,  w: 854 },
+  720:  { h: 720,  w: 1280 },
+  1080: { h: 1080, w: 1920 },
+};
+
+// ── Helpers ──
+function getVal(id) { return document.getElementById(id).value; }
+function getNum(id) { return parseFloat(document.getElementById(id).value); }
+
+// ── Toggle buttons ──
+document.querySelectorAll('.toggle-row').forEach(row => {
+  row.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      row.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateUI();
+      compute();
+    });
+  });
+});
+
+function getToggle(id) {
+  return document.getElementById(id).querySelector('.active').dataset.val;
+}
+
+// ── Range displays ──
+document.getElementById('steps').addEventListener('input', e => {
+  document.getElementById('steps-val').textContent = e.target.value;
+  compute();
+});
+document.getElementById('gpu-count').addEventListener('input', e => {
+  document.getElementById('gpu-count-val').textContent = e.target.value;
+  compute();
+});
+document.getElementById('tops').addEventListener('input', e => {
+  document.getElementById('tops-val').textContent = e.target.value;
+  compute();
+});
+
+// ── All selects trigger compute ──
+document.querySelectorAll('select').forEach(s => s.addEventListener('change', compute));
+
+function updateUI() {
+  const approach = getToggle('approach-toggle');
+  const platform = getToggle('platform-toggle');
+
+  document.getElementById('diffusion-params').style.display = approach === 'diffusion' ? 'block' : 'none';
+  document.getElementById('ar-params').style.display = approach === 'ar' ? 'block' : 'none';
+  document.getElementById('server-params').style.display = platform === 'server' ? 'block' : 'none';
+  document.getElementById('mobile-params').style.display = platform === 'mobile' ? 'block' : 'none';
+}
+
+function compute() {
+  const approach = getToggle('approach-toggle');
+  const platform = getToggle('platform-toggle');
+  const res = RES[getVal('resolution')];
+  const fps = getNum('fps');
+
+  let timePerSec, tokens, pflopsPerStep, computeDesc;
+
+  if (approach === 'diffusion') {
+    // ── Diffusion compute ──
+    const modelB = getNum('model-size');
+    const steps = getNum('steps');
+    const vae = getNum('vae');
+    const sparse = getNum('sparse');
+    const cfg = getToggle('cfg-toggle') === 'on' ? 2 : 1;
+
+    // Token count
+    const framesPerSec = fps;
+    const latT = 1 + Math.floor((framesPerSec - 1) / 4);
+    const latH = Math.floor(res.h / (vae * 2));  // vae × patch
+    const latW = Math.floor(res.w / (vae * 2));
+    tokens = latT * latH * latW;
+
+    // FLOPS per step per layer (scaled from 14B baseline)
+    const d = 5120 * Math.sqrt(modelB / 14);
+    const d_ff = 13824 * Math.sqrt(modelB / 14);
+    // Layer count scales sub-linearly with model size (empirical from known architectures)
+    const LAYER_TABLE = { 1.3: 24, 5: 32, 14: 40, 30: 52, 72: 64, 200: 80 };
+    const layers = LAYER_TABLE[modelB] || Math.round(40 * Math.pow(modelB / 14, 0.4));
+
+    const selfAttn = (8 * tokens * d * d + 4 * tokens * tokens * d) / sparse;
+    const crossAttn = 8.4e12 * (modelB / 14);
+    const ffn = 4 * tokens * d * d_ff;
+    const perLayer = selfAttn + crossAttn + ffn;
+    pflopsPerStep = (perLayer * layers) / 1e15;
+
+    const totalPflop = pflopsPerStep * steps * cfg;
+
+    // Hardware
+    let tflops;
+    if (platform === 'server') {
+      const gpu = GPUS[getVal('gpu')];
+      const prec = getVal('precision');
+      const raw = prec === 'fp4' ? gpu.fp4 : (prec === 'fp8' ? gpu.fp8 : gpu.fp16);
+      if (raw === 0) { tflops = gpu.fp8; } // fallback
+      else { tflops = raw; }
+      const nGpu = getNum('gpu-count');
+      const eff = nGpu > 1 ? SCALING_EFF : 1;
+      tflops = tflops * MFU * nGpu * eff;
+    } else {
+      const tops = getNum('tops');
+      tflops = tops * 0.15; // rough FP16-equiv from INT8 TOPS
+    }
+
+    timePerSec = totalPflop / (tflops / 1000); // tflops → pflops
+
+  } else {
+    // ── AR compute ──
+    // Base: LongLive 1.3B, 480p, H100 FP8 = 24.8 FPS
+    const baseFPS = 24.8;
+    const baseTflops = 790; // H100 FP8 achievable
+    const baseTflopPerFrame = baseTflops / baseFPS; // ~32 TFLOP
+
+    // Scale for resolution
+    const basePixels = 480 * 854;
+    const targetPixels = res.h * res.w;
+    const resScale = targetPixels / basePixels;
+    // AR attention is local (short window), so scaling is ~linear not quadratic
+    const tflopPerFrame = baseTflopPerFrame * resScale;
+
+    tokens = Math.round(resScale * 3600); // rough token estimate
+    pflopsPerStep = tflopPerFrame / 1000;
+
+    // Quantization effect on compute
+    const quant = getVal('ar-quant');
+    let quantMul = 1;
+    if (quant === 'fp8') quantMul = 1;
+    else if (quant === 'fp16') quantMul = 0.5; // slower
+    else if (quant === 'int8') quantMul = 1.2;
+    else if (quant === 'int4') quantMul = 2;
+
+    let tflops;
+    if (platform === 'server') {
+      const gpu = GPUS[getVal('gpu')];
+      tflops = gpu.fp8 * MFU;
+      const nGpu = getNum('gpu-count');
+      tflops *= nGpu * (nGpu > 1 ? SCALING_EFF : 1);
+    } else {
+      const tops = getNum('tops');
+      tflops = tops * 0.15 * quantMul;
+    }
+
+    const achievableFPS = tflops / tflopPerFrame;
+    timePerSec = achievableFPS > 0 ? 1 / achievableFPS : 999;
+    // For AR, time = 1/FPS (how long to generate 1 second of video at target FPS)
+    // If achievableFPS >= targetFPS, we're realtime
+    timePerSec = fps / achievableFPS;
+  }
+
+  // ── Display ──
+  const timeEl = document.getElementById('r-time');
+  const badgeEl = document.getElementById('r-badge');
+
+  let timeStr;
+  if (timePerSec < 0.001) timeStr = '<0.001s';
+  else if (timePerSec < 0.01) timeStr = timePerSec.toFixed(3) + 's';
+  else if (timePerSec < 1) timeStr = timePerSec.toFixed(2) + 's';
+  else if (timePerSec < 100) timeStr = timePerSec.toFixed(1) + 's';
+  else timeStr = Math.round(timePerSec) + 's';
+
+  timeEl.textContent = timeStr;
+
+  const ratio = 1 / timePerSec;
+  let ratioStr = ratio >= 100 ? Math.round(ratio) + '×' :
+                 ratio >= 1 ? ratio.toFixed(1) + '×' :
+                 ratio.toFixed(2) + '×';
+
+  if (timePerSec <= 1) {
+    badgeEl.innerHTML = '<span class="result-badge badge-rt">REALTIME</span>';
+  } else if (timePerSec <= 10) {
+    badgeEl.innerHTML = '<span class="result-badge badge-usable">USABLE</span>';
+  } else {
+    badgeEl.innerHTML = '<span class="result-badge badge-slow">TOO SLOW</span>';
+  }
+
+  document.getElementById('r-tokens').textContent = tokens > 1000 ?
+    (tokens / 1000).toFixed(1) + 'K' : tokens;
+  document.getElementById('r-pflops').textContent = pflopsPerStep < 0.01 ?
+    (pflopsPerStep * 1000).toFixed(1) + 'T' : pflopsPerStep.toFixed(2);
+  document.getElementById('r-ratio').textContent = ratioStr;
+
+  // When realtime?
+  const whenEl = document.getElementById('when-rt');
+  if (timePerSec > 1 && platform === 'server' && approach === 'diffusion') {
+    // Find which GPU gets us to realtime
+    const steps = getNum('steps');
+    const vae = getNum('vae');
+    const sparse = getNum('sparse');
+    const cfg = getToggle('cfg-toggle') === 'on' ? 2 : 1;
+    const modelB = getNum('model-size');
+    const prec = getVal('precision');
+
+    let found = null;
+    for (const [name, spec] of Object.entries(GPUS)) {
+      const raw = prec === 'fp4' ? spec.fp4 : (prec === 'fp8' ? spec.fp8 : spec.fp16);
+      if (raw === 0) continue;
+      const tflops = raw * MFU;
+      const t = (pflopsPerStep * steps * cfg) / (tflops / 1000);
+      if (t <= 1) {
+        const yearStr = spec.year % 1 === 0 ? spec.year :
+                       'H2 ' + Math.floor(spec.year);
+        found = `With current model settings, <strong>realtime on 1 GPU</strong> is achievable on <strong>${name.replace('_', ' ').toUpperCase()}</strong> (~${yearStr}).`;
+        break;
+      }
+    }
+    if (found) {
+      whenEl.innerHTML = found;
+      whenEl.style.display = 'block';
+    } else {
+      whenEl.innerHTML = 'With current settings, realtime requires <strong>multi-GPU</strong> or further model optimization.';
+      whenEl.style.display = 'block';
+    }
+  } else {
+    whenEl.style.display = 'none';
+  }
+}
+
+// Init
+updateUI();
+compute();
+</script>
+</body>
+</html>
