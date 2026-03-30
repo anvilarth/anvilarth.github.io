@@ -6,52 +6,53 @@
 <title>How GPUs Work: From Triangles to Tensor Cores</title>
 <meta name="description" content="The GPU story from first principles">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Source+Sans+3:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-:root{--t:#1a1a1a;--ts:#6b6b6b;--th:#999;--bg:#fafafa;--l:#1a1a1a;--ll:#d0d0d0;--serif:'Cormorant Garamond',Georgia,serif;--sans:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
-@media(prefers-color-scheme:dark){:root{--t:#e8e8e8;--ts:#999;--th:#666;--bg:#111;--l:#e8e8e8;--ll:#333}}
+:root{--t:#1c1917;--ts:#57534e;--th:#a8a29e;--bg:#faf9f7;--l:#1c1917;--ll:#e7e5e4;--accent:#b45309;--accent-soft:#fef3c7;--serif:'Playfair Display',Georgia,serif;--sans:'Source Sans 3',sans-serif;--mono:'JetBrains Mono',monospace;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
+@media(prefers-color-scheme:dark){:root{--t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;--l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:rgba(69,26,3,.06)}}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--sans);font-weight:300;font-size:17px;line-height:1.75;color:var(--t);background:var(--bg);-webkit-font-smoothing:antialiased}
-.c{max-width:720px;margin:0 auto;padding:0 24px}
+body{font-family:var(--sans);font-weight:300;font-size:17px;line-height:1.75;color:var(--t);background:var(--bg);background-image:var(--grain);-webkit-font-smoothing:antialiased}
+.c{max-width:740px;margin:0 auto;padding:0 28px}
 header{padding:120px 0 80px;border-bottom:.5px solid var(--l)}
 header h1{font-family:var(--serif);font-weight:400;font-size:clamp(32px,5vw,48px);line-height:1.2;letter-spacing:-.02em;margin-bottom:16px}
 header .sub{font-size:15px;color:var(--ts);font-weight:300}
 header .meta{margin-top:24px;font-size:13px;color:var(--th);font-family:var(--mono);font-weight:300}
-.ch{padding:64px 0;border-bottom:.5px solid var(--ll)}
-.chn{font-family:var(--mono);font-size:12px;font-weight:300;color:var(--th);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.ch{padding:72px 0;position:relative}
+.ch::after{content:'';display:block;position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+.chn{font-family:var(--mono);font-size:12px;font-weight:300;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
 h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,4vw,32px);line-height:1.3;margin-bottom:32px;letter-spacing:-.01em}
-h3{font-family:var(--sans);font-weight:500;font-size:17px;margin:40px 0 16px;color:var(--t)}
+h3{font-family:var(--sans);font-weight:500;font-size:17px;margin:40px 0 16px;color:var(--t);padding-left:12px;border-left:2px solid var(--accent)}
 p{margin-bottom:20px}
 strong{font-weight:500}
-code{font-family:var(--mono);font-size:15px;background:var(--ll);padding:1px 5px;border-radius:3px}
-pre{font-family:var(--mono);font-size:14px;line-height:1.5;padding:16px 20px;background:var(--ll);border-radius:0;margin:20px 0;overflow-x:auto;opacity:.7}
+code{font-family:var(--mono);font-size:15px;background:color-mix(in srgb,var(--ll) 60%,transparent);padding:1px 5px;border-radius:3px}
+pre{font-family:var(--mono);font-size:14px;line-height:1.5;padding:16px 20px;background:color-mix(in srgb,var(--ll) 50%,transparent);border-radius:0;margin:20px 0;overflow-x:auto;opacity:.7}
 blockquote{border-left:1px solid var(--l);padding-left:20px;margin:32px 0;font-style:italic;color:var(--ts);font-family:var(--serif);font-size:19px;line-height:1.6}
 .fig{margin:40px 0;padding:24px 0}
 .fig svg{width:100%;height:auto}
 .figc{font-size:13px;color:var(--th);margin-top:12px;font-family:var(--mono);font-weight:300;line-height:1.5}
 .fig img{width:100%;border:0;border-radius:0}
-.demo{margin:48px -24px;padding:32px 24px;border-top:.5px solid var(--l);border-bottom:.5px solid var(--l)}
-.demo-l{font-family:var(--mono);font-size:11px;color:var(--th);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.demo{margin:48px -28px;padding:32px 28px;background:color-mix(in srgb,var(--ll) 20%,transparent);border-top:.5px solid var(--l);border-bottom:.5px solid var(--l)}
+.demo-l{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
 .src{padding:48px 0;font-size:14px;color:var(--ts)}
-.src h3{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;color:var(--th)}
+.src h3{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;color:var(--th);padding-left:0;border-left:none}
 .src a{color:var(--ts);text-decoration:none;border-bottom:.5px solid var(--ll)}
 .src a:hover{color:var(--t)}
 .src li{margin-bottom:6px;list-style:none}
-.src li::before{content:"—";margin-right:8px;color:var(--th)}
+.src li::before{content:"\2014";margin-right:8px;color:var(--th)}
 footer{padding:48px 0;border-top:.5px solid var(--l);text-align:center;font-size:13px;color:var(--th);font-family:var(--mono);font-weight:300}
 .sr{display:flex;align-items:center;gap:10px;padding:4px 0}
 .sr label{font-size:13px;font-family:var(--mono);font-weight:300;color:var(--ts);min-width:110px}
-.sr input[type=range]{flex:1;accent-color:var(--t)}
+.sr input[type=range]{flex:1;accent-color:var(--accent)}
 .sr .v{font-size:13px;font-family:var(--mono);font-weight:300;min-width:36px;text-align:right;color:var(--t)}
-.pb{background:0 0;border:.5px solid var(--ll);padding:4px 14px;font-size:12px;font-family:var(--mono);font-weight:300;color:var(--ts);cursor:pointer;transition:border-color .2s}
-.pb:hover{border-color:var(--t);color:var(--t)}
+.pb{background:0 0;border:.5px solid var(--ll);padding:4px 14px;font-size:12px;font-family:var(--mono);font-weight:300;color:var(--ts);cursor:pointer;transition:all .2s}
+.pb:hover{border-color:var(--accent);color:var(--t);background:color-mix(in srgb,var(--accent-soft) 40%,transparent)}
 .step-nav{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
 .step-lbl{font-size:12px;color:var(--ts);cursor:pointer;transition:color .2s;font-family:var(--mono);font-weight:300}
-.step-lbl.active{color:var(--t);font-weight:400}
+.step-lbl.active{color:var(--accent);font-weight:400}
 .step-sep{width:20px;height:.5px;background:var(--ll)}
 .lang-switch{position:fixed;top:16px;right:16px;z-index:100;display:flex;gap:4px;background:var(--bg);padding:4px;border:.5px solid var(--ll);border-radius:2px}
 .lang-btn{font-family:var(--mono);font-size:11px;padding:3px 8px;background:0 0;border:none;color:var(--th);cursor:pointer;transition:color .2s;font-weight:300}
-.lang-btn.active{color:var(--t);font-weight:400}
+.lang-btn.active{color:var(--accent);font-weight:400}
 @media(max-width:600px){header{padding:80px 0 48px}.ch{padding:40px 0}.demo{margin:32px -16px;padding:24px 16px}.lang-switch{top:8px;right:8px}}
 </style>
 </head>
