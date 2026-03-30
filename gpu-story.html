@@ -105,10 +105,20 @@ section.ch:nth-child(4){animation-delay:.15s}
   blockquote{padding:16px 18px;font-size:18px}
 }
 </style>
+.post-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg),transparent 20%)}
+.post-nav .c{display:flex;justify-content:space-between;align-items:center}
+.post-nav a{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none}
+.post-nav a:hover{color:var(--accent)}
+.post-nav svg{width:16px;height:16px}
+.post-nav .nav-logo{font-weight:400;letter-spacing:-.01em}
+.post-nav .nav-logo span{color:var(--accent)}
+.post-nav .nav-links{display:flex;gap:20px}
+</style>
 </head>
 <body>
+<div class="post-nav"><div class="c"><a href="/" class="nav-logo">andrei<span>filatov</span></a><div class="nav-links"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="/blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a></div></div></div>
 <div class="c">
-<header>
+<header style="padding-top:160px">
 <h1>История о том, как штука для рисования треугольников стала самым важным чипом на планете</h1>
 <p class="meta">Андрей Филатов · 2026 · ~20 минут</p>
 <div style="margin-top:36px">

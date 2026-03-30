@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta property="og:title" content="Blog — Andrei Filatov">
+<meta name="description" content="Blog posts about ML, GPU architecture, inference, and deep learning">
+<title>Blog | Andrei Filatov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --t:#1c1917;--ts:#57534e;--th:#a8a29e;--bg:#faf9f7;
+  --l:#1c1917;--ll:#e7e5e4;--accent:#b45309;--accent-soft:#fef3c7;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Source Sans 3','Source Sans Pro',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")
+}
+@media(prefers-color-scheme:dark){:root{
+  --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
+  --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
+}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.8;color:var(--t);background:var(--bg);-webkit-font-smoothing:antialiased;background-image:var(--grain);background-repeat:repeat;background-size:256px}
+a{color:var(--t);text-decoration:none}
+
+.c{max-width:740px;margin:0 auto;padding:0 28px}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg),transparent 20%)}
+nav .c{display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-family:var(--mono);font-size:14px;font-weight:400;letter-spacing:-.01em}
+.nav-logo span{color:var(--accent)}
+.nav-back{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s}
+.nav-back:hover{color:var(--accent)}
+.nav-back svg{width:16px;height:16px}
+
+/* ── Header ── */
+header{padding:140px 0 48px;position:relative}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+.section-label{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
+header h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.5vw,48px);line-height:1.15;letter-spacing:-.025em;margin-bottom:16px}
+header p{color:var(--ts);font-size:16px}
+
+/* ── Posts ── */
+.posts{padding:48px 0}
+.post-item{display:block;padding:32px 0;position:relative;transition:all .2s}
+.post-item+.post-item{border-top:1px solid var(--ll)}
+.post-item:hover .post-title{color:var(--accent)}
+.post-date{font-family:var(--mono);font-size:12px;color:var(--th);letter-spacing:.04em;margin-bottom:8px;display:block}
+.post-title{font-family:var(--serif);font-weight:600;font-size:clamp(20px,3vw,26px);line-height:1.3;letter-spacing:-.01em;margin-bottom:10px;transition:color .2s}
+.post-desc{color:var(--ts);font-size:16px;line-height:1.7;margin-bottom:12px}
+.post-tags{display:flex;gap:8px;flex-wrap:wrap}
+.post-tag{font-family:var(--mono);font-size:11px;color:var(--th);padding:3px 10px;border:1px solid var(--ll);border-radius:4px}
+.post-arrow{position:absolute;right:0;top:50%;transform:translateY(-50%);color:var(--ll);transition:color .2s}
+.post-item:hover .post-arrow{color:var(--accent)}
+
+/* ── Footer ── */
+footer{padding:48px 0;text-align:center;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:300;position:relative}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+
+@media(max-width:600px){
+  header{padding:100px 0 36px}
+  .post-arrow{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="c">
+    <a href="/" class="nav-logo">andrei<span>filatov</span></a>
+    <a href="/" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to main
+    </a>
+  </div>
+</nav>
+
+<div class="c">
+
+<header>
+  <p class="section-label">Writing</p>
+  <h1>Blog</h1>
+  <p>Interactive tools, long-reads, and deep dives into ML, GPU architecture, and inference</p>
+</header>
+
+<div class="posts">
+
+  <a href="/gpu-story.html" class="post-item">
+    <span class="post-date">March 2026 · ~20 min read</span>
+    <h2 class="post-title">GPU Story: from triangles to AI chips</h2>
+    <p class="post-desc">How a triangle-drawing chip became the most important processor on the planet. GPU history from first principles — parallelism, shaders, CUDA, Tensor Cores, and what comes next.</p>
+    <div class="post-tags">
+      <span class="post-tag">GPU</span>
+      <span class="post-tag">Architecture</span>
+      <span class="post-tag">Long-read</span>
+    </div>
+    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+
+  <a href="/realtime-video-calculator.html" class="post-item">
+    <span class="post-date">March 2026 · Interactive tool</span>
+    <h2 class="post-title">Realtime Video Generation Calculator</h2>
+    <p class="post-desc">First-principles compute estimator for diffusion and AR streaming video models. Adjust model size, steps, VAE compression, sparse attention, hardware, and precision to see if realtime generation is achievable.</p>
+    <div class="post-tags">
+      <span class="post-tag">Video Generation</span>
+      <span class="post-tag">Compute</span>
+      <span class="post-tag">Interactive</span>
+    </div>
+    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+
+</div>
+
+</div>
+
+<footer>
+  <div class="c">
+    Designed & built by Andrei Filatov · &copy; 2026
+  </div>
+</footer>
+
+</body>
+</html>
