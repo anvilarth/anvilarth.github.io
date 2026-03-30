@@ -2346,11 +2346,11 @@ function setLang(lang) {
   if (typeof window.pgoTo === 'function') window.pgoTo(window._pCur || 0);
   var cpuPanel = document.getElementById('cpu-info-panel');
   if (cpuPanel) cpuPanel.innerHTML = T['cpu-info-default'][lang];
-  if (lang === 'ru') { if (location.hash === '#en') history.replaceState(null, '', location.pathname); }
-  else { if (location.hash !== '#en') history.replaceState(null, '', '#en'); }
+  if (lang === 'en') { if (location.hash === '#ru') history.replaceState(null, '', location.pathname); }
+  else { if (location.hash !== '#ru') history.replaceState(null, '', '#ru'); }
 }
 document.addEventListener('DOMContentLoaded', function() {
-  if (location.hash === '#en') setLang('en');
+  if (location.hash === '#ru') setLang('ru'); else setLang('en');
 });
 </script>
 
