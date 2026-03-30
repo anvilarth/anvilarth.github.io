@@ -25,7 +25,7 @@ body{font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.8;colo
 .c{max-width:740px;margin:0 auto;padding:0 28px}
 
 /* ── Header ── */
-header{padding:140px 0 48px;border-bottom:none;position:relative}
+header{padding:160px 0 48px;border-bottom:none;position:relative}
 header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
 header h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.5vw,52px);line-height:1.15;letter-spacing:-.025em;margin-bottom:20px}
 header .sub{font-size:16px;color:var(--ts);font-weight:300;line-height:1.7;max-width:520px}
@@ -96,8 +96,18 @@ section.ch:nth-child(2){animation-delay:.05s}
 section.ch:nth-child(3){animation-delay:.1s}
 section.ch:nth-child(4){animation-delay:.15s}
 
+/* ── Post nav ── */
+.post-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:12px 0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg),transparent 20%)}
+.post-nav-inner{max-width:740px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center}
+.post-nav a{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none}
+.post-nav a:hover{color:var(--accent)}
+.post-nav svg{width:16px;height:16px}
+.post-nav .nav-logo{font-weight:400;color:var(--t)}
+.post-nav .nav-logo span{color:var(--accent)}
+.post-nav .nav-links{display:flex;gap:20px}
+
 /* ── Language switcher ── */
-.lang-switch{position:fixed;top:16px;right:16px;z-index:100;display:flex;gap:4px;background:var(--bg);padding:4px 6px;border:1px solid var(--ll);border-radius:6px}
+.lang-switch{display:flex;gap:4px;padding:4px 6px;border:1px solid var(--ll);border-radius:6px}
 .lang-btn{font-family:var(--mono);font-size:11px;padding:3px 10px;background:0 0;border:none;color:var(--th);cursor:pointer;transition:all .2s;font-weight:300;border-radius:4px;letter-spacing:.02em}
 .lang-btn.active{color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent-soft),transparent 40%)}
 
@@ -108,16 +118,13 @@ section.ch:nth-child(4){animation-delay:.15s}
   .demo{margin:36px -16px;padding:24px 16px;border-radius:0}
   h3{padding-left:14px}
   blockquote{padding:16px 18px;font-size:18px}
-  .lang-switch{top:8px;right:8px}
+  .post-nav .nav-links{gap:12px}
 }
 </style>
 </head>
 <body>
 <div class="c">
-<div class="lang-switch">
-<button class="lang-btn active" id="btn-ru" onclick="setLang('ru')">RU</button>
-<button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
-</div>
+<div class="post-nav"><div class="post-nav-inner"><a href="/" class="nav-logo">andrei<span>filatov</span></a><div class="nav-links"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="/blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a><div class="lang-switch"><button class="lang-btn active" id="btn-ru" onclick="setLang('ru')">RU</button><button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button></div></div></div></div>
 
 <header>
 <h1 data-i18n="title" data-i18n-html="1">История о том, как штука для рисования треугольников стала самым важным чипом на планете</h1>
