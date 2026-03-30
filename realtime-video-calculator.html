@@ -4,40 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Realtime Video Generation Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
+  :root{
+    --t:#1c1917;--ts:#57534e;--th:#a8a29e;--bg:#faf9f7;
+    --l:#1c1917;--ll:#e7e5e4;--accent:#b45309;--accent-soft:#fef3c7;
+    --serif:'Playfair Display',Georgia,serif;
+    --sans:'Source Sans 3','Source Sans Pro',sans-serif;
+    --mono:'JetBrains Mono',monospace;
+    --green:#2d6a4f;--yellow:#b08600;--red:#9d0208;
+    --card:color-mix(in srgb,var(--ll),transparent 50%);
+    --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
+    --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310;
+    --green:#4ade80;--yellow:#fbbf24;--red:#f87171;
+    --card:color-mix(in srgb,var(--ll),transparent 30%)
+  }}
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --bg: #fafafa;
-    --fg: #1a1a1a;
-    --gray: #888;
-    --light: #e0e0e0;
-    --lighter: #f0f0f0;
-    --green: #2d6a4f;
-    --yellow: #b08600;
-    --red: #9d0208;
-  }
-
   body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--sans);
+    font-weight: 300;
     background: var(--bg);
-    color: var(--fg);
-    line-height: 1.5;
+    background-image: var(--grain);
+    background-repeat: repeat;
+    background-size: 256px;
+    color: var(--t);
+    line-height: 1.6;
     padding: 2rem 1rem;
     max-width: 860px;
     margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 600;
     margin-bottom: 0.3rem;
     letter-spacing: -0.02em;
   }
   .subtitle {
-    color: var(--gray);
+    color: var(--ts);
     font-size: 0.95rem;
     margin-bottom: 2rem;
   }
@@ -51,16 +64,17 @@
   @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
 
   .section {
-    background: white;
-    border: 1px solid var(--light);
+    background: var(--card);
+    border: 1px solid var(--ll);
     border-radius: 8px;
     padding: 1.2rem 1.4rem;
   }
   .section h2 {
-    font-size: 0.75rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--gray);
+    letter-spacing: 0.12em;
+    color: var(--accent);
     margin-bottom: 1rem;
     font-weight: 500;
   }
@@ -73,47 +87,48 @@
     font-size: 0.82rem;
     font-weight: 500;
     margin-bottom: 0.3rem;
-    color: var(--fg);
+    color: var(--t);
   }
   .field select, .field input[type="range"] {
     width: 100%;
   }
   select {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--sans);
     font-size: 0.85rem;
     padding: 0.45rem 0.6rem;
-    border: 1px solid var(--light);
-    border-radius: 4px;
-    background: var(--lighter);
-    color: var(--fg);
+    border: 1px solid var(--ll);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--t);
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a8a29e'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.6rem center;
     padding-right: 2rem;
   }
-  select:focus { outline: 2px solid var(--fg); outline-offset: 1px; }
+  select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 
   input[type="range"] {
     -webkit-appearance: none;
     height: 4px;
-    background: var(--light);
+    background: var(--ll);
     border-radius: 2px;
     outline: none;
+    accent-color: var(--accent);
   }
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 16px; height: 16px;
-    background: var(--fg);
+    background: var(--accent);
     border-radius: 50%;
     cursor: pointer;
   }
   .range-val {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--mono);
     font-size: 0.82rem;
-    color: var(--gray);
+    color: var(--th);
   }
 
   .toggle-row {
@@ -123,56 +138,59 @@
   }
   .toggle-row label { font-size: 0.82rem; font-weight: 500; margin-bottom: 0; }
   .toggle-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
     padding: 0.3rem 0.7rem;
-    border: 1px solid var(--light);
-    border-radius: 4px;
-    background: white;
+    border: 1px solid var(--ll);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ts);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
   }
   .toggle-btn.active {
-    background: var(--fg);
-    color: white;
-    border-color: var(--fg);
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
   }
 
   /* ── Result ── */
   .result {
-    background: white;
-    border: 2px solid var(--fg);
-    border-radius: 8px;
+    background: var(--card);
+    border: 2px solid var(--l);
+    border-radius: 10px;
     padding: 1.5rem 1.8rem;
     margin-bottom: 1.5rem;
     text-align: center;
   }
   .result-time {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--mono);
     font-size: 3rem;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: -0.03em;
     line-height: 1.1;
   }
   .result-unit {
     font-size: 1rem;
-    color: var(--gray);
-    font-weight: 400;
+    color: var(--th);
+    font-weight: 300;
   }
   .result-label {
     font-size: 0.85rem;
-    color: var(--gray);
+    color: var(--th);
     margin-top: 0.3rem;
   }
   .result-badge {
     display: inline-block;
-    font-size: 0.8rem;
-    font-weight: 700;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
     padding: 0.25rem 0.8rem;
     border-radius: 20px;
     margin-top: 0.6rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
   }
   .badge-rt { background: var(--green); color: white; }
   .badge-usable { background: var(--yellow); color: white; }
@@ -184,53 +202,61 @@
     gap: 1rem;
     margin-top: 1.2rem;
     padding-top: 1.2rem;
-    border-top: 1px solid var(--light);
+    border-top: 1px solid var(--ll);
     text-align: center;
   }
   .detail-val {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--mono);
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 500;
   }
   .detail-label {
-    font-size: 0.72rem;
-    color: var(--gray);
+    font-size: 0.7rem;
+    color: var(--th);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    font-family: var(--mono);
   }
 
   .when-rt {
-    background: var(--lighter);
+    background: var(--card);
+    border: 1px solid var(--ll);
     border-radius: 8px;
     padding: 1rem 1.4rem;
     font-size: 0.9rem;
-    color: var(--fg);
+    color: var(--t);
     margin-bottom: 1.5rem;
   }
-  .when-rt strong { font-weight: 700; }
+  .when-rt strong { font-weight: 600; }
 
   .footer {
     text-align: center;
-    color: var(--gray);
+    color: var(--th);
     font-size: 0.78rem;
+    font-family: var(--mono);
+    font-weight: 300;
     margin-top: 2rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--light);
+    border-top: none;
+    position: relative;
   }
-  .footer a { color: var(--fg); }
+  .footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+  .footer a { color: var(--ts); border-bottom: 1px solid var(--ll); transition: color .2s, border-color .2s; }
+  .footer a:hover { color: var(--accent); border-color: var(--accent); }
 
   .post-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:12px 0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg),transparent 20%)}
   .post-nav-inner{max-width:860px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center}
-  .post-nav a{font-family:'DM Mono',monospace;font-size:12px;color:var(--gray);display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none}
-  .post-nav a:hover{color:var(--fg)}
+  .post-nav a{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none}
+  .post-nav a:hover{color:var(--accent)}
   .post-nav svg{width:16px;height:16px}
-  .post-nav .nav-logo{font-weight:500;color:var(--fg)}
+  .post-nav .nav-logo{font-weight:400;color:var(--t)}
+  .post-nav .nav-logo span{color:var(--accent)}
   .post-nav .nav-links{display:flex;gap:20px}
 </style>
 </head>
 <body>
 
-<div class="post-nav"><div class="post-nav-inner"><a href="/" class="nav-logo">andrei<span style="font-weight:400">filatov</span></a><div class="nav-links"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="/blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a></div></div></div>
+<div class="post-nav"><div class="post-nav-inner"><a href="/" class="nav-logo">andrei<span>filatov</span></a><div class="nav-links"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="/blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a></div></div></div>
 
 <div style="height:48px"></div>
 <h1>Realtime Video Generation Calculator</h1>
@@ -275,10 +301,10 @@
       <div class="field">
         <label style="display:flex; justify-content:space-between; align-items:center;">
           Steps
-          <span style="font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:700; color:var(--fg);" id="steps-val">4</span>
+          <span style="font-family:var(--mono); font-size:0.9rem; font-weight:500; color:var(--t);" id="steps-val">4</span>
         </label>
         <input type="range" id="steps" min="1" max="50" value="4">
-        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-top:0.2rem;">
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--th); margin-top:0.2rem;">
           <span>1</span><span>25</span><span>50</span>
         </div>
       </div>
@@ -355,10 +381,10 @@
       <div class="field">
         <label style="display:flex; justify-content:space-between; align-items:center;">
           GPU Count
-          <span style="font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:700; color:var(--fg);" id="gpu-count-val">1</span>
+          <span style="font-family:var(--mono); font-size:0.9rem; font-weight:500; color:var(--t);" id="gpu-count-val">1</span>
         </label>
         <input type="range" id="gpu-count" min="1" max="8" value="1">
-        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-top:0.2rem;">
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--th); margin-top:0.2rem;">
           <span>1</span><span>4</span><span>8</span>
         </div>
       </div>
@@ -367,10 +393,10 @@
       <div class="field">
         <label style="display:flex; justify-content:space-between; align-items:center;">
           NPU TOPS
-          <span style="font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:700; color:var(--fg);" id="tops-val">80</span>
+          <span style="font-family:var(--mono); font-size:0.9rem; font-weight:500; color:var(--t);" id="tops-val">80</span>
         </label>
         <input type="range" id="tops" min="20" max="1500" value="80" step="10">
-        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-top:0.2rem;">
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--th); margin-top:0.2rem;">
           <span>20</span><span>750</span><span>1500</span>
         </div>
       </div>
