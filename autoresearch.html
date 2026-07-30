@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age of Autoresearch</title>
+<meta name="description" content="Как экспертиза переезжает с «найти решение» на «построить систему, которая находит решение» — и что после этого остаётся человеку">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --t:#1c1917;--ts:#57534e;--th:#a8a29e;--bg:#faf9f7;
+  --l:#1c1917;--ll:#e7e5e4;--accent:#b45309;--accent-soft:#fef3c7;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Source Sans 3','Source Sans Pro',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")
+}
+@media(prefers-color-scheme:dark){:root{
+  --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
+  --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
+}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.8;color:var(--t);background:var(--bg);-webkit-font-smoothing:antialiased;background-image:var(--grain);background-repeat:repeat;background-size:256px}
+.c{max-width:740px;margin:0 auto;padding:0 28px}
+
+/* ── Header ── */
+header{padding:160px 0 48px;border-bottom:none;position:relative}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+header h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.5vw,52px);line-height:1.15;letter-spacing:-.025em;margin-bottom:20px}
+header .sub{font-size:16px;color:var(--ts);font-weight:300;line-height:1.7;max-width:520px}
+header .meta{margin-top:28px;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:300;letter-spacing:.04em}
+
+/* ── Chapters ── */
+.ch{padding:72px 0;position:relative}
+.ch::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 15%,var(--ll) 85%,transparent)}
+.chn{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
+
+/* ── Typography ── */
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,36px);line-height:1.25;margin-bottom:36px;letter-spacing:-.015em}
+h3{font-family:var(--sans);font-weight:600;font-size:17px;margin:48px 0 18px;color:var(--t);letter-spacing:-.01em;position:relative;padding-left:16px}
+h3::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--accent);border-radius:2px}
+p{margin-bottom:22px}
+strong{font-weight:600;color:var(--t)}
+code{font-family:var(--mono);font-size:14px;background:var(--ll);padding:2px 7px;border-radius:4px;font-weight:400}
+pre{font-family:var(--mono);font-size:13px;line-height:1.6;padding:20px 24px;background:var(--ll);border-radius:6px;margin:24px 0;overflow-x:auto;border:1px solid color-mix(in srgb,var(--ll),var(--t) 5%)}
+
+/* ── Blockquotes ── */
+blockquote{border-left:3px solid var(--accent);padding:20px 24px;margin:40px 0;font-style:italic;color:var(--ts);font-family:var(--serif);font-size:20px;line-height:1.6;background:color-mix(in srgb,var(--accent-soft),transparent 60%);border-radius:0 8px 8px 0;position:relative}
+blockquote::before{content:'\201C';position:absolute;top:-8px;left:12px;font-size:48px;font-family:var(--serif);color:var(--accent);opacity:.25;line-height:1}
+
+/* ── Figures ── */
+.fig{margin:48px -40px;padding:0}
+.fig svg{width:calc(100% + 0px);height:auto;border-radius:8px;overflow:hidden;max-width:820px}
+.figc{font-size:12px;color:var(--th);margin-top:14px;font-family:var(--mono);font-weight:300;line-height:1.6;padding-left:2px;border-left:2px solid var(--ll);padding-left:12px}
+.fig img{width:100%;border:0;border-radius:8px}
+
+/* ── Demos ── */
+.demo{margin:56px -28px;padding:36px 28px;border:none;background:color-mix(in srgb,var(--ll),transparent 50%);border-radius:12px;position:relative}
+.demo::before{content:'';position:absolute;inset:0;border-radius:12px;border:1px solid var(--ll);pointer-events:none}
+.demo-l{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;font-weight:500}
+
+/* ── Sources ── */
+.src{padding:56px 0;font-size:14px;color:var(--ts)}
+.src h3{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px;color:var(--th);padding-left:0}
+.src h3::before{display:none}
+.src a{color:var(--ts);text-decoration:none;border-bottom:1px solid var(--ll);transition:color .2s,border-color .2s}
+.src a:hover{color:var(--accent);border-color:var(--accent)}
+.src li{margin-bottom:8px;list-style:none}
+.src li::before{content:"—";margin-right:10px;color:var(--th)}
+footer{padding:56px 0;border-top:none;text-align:center;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:300;position:relative}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+
+/* ── Controls ── */
+.sr{display:flex;align-items:center;gap:12px;padding:6px 0}
+.sr label{font-size:12px;font-family:var(--mono);font-weight:400;color:var(--ts);min-width:110px}
+.sr input[type=range]{flex:1;accent-color:var(--accent);height:4px}
+.sr .v{font-size:12px;font-family:var(--mono);font-weight:400;min-width:36px;text-align:right;color:var(--t)}
+.pb{background:transparent;border:1px solid var(--ll);padding:6px 18px;font-size:12px;font-family:var(--mono);font-weight:400;color:var(--ts);cursor:pointer;transition:all .25s ease;border-radius:6px;letter-spacing:.02em}
+.pb:hover{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent-soft),transparent 70%)}
+.step-nav{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.step-lbl{font-size:11px;color:var(--ts);cursor:pointer;transition:all .2s;font-family:var(--mono);font-weight:300;padding:3px 8px;border-radius:4px}
+.step-lbl:hover{color:var(--t);background:var(--ll)}
+.step-lbl.active{color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent-soft),transparent 40%)}
+.step-sep{width:16px;height:1px;background:var(--ll)}
+details.expandable{margin:32px 0}
+details.expandable summary{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--accent);cursor:pointer;padding:10px 0;letter-spacing:.02em;list-style:none;display:flex;align-items:center;gap:8px}
+details.expandable summary::before{content:'▸';transition:transform .2s}
+details.expandable[open] summary::before{transform:rotate(90deg)}
+details.expandable summary::-webkit-details-marker{display:none}
+
+/* ── Stack visualization ── */
+.stack-layer{padding:16px 20px;margin:4px 0;border-radius:8px;border:1px solid var(--ll);cursor:pointer;transition:all .25s ease}
+.stack-layer:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent-soft),transparent 70%)}
+.stack-layer.active{border-color:var(--accent);background:color-mix(in srgb,var(--accent-soft),transparent 40%)}
+.stack-layer .layer-name{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--t)}
+.stack-layer .layer-desc{font-size:13px;color:var(--ts);margin-top:4px}
+.stack-code{margin-top:16px;display:none}
+.stack-code.visible{display:block}
+.stack-arrow{text-align:center;color:var(--th);font-size:14px;line-height:1;padding:2px 0}
+
+/* ── Memory demo ── */
+.mem-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:16px 0}
+.mem-cell{aspect-ratio:1;border-radius:4px;border:1px solid var(--ll);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--th);transition:all .3s ease}
+.mem-cell.hit{background:color-mix(in srgb,var(--accent-soft),transparent 20%);border-color:var(--accent);color:var(--accent)}
+.mem-cell.miss{background:color-mix(in srgb,#ef4444,transparent 85%);border-color:#ef4444;color:#ef4444}
+
+/* ── Comparison cards ── */
+.cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:36px 0}
+.card-item{padding:20px;border:1px solid var(--ll);border-radius:8px;transition:border-color .2s}
+.card-item:hover{border-color:var(--accent)}
+.card-item h4{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.card-item p{font-size:14px;line-height:1.6;margin-bottom:0}
+@media(max-width:600px){
+  .cards-3{grid-template-columns:1fr}
+}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+header,section.ch{animation:fadeUp .6s ease both}
+section.ch:nth-child(2){animation-delay:.05s}
+section.ch:nth-child(3){animation-delay:.1s}
+section.ch:nth-child(4){animation-delay:.15s}
+
+/* ── Post nav ── */
+.post-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:12px 0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg),transparent 20%)}
+.post-nav-inner{max-width:740px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center}
+.post-nav a{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none}
+.post-nav a:hover{color:var(--accent)}
+.post-nav svg{width:16px;height:16px}
+.post-nav .nav-logo{font-weight:400;color:var(--t)}
+.post-nav .nav-logo span{color:var(--accent)}
+.post-nav .nav-links{display:flex;gap:20px}
+
+/* ── Language switcher ── */
+.lang-switch{display:flex;gap:4px;padding:4px 6px;border:1px solid var(--ll);border-radius:6px}
+.lang-btn{font-family:var(--mono);font-size:11px;padding:3px 10px;background:0 0;border:none;color:var(--th);cursor:pointer;transition:all .2s;font-weight:300;border-radius:4px;letter-spacing:.02em}
+.lang-btn.active{color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent-soft),transparent 40%)}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  header{padding:80px 0 48px}
+  .ch{padding:48px 0}
+  .demo{margin:36px -16px;padding:24px 16px;border-radius:0}
+  h3{padding-left:14px}
+  blockquote{padding:16px 18px;font-size:18px}
+  .post-nav .nav-links{gap:12px}
+  .mem-grid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="c">
+<div class="post-nav"><div class="post-nav-inner"><a href="/" class="nav-logo">andrei<span>filatov</span></a><div class="nav-links"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="/blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a></div></div></div>
+
+<header>
+<h1>Age of Autoresearch</h1>
+<p class="meta">Андрей Филатов · 2026 · ~15 минут</p>
+</header>
+
+<section class="ch">
+<p class="chn">Глава 1</p>
+<h2>Ленивый вечер</h2>
+
+<p>Был обычный будний вечер, и мне было откровенно лень тестировать гипотезы руками.</p>
+
+<p>Не лень в смысле «устал и хочу спать» — лень конкретная, инженерная: у меня накопился список из штук пятнадцати идей, которые нужно было прогнать, посмотреть на результат, отсеять мусор, повторить. Работа, которую я делал десятки раз и знал наизусть каждый шаг. И в этот вечер просто не было сил в очередной раз садиться и щёлкать одно и то же руками.</p>
+
+<p>Последние полтора месяца я жил без выходных, пытаясь стать условным 10x engineer — делать сильно больше, не наращивая при этом собственную когнитивную нагрузку. Звучит красиво, на практике это означало, что я пытался засунуть агентов во всё подряд и надеялся, что от этого само как-то ускорится.</p>
+
+<p>Первая попытка была наглой и глупой одновременно: я просто запустил десять разных задач параллельно, агент на агенте. Логика была простая — раз один агент делает одну задачу нормально, десять агентов сделают десять задач одновременно, и я освобожу себе вечер. На практике ломалась почти всегда какая-то одна из десяти. И стоило ей сломаться — вставало всё моё внимание. По факту я тратил больше времени на разгребание, чем если бы делал по одной штуке сам. Осадок был мега неприятный: вроде разложил работу на параллельные потоки, а получил просто параллельный хаос.</p>
+
+<p>Вторая попытка была умнее. Я подумал — окей, раз агент без явного плана делает какую-то дичь, дам ему план. Прописал агенду заранее: что делать в каком порядке, на какие корнер-кейсы обратить внимание, что считать успехом. Агент вёл себя ощутимо чище — меньше сюрпризов, больше покрытых кейсов. Стало лучше. Но всё равно как-то фигово — я по-прежнему сидел рядом и разгребал хвосты, просто хвостов стало поменьше. Ощущение было такое, будто я улучшил процесс контроля, а не избавился от необходимости контролировать.</p>
+
+<p>И вот в тот самый ленивый вечер, вместо того чтобы в третий раз пытаться лучше рулить агентом руками, я сделал ленивую вещь. Я просто описал pipeline генерации гипотез текстом — как я сам обычно придумываю, что попробовать дальше — и попросил Gemini оценивать результат каждой попытки. Не направлять процесс, не решать, что делать следующим шагом, а именно судить: вот гипотеза, вот результат, годится или нет. Отдал всё это агенту и лёг спать, потому что было откровенно лень сидеть рядом и смотреть.</p>
+
+<p>Утром я открыл лог и обнаружил, что за ночь было проверено <strong>40 гипотез</strong>.</p>
+
+<p>Не все сорок оказались полезными — часть была откровенным мусором, часть повторяла то, что я уже пробовал. Но это было неважно. Всю ночь я не делал руками ничего — а на выходе получил больше проверенных вариантов, чем сделал бы сам за неделю с ноутбуком. И стало ясно: дело было не в том, чтобы лучше управлять агентом. Дело было в том, кто оценивает результат.</p>
+
+<p>Сработало это один раз, ночью, на одной конкретной задаче. Осталось понять, что именно сработало — и, как ни странно, помогает это понять не собственный опыт, а то, что кто-то другой наткнулся почти на то же самое чуть раньше меня.</p>
+</section>
+
+<section class="ch">
+<p class="chn">Глава 2</p>
+<h2>У этого уже было имя</h2>
+
+<p>То, что случилось той ночью, не было изобретением. У этого уже было имя — autoresearch — и пара громких прецедентов до меня.</p>
+
+<p>Сначала я наткнулся на <a href="https://sankalp.bearblog.dev/autoresearch/" target="_blank" rel="noopener">пост sankalp про QR-разложение</a>. Задача классическая: разложить матрицу быстро. Он не трогал кернелы руками — натравил на задачу Codex как автономного агента. Тот держал beam из кандидатов, плодил суб-агентов под профилировку, матан и генерацию идей, сам отбраковывал тупые ветки по ходу. Итог — <strong>232x speedup</strong> на batched QR и 12-е место из 183 участников, при том что у автора не было профессионального GPU-опыта.</p>
+
+<p>И пока читал, дошло, что дело не в агенте и не в промпте. Раньше эксперт вкладывался в само решение: признаки собирал руками, эвристики придумывал из головы, кернелы писал нативно. Знать, как устроена задача, и было работой. Теперь это знание напрямую почти не нужно. Нужно уметь собрать цикл, который решение найдёт сам: бенчмарк, oracle, критерий остановки. Ты не пишешь кернел — ты строишь loop, который его перебирает. Тот же bitter lesson, только не про архитектуру модели, а про то, чем занят человек.</p>
+
+<p>Отсюда два прямых вывода. Первый: можно физически делать меньше работы. Та самая рутина тестирования гипотез, ради которой я ленился вечером, делегируется — агент гоняет её ночью, я сплю. Второй: работа делается лучше. Не «быстрее то же самое», а качественнее — oracle за то же время перебирает пространство решений шире, чем один человек, и находит варианты, до которых я бы сам просто не дошёл.</p>
+
+<p>И sankalp — не единственный. Karpathy собрал <a href="https://github.com/karpathy/autoresearch" target="_blank" rel="noopener">autoresearch</a>: 630-строчный скрипт, автономный loop — агент читает training code, предлагает изменение, гоняет пятиминутный run, меряет улучшение, коммитит или откатывает, и по новой. За ночь — сотни экспериментов, ни одного клика. <a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/" target="_blank" rel="noopener">AlphaEvolve</a> от DeepMind — та же идея в большем масштабе: Gemini плюс evolutionary framework плюс автоматические оценщики. Улучшили решения для 20% из 50 открытых математических задач, ускорили датацентры, чип-дизайн и AI-training у Google.</p>
+
+<p>Разные названия, разные реализации, разный масштаб. Но один и тот же паттерн: экспертиза переезжает с «найти решение» на «построить систему, которая находит решение».</p>
+
+<p>И это пока рамка, не ответ. Чтобы понять, где у рамки края, мне помогли не чужие кейсы, а два своих. Один прошёл гладко — там почти не о чем рассказывать. Второй — тот, где пришлось спорить с собой: я был уверен, что знаю, как лучше.</p>
+</section>
+
+<section class="ch">
+<p class="chn">Глава 3</p>
+<h2>Я знал лучше</h2>
+
+<p>Две недели я собирал фильтры для датасета руками.</p>
+
+<p>Задача простая на вид — решить, какие семплы выкинуть из обучения, какие оставить. На деле смесь инженерии и кураторства: читаешь статьи, смотришь на данные, формулируешь гипотезу, проверяешь, отбрасываешь, по новой. Я считал, что понимаю эту задачу. Вооружённый эго и знанием, как будет лучше, я две недели вкладывал интуицию и чтение статей в ручные фильтры.</p>
+
+<p>А потом я сделал ровно то, что делал в тот ленивый вечер — построил бенчмарк через Gemini как oracle и натравил на него VLM zero-shot. Просто чтобы посмотреть, побьёт ли он мою ручную работу. Никаких эвристик и подсказок, никакого моего участия.</p>
+
+<p>Первая попытка уже была лучше двух недель ручной работы. Вторая — ещё лучше.</p>
+
+<p>Это был не какой-то космический отрыв. Не «агент изобрёл фильтр, которого я не мог придумать». Просто результат был объективно лучше, а времени на него ушло — пара прогонов против двух недель моей жизни. И тут стало по-настоящему обидно — не потому что метод сработал, а потому что я две недели спорил с самим собой над решением, которое автоматика перебрала за пару попыток.</p>
+
+<p>До AlexNet признаки собирали руками. Инженеры придумывали эвристики, выковыривали фичи, настраивали пайплайны — и это была экспертиза, за которой стояли годы работы. Нейросети это автоматизировали: фичи стали учиться, а работа сместилась на архитектуру и данные. Теперь автоматизируется сама экспертиза исследователя. Не нужно идеально знать домен, чтобы принимать хорошие решения — достаточно построить oracle, который знает, что считать хорошим решением, и пустить агента. Это и есть bitter lesson на собственной шкуре. Две недели, которые побила одна ночь.</p>
+
+<p>Второй кейс дался куда спокойнее. Может, ставки были другие — а может, потому что после первого я перестал спорить с oracle.</p>
+</section>
+
+<section class="ch">
+<p class="chn">Глава 4</p>
+<h2>Не серебряная пуля</h2>
+
+<p>Второй кейс был про ускорение обучения. Никакой внутренней драмы — просто задача, где frontier-модели дороги и могут быть оверкилом, но если направить их на оптимизацию времени инференса или обучения, они экономят деньги и время. Я оставил модель работать на два дня и получил <strong>30% ускорение</strong>. Дальше ускорять стало сильно сложнее, и смысла тратить на это время уже не было. Гладко, буднично, без истории про эго.</p>
+
+<p>Но даже на гладком кейсе — и тем более после — всплывали подводные камни, из-за которых метод не стоит воспринимать как серебряную пулю.</p>
+
+<p>Первый — loss parity. Я забыл добавить в oracle проверку, что loss не разъезжается. Агент честно сообщил «готово, ускорение есть» — а по факту loss везде был NaN. Модель формально стала быстрее, но перестала учиться. После того как я добавил loss parity check, проблема ушла. Банальная вещь, которую я тем не менее пропустил, потому что слишком доверил агенту решать, что считать успехом.</p>
+
+<p>Второй — недостаточно детальный oracle. Это всплыло позже, на задаче удаления текста с изображений. Я тестировал разные модели, но валидировал результат по полному изображению. Мелкие артефакты — остатки букв, полустёртый символ — я замечал глазами, а oracle нет. Он считал, что текст удалён, и решение, которое он называл лучшим, на деле оставляло за собой мусор. Как только я добавил в oracle кроп области, где текст должен был удалиться, — стал валидировать не картинку целиком, а именно факт удаления — лучшим решением оказался совсем другой пайплайн. Прежний победитель просто эксплуатировал слепоту oracle.</p>
+
+<p>Общий урок простой и неприятный: конструирование autoresearch — тонкая задача, где именно на проектирование oracle и loop'а нужно тратить время. Время уходит не на рулёжку агентом и не на поиск магического промпта, а на то, чтобы честно и подробно описать, что считать хорошим решением. Воспринимать это как автоматическую серебряную пулю — значит рано или поздно получить NaN на месте loss'а.</p>
+
+<p>И даже когда oracle сконструирован правильно и loop работает гладко, остаётся ещё одна переменная, которую нельзя убрать проектированием — сама модель внутри loop'а. Я гонял весь этот выверенный процесс на разных моделях, и оказалось, что при одном и том же oracle и одной и той же задаче результат зависел не только от того, что я построил, но и от того, кому я это доверил.</p>
+</section>
+
+<section class="ch">
+<p class="chn">Глава 5</p>
+<h2>Не мощность, а интуиция</h2>
+
+<p>На ускорении кода у меня было три модели: Fable 5, Claude Opus 4.8 и GPT-5.5. Одна и та же задача, один и тот же oracle.</p>
+
+<p>Fable 5 — я просто описал задачу, и всё сработало. Агент выдавал гипотезы, которые имели смысл, проверял их, отбраковывал тупые. Мне оставалось только кивать на разумные шаги. Claude Opus 4.8 предложил решение, которое вызывало OOM, и на этом как бы сдался — не откорректировал сам, не попробовал другой путь. GPT-5.5 в итоге справился, но мне приходилось явно подсказывать, куда смотреть, иначе он топтался.</p>
+
+<p>Разница не в способности выполнять шаги. Все три умеют читать код, писать код, запускать, мерять. Разница в domain-интуиции — в том, насколько глубоко в модель «зашито» понимание, что в этой задаче вообще имеет смысл пробовать. У Fable 5 это понимание было. У двух других — нет.</p>
+
+<p>Я компенсирую нехватку интуиции у моделей тем, что закидываю в промпт контекст — блоги, гайды, чужие кейсы. Но это ограничение, и неприятное: чтобы знать, чем помочь модели, я должен сам заранее хорошо разбираться в теме. То есть ровно та экспертиза, которую я думал автоматизировать, мне приходится держать в голове, чтобы вытаскивать её кусками и подсовывать агенту.</p>
+
+<p>И это не только моё наблюдение. Тот же паттерн виден в независимых бенчмарках. <a href="https://kernelbench.com/mega" target="_blank" rel="noopener">KernelBench-Mega</a> — бенчмарк на whole-block megakernels, где нужно слить целый блок модели в один кернел, а не оптимизировать отдельные операции. Все предыдущие модели «выигрывали» на нём только за счёт multi-kernel Triton pipeline — технически проходит тест, но честного слияния нет, это обход. И только Fable 5, <a href="https://x.com/elliotarledge/status/2072814573753975266" target="_blank" rel="noopener">по твиту автора бенчмарка</a>, написал первый настоящий megakernel. Прямая параллель с моим подводным камнем из четвёртой главы: плохо спроектированный oracle позволял жухлерство, пока кто-то не сделал честно. <a href="https://arxiv.org/abs/2410.20424" target="_blank" rel="noopener">AutoKaggle</a> — тот же паттерн вне GPU: multi-agent фреймворк для Kaggle-соревнований, oracle там — это само соревнование и тесты, и на восьми соревнованиях получилось 0.85 validation submission rate и 0.82 comprehensive score, на уровне человека.</p>
+
+<p>Получается, лучший инструмент — это не самая мощная модель, а модель с правильной интуицией под конкретную задачу. И чем детальнее сконструирован oracle, тем яснее видно, у кого эта интуиция есть, а у кого её приходится компенсировать контекстом.</p>
+
+<p>Дальше это движется к recursive loops — циклам, где агент улучшает не веса модели, а саму систему: код, пайплайн, артефакт. Каждое улучшение облегчает следующее. Надеюсь, скоро появятся инструменты, которыми можно будет просто пользоваться. Пока приходится каждый раз выбирать, какой loop под какую задачу, и работает это точечно.</p>
+
+<p>Что это тогда говорит про мою собственную роль, если интуиция — единственное, что пока ещё моё, — становится товаром, который можно закинуть в промпт?</p>
+</section>
+
+<section class="ch">
+<p class="chn">Глава 6</p>
+<h2>Что остаётся</h2>
+
+<p>На вопрос «заменит ли AI нас» у меня теперь скучный ответ: для части работы это уже случилось. Стажёры и джуны раньше рисовали графики и проверяли простые гипотезы — сейчас это целиком делает агент.</p>
+
+<p>Но это про джунов. Со мной сложнее.</p>
+
+<p>Три года назад я три дня копался в исходниках PyTorch Lightning, чтобы разобраться, как там устроен checkpointing. Три дня — и я знал это на уровне, на котором мог объяснить кому угодно и починить что угодно. Сейчас то же самое агент делает за час. Освобождает от рутины — да. Но забирает кое-что взамен. То чувство авторства, которое раньше давало ручное ковыряние в исходниках — «я это понял, я это сделал» — его больше нет. По факту я ничего не сделал, это всё агенты.</p>
+
+<p>Это похоже на переход от роли сеньора к роли менеджера. История ровно та же, что и в обычной карьере: становишься тимлидом — и руками уже почти ничего не делаешь. Раньше сам сидел и решал, теперь смотришь, как решают другие, и следишь, чтобы решали в нужную сторону. На выходе получается больше, чем сделал бы сам. Но своего, руками сделанного, в этом больше нет. Позиция менее дофаминовая: прежнего драйва от собственноручного решения не будет.</p>
+
+<p>И я думал, что на этом можно остановиться. Менеджер-то всё равно нужен. Не потому, что он умнее тех, кем управляет, а потому что знает, куда направить — у него domain-интуиция. Это и был мой вывод в прошлой главе: разница не в мощности, а в интуиции. Там, где у модели нет интуиции, я компенсирую закидыванием контекста в промпт. Интуиция была последним, что оставалось моим. А потом за пару месяцев набралось несколько историй, которые в эту картину не укладываются.</p>
+
+<p>Jacobian Conjecture — классическая гипотеза алгебры. Если у многочленного отображения якобиан ненулевая константа, то отображение обратимо. Недавно — контрпример в размерности три. И нашла его не группа математиков. Нашла Fable 5, пока я смотрел финал чемпионата мира по футболу.</p>
+
+<p>Теренс Тао, лауреат Филдсовской премии, написал <a href="https://terrytao.wordpress.com/2026/07/21/a-digestion-of-the-jacobian-conjecture-counterexample/" target="_blank" rel="noopener">пост</a>, чтобы это переварить. Он объясняет ретроспективно, геометрически, то, что модель нашла сама. И вот что меня поразило: Тао садится и считает, насколько это невероятно. Многочлен степени семь. У якобиана априори до <strong>1329</strong> ненулевых коэффициентов — при <strong>360</strong> степенях свободы общего многочленного отображения той же степени. 1329 уравнений, которые должны занулиться одновременно, в пространстве из 360 переменных. Брутфорсом такое не находится — шанс ткнуть в нужную точку нулевой. Значит, Fable не перебирала. Она видела структуру.</p>
+
+<p>Увидеть, где лежит решение, в пространстве, где наивный перебор бесполезен. Это ровно то, что я считал своим.</p>
+
+<p>В университете мне рассказывали, что есть разные уровни запоминания материала. Первая стадия — ты учишь термины: «якобиан», «многочлен», «обратимое отображение». Знаешь, что они есть, но не понимаешь. Вторая — ты знаешь весь материал: определения, теоремы, доказательства. Но не можешь применить — на экзамене заваливаешь задачу, потому что она чуть отличается от шаблона. И есть третья стадия, которая и есть знание материала — интуиция. Не просто знать, что факт есть, а видеть, когда его применить, и узнавать ту же структуру в новой ситуации.</p>
+
+<p>Модели проделали тот же путь. Сначала стохастические попугаи — угадывали следующее слово. Потом выучили материал, знают факты, но ломаются на чём-то чуть новом. И вот теперь — третья стадия. Видят структуру, находят решения, которых не было в обучающей выборке. Контрпример к гипотезе — это не воспроизведение того, что модель видела, это новая математика. И схитрить тут негде: контрпример либо работает, либо нет, плохо спроектированного oracle, который можно обойти, в чистой математике не существует.</p>
+
+<p>Ладно, допустим, интуиция у модели есть. Но менеджер, который направляет, всё равно нужен — на этом я и держался. Второй случай ровно про это, и он мне ближе, потому что там видно, что делал человек.</p>
+
+<p>Математик Дмитрий Рыбин взял гипотезу Динница-Гарга-Гоманса — задача про сетевые потоки, висела с девяностых: можно ли дробное решение сделать неделимым, не подняв стоимость и не перегрузив ни одно ребро больше, чем на размер самой большой отправки. Контрпример нашёл <a href="https://chatgpt.com/share/6a60b2eb-0b64-83ee-9c76-7931ca1de063" target="_blank" rel="noopener">GPT-5.6 Pro</a>: граф на семь узлов, три отправки, дробная стоимость 58, а любая неделимая маршрутизация — минимум 60.</p>
+
+<p>Интересна тут не модель, а промпты. Их было четыре, суммарно меньше шестидесяти слов: «construct a counterexample», «you should do a breakthrough», «it's enough of partial results, let's finish». Три захода подряд по полтора часа модель возвращала частичные результаты, и человек просто просил продолжать. Domain-интуиции в этих словах нет вообще. Есть направление и понимание, когда результат уже годится, — то есть ровно то, что я оставил себе как менеджеру. Оказалось, этой работы примерно на минуту.</p>
+
+<p>Тот же навык переносится и на мою работу. Мой личный труд — что он такое? Набор паттернов, которые я наработал за годы. «Видел эту ошибку — знаю, куда смотреть». «Эта архитектура ломается вот так — обходи вот так». «Эта гипотеза не сработает, потому что вот эта метрика врёт». Это всё паттерны. И их можно выучить. И сеть, которая нашла решение в пространстве из 1329 уравнений, — она выучит и мои паттерны. Вопрос лишь в цене, и цена эта каждый месяц дешевле, чем вчера.</p>
+
+<p>И вот что странно: кайф при этом никуда не делся. Я всё так же с утра открываю лог и залипаю в то, что там за ночь произошло, хотя руками не сделал ничего. Значит, кайф был не от «я решил это сам», а от того, что задача сдвинулась. А сдвигать её теперь получается сильно больше: бóльшую часть обучения моделей я тяну один, там, где раньше нужна была команда.</p>
+
+<p>Поэтому я не бросаю, а собираю следующий loop. Но на вопрос, в чём теперь моя ценность, ответа у меня нет.</p>
+</section>
+
+<section class="src">
+<h3>Источники</h3>
+<ul>
+<li><a href="https://sankalp.bearblog.dev/autoresearch/">sankalp — Auto-Research: QR Decomposition</a> — 232x speedup на batched QR (419 000 µs → 1805 µs) через Codex как автономного агента; 12-е место среди 183 участников, больше 1500 сабмитов за 14 дней.</li>
+<li><a href="https://github.com/karpathy/autoresearch">Andrej Karpathy — autoresearch</a> — 630-строчный скрипт: training code → изменение → 5-минутный run → мера улучшения → commit/rollback → repeat.</li>
+<li><a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/">DeepMind — AlphaEvolve</a> — Gemini + evolutionary framework + automated evaluators; улучшены решения для 20% из 50 открытых математических задач.</li>
+<li><a href="https://terrytao.wordpress.com/2026/07/21/a-digestion-of-the-jacobian-conjecture-counterexample/">Terence Tao — A digestion of the Jacobian conjecture counterexample</a> — контрпример в размерности 3; многочлен степени 7, до 1329 коэффициентов якобиана при 360 степенях свободы.</li>
+<li><a href="https://kernelbench.com/mega">KernelBench-Mega</a> — независимый бенчмарк на whole-block megakernels (автор — Elliot Arledge).</li>
+<li><a href="https://x.com/elliotarledge/status/2072814573753975266">Elliot Arledge (твит)</a> — первый настоящий megakernel на KernelBench-Mega, написанный Fable 5.</li>
+<li><a href="https://arxiv.org/abs/2410.20424">AutoKaggle (arXiv:2410.20424)</a> — multi-agent фреймворк для Kaggle-соревнований; validation submission rate 0.85, comprehensive score 0.82 на 8 соревнованиях.</li>
+<li><a href="https://chatgpt.com/share/6a60b2eb-0b64-83ee-9c76-7931ca1de063">Дмитрий Рыбин — контрпример к гипотезе Динница-Гарга-Гоманса</a> — четыре промпта, меньше 60 слов; три захода с частичными результатами, контрпример на четвёртом: граф на 7 узлов, три отправки, дробная стоимость 58 против минимум 60 у любой неделимой маршрутизации.</li>
+</ul>
+</section>
+
+</div>
+
+<script>
+</script>
+
+<script>
+// ═══ GOATCOUNTER ═══
+(function(){
+  if(location.hostname==='localhost'||location.hostname==='127.0.0.1')return;
+  var s=document.createElement('script');
+  s.async=true;
+  s.dataset.goatcounter='https://anvilarth.goatcounter.com/count';
+  s.src='//gc.zgo.at/count.js';
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
