@@ -41,6 +41,8 @@ h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,36px);line-
 h3{font-family:var(--sans);font-weight:600;font-size:17px;margin:48px 0 18px;color:var(--t);letter-spacing:-.01em;position:relative;padding-left:16px}
 h3::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--accent);border-radius:2px}
 p{margin-bottom:22px}
+p a{color:var(--t);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--accent),transparent 55%);transition:color .2s,border-color .2s}
+p a:hover{color:var(--accent);border-color:var(--accent)}
 strong{font-weight:600;color:var(--t)}
 code{font-family:var(--mono);font-size:14px;background:var(--ll);padding:2px 7px;border-radius:4px;font-weight:400}
 pre{font-family:var(--mono);font-size:13px;line-height:1.6;padding:20px 24px;background:var(--ll);border-radius:6px;margin:24px 0;overflow-x:auto;border:1px solid color-mix(in srgb,var(--ll),var(--t) 5%)}
