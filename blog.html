@@ -46,7 +46,7 @@ header p{color:var(--ts);font-size:16px}
 
 /* ── Posts ── */
 .posts{padding:48px 0}
-.post-item{display:block;padding:32px 0;position:relative;transition:all .2s}
+.post-item{display:block;padding:32px 44px 32px 0;position:relative;transition:all .2s}
 .post-item+.post-item{border-top:1px solid var(--ll)}
 .post-item:hover .post-title{color:var(--accent)}
 .post-date{font-family:var(--mono);font-size:12px;color:var(--th);letter-spacing:.04em;margin-bottom:8px;display:block}
@@ -63,6 +63,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 @media(max-width:600px){
   header{padding:100px 0 36px}
+  .post-item{padding-right:0}
   .post-arrow{display:none}
 }
 </style>
@@ -92,7 +93,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   <a href="/autoresearch.html" class="post-item">
     <span class="post-date">July 2026 · ~15 min read · RU</span>
     <h2 class="post-title">Age of Autoresearch</h2>
-    <p class="post-desc">Как экспертиза переезжает с «найти решение» на «построить систему, которая находит решение» — oracle, циклы, подводные камни и что после этого остаётся человеку.</p>
+    <p class="post-desc">Экспертиза переезжает с «найти решение» на «построить систему, которая находит решение». Oracle, циклы, подводные камни — и что остаётся человеку.</p>
     <div class="post-tags">
       <span class="post-tag">Agents</span>
       <span class="post-tag">Research</span>
