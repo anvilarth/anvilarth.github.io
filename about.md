@@ -32,6 +32,16 @@ deep learning course.
 
 ## Selected work
 
+- **Krea 2** — open-weights text-to-image foundation model trained from scratch at Krea.
+  [Technical report](https://www.krea.ai/blog/krea-2-technical-report)
+- **XLabs FLUX LoRAs** — open-source LoRA adapters for FLUX.1-dev, with training and inference
+  code. [Hugging Face](https://huggingface.co/XLabs-AI/flux-lora-collection) ·
+  [x-flux on GitHub](https://github.com/XLabs-AI/x-flux)
+- **Kandinsky 3.0 / 3.1 / 4.0** — family of text-to-image and text-to-video foundation models.
+  Co-author of [the Kandinsky 3.0 technical report](https://arxiv.org/abs/2312.03511) and of
+  [Kandinsky 3: Text-to-Image Synthesis for Multifunctional Generative Framework](https://arxiv.org/abs/2410.21061);
+  [Kandinsky 4.0](https://ai-forever.github.io/Kandinsky-4/K40/) adds video and video-to-audio
+  generation.
 - **Task Discovery** (NeurIPS 2022) — discovering tasks on which neural networks generalize
   well, by optimizing an agreement-score objective. Computer vision, meta-learning, PyTorch.
 - **Deep Learning course** — prepared and taught in a team of two. Covers neural network
