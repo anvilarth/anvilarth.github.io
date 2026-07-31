@@ -44,6 +44,10 @@ p{margin-bottom:22px}
 p a{color:var(--t);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--accent),transparent 55%);transition:color .2s,border-color .2s}
 p a:hover{color:var(--accent);border-color:var(--accent)}
 strong{font-weight:600;color:var(--t)}
+.pull{margin:44px 0;padding:26px 0;border-top:1px solid var(--ll);border-bottom:1px solid var(--ll);font-family:var(--serif);font-size:22px;line-height:1.55;color:var(--t);text-align:left}
+.pull em{font-style:normal;color:var(--accent)}
+@media(max-width:600px){.pull{font-size:19px;margin:32px 0;padding:20px 0}}
+.term{font-family:var(--mono);font-size:.92em;font-weight:500;color:var(--accent);background:color-mix(in srgb,var(--accent-soft),transparent 35%);padding:2px 8px;border-radius:4px;white-space:nowrap}
 code{font-family:var(--mono);font-size:14px;background:var(--ll);padding:2px 7px;border-radius:4px;font-weight:400}
 pre{font-family:var(--mono);font-size:13px;line-height:1.6;padding:20px 24px;background:var(--ll);border-radius:6px;margin:24px 0;overflow-x:auto;border:1px solid color-mix(in srgb,var(--ll),var(--t) 5%)}
 
@@ -56,6 +60,10 @@ blockquote::before{content:'\201C';position:absolute;top:-8px;left:12px;font-siz
 .fig svg{width:calc(100% + 0px);height:auto;border-radius:8px;overflow:hidden;max-width:820px}
 .figc{font-size:12px;color:var(--th);margin-top:14px;font-family:var(--mono);font-weight:300;line-height:1.6;padding-left:2px;border-left:2px solid var(--ll);padding-left:12px}
 .fig img{width:100%;border:0;border-radius:8px}
+.fig.narrow{margin:48px 0}
+.fig.narrow img{display:block;width:auto;max-width:100%;margin:0 auto}
+.fig.framed img{border:1px solid var(--ll)}
+@media(prefers-color-scheme:dark){.fig img{filter:brightness(.9) contrast(.96)}}
 
 /* ── Demos ── */
 .demo{margin:56px -28px;padding:36px 28px;border:none;background:color-mix(in srgb,var(--ll),transparent 50%);border-radius:12px;position:relative}
@@ -144,6 +152,8 @@ section.ch:nth-child(4){animation-delay:.15s}
   header{padding:80px 0 48px}
   .ch{padding:48px 0}
   .demo{margin:36px -16px;padding:24px 16px;border-radius:0}
+  .fig{margin:36px -16px}
+  .fig.narrow{margin:36px 0}
   h3{padding-left:14px}
   blockquote{padding:16px 18px;font-size:18px}
   .post-nav .nav-links{gap:12px}
@@ -178,6 +188,11 @@ section.ch:nth-child(4){animation-delay:.15s}
 
 <p>Утром я открыл лог и обнаружил, что за ночь было проверено <strong>40 гипотез</strong>.</p>
 
+<div class="fig narrow framed">
+  <img src="img/sankalp_17pm.webp" alt="Терминал агента: Pursuing goal (1d 1h 41m)">
+  <p class="figc">Так это выглядит со стороны: строчка в терминале и счётчик, который тикает, пока ты спишь. Кадр не мой — из <a href="https://sankalp.bearblog.dev/autoresearch/" target="_blank" rel="noopener">разбора sankalp</a>, про него следующая глава.</p>
+</div>
+
 <p>Не все сорок оказались полезными — часть была откровенным мусором, часть повторяла то, что я уже пробовал. Но это было неважно. Всю ночь я не делал руками ничего — а на выходе получил больше проверенных вариантов, чем сделал бы сам за неделю с ноутбуком. И стало ясно: дело было не в том, чтобы лучше управлять агентом. Дело было в том, кто оценивает результат.</p>
 
 <p>Сработало это один раз, ночью, на одной конкретной задаче. Осталось понять, что именно сработало — и, как ни странно, помогает это понять не собственный опыт, а то, что кто-то другой наткнулся почти на то же самое чуть раньше меня.</p>
@@ -187,15 +202,33 @@ section.ch:nth-child(4){animation-delay:.15s}
 <p class="chn">Глава 2</p>
 <h2>У этого уже было имя</h2>
 
-<p>То, что случилось той ночью, не было изобретением. У этого уже было имя — autoresearch — и пара громких прецедентов до меня.</p>
+<p>То, что случилось той ночью, не было изобретением. У этого уже было имя: <span class="term">autoresearch</span>. И пара громких прецедентов до меня.</p>
 
 <p>Сначала я наткнулся на <a href="https://sankalp.bearblog.dev/autoresearch/" target="_blank" rel="noopener">пост sankalp про QR-разложение</a>. Задача классическая: разложить матрицу быстро. Он не трогал кернелы руками — натравил на задачу Codex как автономного агента. Тот держал beam из кандидатов, плодил суб-агентов под профилировку, матан и генерацию идей, сам отбраковывал тупые ветки по ходу. Итог — <strong>232x speedup</strong> на batched QR и 12-е место из 183 участников, при том что у автора не было профессионального GPU-опыта.</p>
 
-<p>И пока читал, дошло, что дело не в агенте и не в промпте. Раньше эксперт вкладывался в само решение: признаки собирал руками, эвристики придумывал из головы, кернелы писал нативно. Знать, как устроена задача, и было работой. Теперь это знание напрямую почти не нужно. Нужно уметь собрать цикл, который решение найдёт сам: бенчмарк, oracle, критерий остановки. Ты не пишешь кернел — ты строишь loop, который его перебирает. Тот же bitter lesson, только не про архитектуру модели, а про то, чем занят человек.</p>
+<div class="fig narrow">
+  <img src="img/sankalp_10pm.webp" alt="Схема beam-поиска: ветки кандидатов, точки слияния, лучшая ветка">
+  <p class="figc">Beam из кандидатов у sankalp: ветки живут параллельно, слабые гаснут, сильные сливаются. Никто не выбирает победителя руками — его выбирает критерий. Схема из <a href="https://sankalp.bearblog.dev/autoresearch/" target="_blank" rel="noopener">поста sankalp</a>.</p>
+</div>
+
+<p>И пока читал, дошло, что дело не в агенте и не в промпте. Раньше эксперт вкладывался в само решение: признаки собирал руками, эвристики придумывал из головы, кернелы писал нативно. Знать, как устроена задача, и было работой. Теперь это знание напрямую почти не нужно.</p>
+
+<p class="pull">Нужно уметь собрать цикл, который решение найдёт сам: бенчмарк, oracle, критерий остановки. Ты не пишешь кернел — ты строишь loop, который его перебирает. Тот же <em>bitter lesson</em>, только не про архитектуру модели, а про то, чем занят человек.</p>
 
 <p>Отсюда два прямых вывода. Первый: можно физически делать меньше работы. Та самая рутина тестирования гипотез, ради которой я ленился вечером, делегируется — агент гоняет её ночью, я сплю. Второй: работа делается лучше. Не «быстрее то же самое», а качественнее — oracle за то же время перебирает пространство решений шире, чем один человек, и находит варианты, до которых я бы сам просто не дошёл.</p>
 
 <p>И sankalp — не единственный. Karpathy собрал <a href="https://github.com/karpathy/autoresearch" target="_blank" rel="noopener">autoresearch</a>: 630-строчный скрипт, автономный loop — агент читает training code, предлагает изменение, гоняет пятиминутный run, меряет улучшение, коммитит или откатывает, и по новой. За ночь — сотни экспериментов, ни одного клика. <a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/" target="_blank" rel="noopener">AlphaEvolve</a> от DeepMind — та же идея в большем масштабе: Gemini плюс evolutionary framework плюс автоматические оценщики. Улучшили решения для 20% из 50 открытых математических задач, ускорили датацентры, чип-дизайн и AI-training у Google.</p>
+
+<div class="fig">
+  <img src="img/karpathy_progress.png" alt="График прогресса autoresearch: 83 эксперимента, 15 удержанных улучшений">
+  <p class="figc">Одна ночь в репозитории Karpathy: 83 эксперимента, из них 15 удержанных улучшений. Серые точки — то, что loop отбраковал сам. Ровно та пропорция мусора, которую я утром увидел у себя в логе. График из <a href="https://github.com/karpathy/autoresearch" target="_blank" rel="noopener">karpathy/autoresearch</a>.</p>
+</div>
+
+<p>У Karpathy в README есть строчка, которая описывает этот сдвиг точнее, чем я формулировал сам:</p>
+
+<blockquote>You're not touching any of the Python files like you normally would as a researcher. Instead, you are programming the <code>program.md</code> Markdown files that provide context to the AI agents and set up your autonomous research org.</blockquote>
+
+<p>Файл, который правит агент, и файл, который правит человек, — разные файлы. Вся работа исследователя переехала во второй.</p>
 
 <p>Разные названия, разные реализации, разный масштаб. Но один и тот же паттерн: экспертиза переезжает с «найти решение» на «построить систему, которая находит решение».</p>
 
@@ -233,6 +266,17 @@ section.ch:nth-child(4){animation-delay:.15s}
 
 <p>Второй — недостаточно детальный oracle. Это всплыло позже, на задаче удаления текста с изображений. Я тестировал разные модели, но валидировал результат по полному изображению. Мелкие артефакты — остатки букв, полустёртый символ — я замечал глазами, а oracle нет. Он считал, что текст удалён, и решение, которое он называл лучшим, на деле оставляло за собой мусор. Как только я добавил в oracle кроп области, где текст должен был удалиться, — стал валидировать не картинку целиком, а именно факт удаления — лучшим решением оказался совсем другой пайплайн. Прежний победитель просто эксплуатировал слепоту oracle.</p>
 
+<div class="fig">
+  <img src="img/kernelbench_session.jpg" alt="График одной сессии на KernelBench-Mega: ускорение относительно референса против потраченных токенов">
+  <p class="figc">Как выглядит правильно устроенная сессия — разбор одного прогона на <a href="https://kernelbench.com/mega" target="_blank" rel="noopener">KernelBench-Mega</a>. Первые 64% времени вообще нет кода: замер базовой линии, микробенчи барьеров, вывод roofline. Первый работающий кернел появляется на отметке 224k токенов. И ближе к концу — точка, ради которой я это показываю: «finer split-K regresses → measured, reverted». Гипотеза не сработала, замер это поймал, откат.</p>
+</div>
+
+<p>Тот же прогон описан автором бенчмарка одной фразой:</p>
+
+<blockquote>It spent 64% of the session in silence timing the baseline, microbenchmarking grid barriers, deriving a ~29x bytes/token roofline. The one regression it tried (finer split-K) it measured and reverted instead of rationalizing.</blockquote>
+
+<p>Measured and reverted instead of rationalizing — это и есть работающий oracle. Мой NaN получился ровно потому, что мерять было нечем, и агенту оставалось только рационализировать.</p>
+
 <p>Общий урок простой и неприятный: конструирование autoresearch — тонкая задача, где именно на проектирование oracle и loop'а нужно тратить время. Время уходит не на рулёжку агентом и не на поиск магического промпта, а на то, чтобы честно и подробно описать, что считать хорошим решением. Воспринимать это как автоматическую серебряную пулю — значит рано или поздно получить NaN на месте loss'а.</p>
 
 <p>И даже когда oracle сконструирован правильно и loop работает гладко, остаётся ещё одна переменная, которую нельзя убрать проектированием — сама модель внутри loop'а. Я гонял весь этот выверенный процесс на разных моделях, и оказалось, что при одном и том же oracle и одной и той же задаче результат зависел не только от того, что я построил, но и от того, кому я это доверил.</p>
@@ -251,6 +295,11 @@ section.ch:nth-child(4){animation-delay:.15s}
 <p>Я компенсирую нехватку интуиции у моделей тем, что закидываю в промпт контекст — блоги, гайды, чужие кейсы. Но это ограничение, и неприятное: чтобы знать, чем помочь модели, я должен сам заранее хорошо разбираться в теме. То есть ровно та экспертиза, которую я думал автоматизировать, мне приходится держать в голове, чтобы вытаскивать её кусками и подсовывать агенту.</p>
 
 <p>И это не только моё наблюдение. Тот же паттерн виден в независимых бенчмарках. <a href="https://kernelbench.com/mega" target="_blank" rel="noopener">KernelBench-Mega</a> — бенчмарк на whole-block megakernels, где нужно слить целый блок модели в один кернел, а не оптимизировать отдельные операции. Все предыдущие модели «выигрывали» на нём только за счёт multi-kernel Triton pipeline — технически проходит тест, но честного слияния нет, это обход. И только Fable 5, <a href="https://x.com/elliotarledge/status/2072814573753975266" target="_blank" rel="noopener">по твиту автора бенчмарка</a>, написал первый настоящий megakernel. Прямая параллель с моим подводным камнем из четвёртой главы: плохо спроектированный oracle позволял жухлерство, пока кто-то не сделал честно. <a href="https://arxiv.org/abs/2410.20424" target="_blank" rel="noopener">AutoKaggle</a> — тот же паттерн вне GPU: multi-agent фреймворк для Kaggle-соревнований, oracle там — это само соревнование и тесты, и на восьми соревнованиях получилось 0.85 validation submission rate и 0.82 comprehensive score, на уровне человека.</p>
+
+<div class="fig narrow framed">
+  <img src="img/tweet_arledge.png" alt="Твит Elliot Arledge про первый настоящий megakernel">
+  <p class="figc">Автор бенчмарка перечисляет, кто и на сколько «выигрывал» до этого: Opus 4.8 — 14.4x, GLM-5.2 — 11.1x, GPT-5.5 — 4.3x, Sonnet 5 — 4.0x. Все — через multi-kernel Triton pipeline, который не проходит authenticity gate. <a href="https://x.com/elliotarledge/status/2072814573753975266" target="_blank" rel="noopener">Твит целиком</a>.</p>
+</div>
 
 <p>Получается, лучший инструмент — это не самая мощная модель, а модель с правильной интуицией под конкретную задачу. И чем детальнее сконструирован oracle, тем яснее видно, у кого эта интуиция есть, а у кого её приходится компенсировать контекстом.</p>
 
@@ -277,6 +326,15 @@ section.ch:nth-child(4){animation-delay:.15s}
 
 <p>Теренс Тао, лауреат Филдсовской премии, написал <a href="https://terrytao.wordpress.com/2026/07/21/a-digestion-of-the-jacobian-conjecture-counterexample/" target="_blank" rel="noopener">пост</a>, чтобы это переварить. Он объясняет ретроспективно, геометрически, то, что модель нашла сама. И вот что меня поразило: Тао садится и считает, насколько это невероятно. Многочлен степени семь. У якобиана априори до <strong>1329</strong> ненулевых коэффициентов — при <strong>360</strong> степенях свободы общего многочленного отображения той же степени. 1329 уравнений, которые должны занулиться одновременно, в пространстве из 360 переменных. Брутфорсом такое не находится — шанс ткнуть в нужную точку нулевой. Значит, Fable не перебирала. Она видела структуру.</p>
 
+<div class="fig framed">
+  <img src="img/tao_1329.png" alt="Абзац из поста Теренса Тао с подсчётом 1329 уравнений против 360 степеней свободы">
+  <p class="figc">Тот самый абзац у <a href="https://terrytao.wordpress.com/2026/07/21/a-digestion-of-the-jacobian-conjecture-counterexample/" target="_blank" rel="noopener">Тао</a>. Последняя фраза — приговор перебору: «finding such a polynomial looks highly unlikely to be located by brute force».</p>
+</div>
+
+<p>В конце поста стоит дисклеймер, который лет пять назад в тексте филдсовского лауреата смотрелся бы дико:</p>
+
+<blockquote>I used an AI chatbot to discuss various aspects of this problem and to confirm several of the calculations made here.</blockquote>
+
 <p>Увидеть, где лежит решение, в пространстве, где наивный перебор бесполезен. Это ровно то, что я считал своим.</p>
 
 <p>В университете мне рассказывали, что есть разные уровни запоминания материала. Первая стадия — ты учишь термины: «якобиан», «многочлен», «обратимое отображение». Знаешь, что они есть, но не понимаешь. Вторая — ты знаешь весь материал: определения, теоремы, доказательства. Но не можешь применить — на экзамене заваливаешь задачу, потому что она чуть отличается от шаблона. И есть третья стадия, которая и есть знание материала — интуиция. Не просто знать, что факт есть, а видеть, когда его применить, и узнавать ту же структуру в новой ситуации.</p>
@@ -286,6 +344,11 @@ section.ch:nth-child(4){animation-delay:.15s}
 <p>Ладно, допустим, интуиция у модели есть. Но менеджер, который направляет, всё равно нужен — на этом я и держался. Второй случай ровно про это, и он мне ближе, потому что там видно, что делал человек.</p>
 
 <p>Математик Дмитрий Рыбин взял гипотезу Динница-Гарга-Гоманса — задача про сетевые потоки, висела с девяностых: можно ли дробное решение сделать неделимым, не подняв стоимость и не перегрузив ни одно ребро больше, чем на размер самой большой отправки. Контрпример нашёл <a href="https://chatgpt.com/share/6a60b2eb-0b64-83ee-9c76-7931ca1de063" target="_blank" rel="noopener">GPT-5.6 Pro</a>: граф на семь узлов, три отправки, дробная стоимость 58, а любая неделимая маршрутизация — минимум 60.</p>
+
+<div class="fig framed">
+  <img src="img/rybin_graph.jpg" alt="Контрпример к гипотезе Динница-Гарга-Гоманса: граф на семь узлов с потоками, стоимостями и требованиями">
+  <p class="figc">Весь контрпример целиком: семь узлов, один источник s, три получателя с требованиями 15, 10 и 15. Синие числа — поток, красные — стоимость ребра. Тридцать лет никто не мог такой граф ни построить, ни доказать, что его нет. <a href="https://x.com/DmitryRybin1/status/2079904005652893709" target="_blank" rel="noopener">Картинка из твита Рыбина</a>.</p>
+</div>
 
 <p>Интересна тут не модель, а промпты. Их было четыре, суммарно меньше шестидесяти слов: «construct a counterexample», «you should do a breakthrough», «it's enough of partial results, let's finish». Три захода подряд по полтора часа модель возвращала частичные результаты, и человек просто просил продолжать. Domain-интуиции в этих словах нет вообще. Есть направление и понимание, когда результат уже годится, — то есть ровно то, что я оставил себе как менеджеру. Оказалось, этой работы примерно на минуту.</p>
 
