@@ -1,6 +1,7 @@
 # Andrei Filatov
 
-> Research scientist and ML/DL engineer, Team Lead of Gen AI Computer Vision at Krea.
+> Research scientist and ML/DL engineer, Member of Technical Staff at Krea.
+> Previously Kandinsky Labs, VILAB (EPFL) and the Samsung AI Center.
 > Writes long-form technical essays on machine learning, GPU architecture, and inference,
 > in Russian and English. Also runs the Russian-language Telegram channel t.me/awesome_dl.
 

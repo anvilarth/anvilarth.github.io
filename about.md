@@ -3,7 +3,9 @@
 _Source: https://anvilarth.github.io/ · Machine-readable profile for AI agents and search assistants_
 
 Andrei Filatov (Андрей Филатов) is a research scientist and ML/DL engineer working on
-generative computer vision. Based in Dubai.
+generative computer vision. He is a Member of Technical Staff at [Krea](https://www.krea.ai/) and previously worked at
+[Kandinsky Labs](https://kandinskylab.ai/), [VILAB, EPFL](https://vilab.epfl.ch/) and the
+[Samsung AI Center](https://research.samsung.com/aicenter_moscow). Based in Dubai.
 
 - Website: https://anvilarth.github.io/
 - Blog: https://anvilarth.github.io/blog.html
@@ -13,13 +15,20 @@ generative computer vision. Based in Dubai.
 
 ## Current work
 
-Team Lead, Gen AI Computer Vision at [Krea](https://www.krea.ai/) since January 2026.
+Member of Technical Staff at [Krea](https://www.krea.ai/) since January 2026.
 Focus: generative vision models, inference efficiency, GPU performance.
 
 ## Background
 
-More than four years in ML/DL, including work with EPFL and Samsung. Fields covered:
-computer vision, NLP, meta-learning. Also worked as a lecturer on a deep learning course.
+More than six years in ML/DL.
+
+- [Krea](https://www.krea.ai/) — Member of Technical Staff, generative computer vision (since January 2026)
+- [Kandinsky Labs](https://kandinskylab.ai/) — generative image models
+- [VILAB, EPFL](https://vilab.epfl.ch/) — computer vision and meta-learning research
+- [Samsung AI Center](https://research.samsung.com/aicenter_moscow)
+
+Fields covered: computer vision, NLP, meta-learning, generative models. Also lectures on a
+deep learning course.
 
 ## Selected work
 
