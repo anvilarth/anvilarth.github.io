@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+</script>
 <style>
 :root{
   --t:#1c1917;--ts:#57534e;--th:#a8a29e;--bg:#faf9f7;
@@ -18,10 +21,14 @@
   --mono:'JetBrains Mono',monospace;
   --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")
 }
-@media(prefers-color-scheme:dark){:root{
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
   --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
   --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
 }}
+:root[data-theme=dark]{
+  --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
+  --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
+}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.8;color:var(--t);background:var(--bg);-webkit-font-smoothing:antialiased;background-image:var(--grain);background-repeat:repeat;background-size:256px}
 a{color:var(--t);text-decoration:none}
@@ -66,6 +73,16 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   .post-item{padding-right:0}
   .post-arrow{display:none}
 }
+
+.nav-links{align-items:center}
+.nav-right{display:flex;align-items:center;gap:20px}
+.theme-btn{background:0 0;border:none;padding:2px;color:var(--ts);cursor:pointer;display:flex;align-items:center;transition:color .2s;line-height:0}
+.theme-btn:hover{color:var(--accent)}
+.theme-btn svg{width:16px;height:16px}
+.theme-btn .moon{display:none}
+:root[data-theme=dark] .theme-btn .moon{display:block}
+:root[data-theme=dark] .theme-btn .sun{display:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme-btn .moon{display:block}:root:not([data-theme=light]) .theme-btn .sun{display:none}}
 </style>
 </head>
 <body>
@@ -73,10 +90,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 <nav>
   <div class="c">
     <a href="/" class="nav-logo">andrei<span>filatov</span></a>
-    <a href="/" class="nav-back">
+    <div class="nav-right"><a href="/" class="nav-back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Back to main
     </a>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button></div>
   </div>
 </nav>
 
@@ -137,5 +155,19 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 </footer>
 
 <script data-goatcounter="https://anvilarth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById('theme-btn');
+  if(!btn)return;
+  var root=document.documentElement;
+  btn.addEventListener('click',function(){
+    var sysDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    var cur=root.getAttribute('data-theme')||(sysDark?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next)}catch(e){}
+  });
+})();
+</script>
 </body>
 </html>
