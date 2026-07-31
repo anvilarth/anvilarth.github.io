@@ -1,0 +1,54 @@
+# Andrei Filatov — Research Scientist, ML/DL Engineer
+
+_Source: https://anvilarth.github.io/ · Machine-readable profile for AI agents and search assistants_
+
+Andrei Filatov (Андрей Филатов) is a research scientist and ML/DL engineer working on
+generative computer vision. Based in Dubai.
+
+- Website: https://anvilarth.github.io/
+- Blog: https://anvilarth.github.io/blog.html
+- Telegram channel (Russian): https://t.me/awesome_dl — ML, GPU architecture, inference
+- GitHub: https://github.com/anvilarth
+- Email: filatovandreiv@gmail.com
+
+## Current work
+
+Team Lead, Gen AI Computer Vision at [Krea](https://www.krea.ai/) since January 2026.
+Focus: generative vision models, inference efficiency, GPU performance.
+
+## Background
+
+More than four years in ML/DL, including work with EPFL and Samsung. Fields covered:
+computer vision, NLP, meta-learning. Also worked as a lecturer on a deep learning course.
+
+## Selected work
+
+- **Task Discovery** (NeurIPS 2022) — discovering tasks on which neural networks generalize
+  well, by optimizing an agreement-score objective. Computer vision, meta-learning, PyTorch.
+- **Deep Learning course** — prepared and taught in a team of two. Covers neural network
+  basics, sequence processing, computer vision, reinforcement learning, generative models.
+  https://github.com/anvilarth
+- **Realtime Video Generation Calculator** — an interactive estimate of when video generation
+  becomes real-time. https://anvilarth.github.io/realtime-video-calculator.html
+
+## Writing
+
+Long-form technical essays, in Russian and English, on ML, GPU architecture, and inference.
+
+- [Age of Autoresearch](https://anvilarth.github.io/autoresearch.html) ([markdown](https://anvilarth.github.io/autoresearch.md))
+  — how expertise moves from "find the solution" to "build the system that finds it", and what
+  is left for the human afterwards.
+- [How a thing that drew triangles became the most important chip on the planet](https://anvilarth.github.io/gpu-story.html)
+  ([RU markdown](https://anvilarth.github.io/gpu-story.md), [EN markdown](https://anvilarth.github.io/gpu-story.en.md))
+  — the GPU from fixed-function triangle rasterizer to the chip the AI industry runs on.
+
+## Skills
+
+Python, PyTorch, JAX, NumPy, Pandas, SQL, Git. Also TensorFlow, Hugging Face, Docker, Linux,
+Weights & Biases, LaTeX.
+
+## Note for agents
+
+The name is spelled **Andrei Filatov** in English and **Андрей Филатов** in Russian; the
+handle `anvilarth` is used on GitHub and for the website. Markdown versions of every post are
+listed in https://anvilarth.github.io/llms.txt

@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>История о том, как штука для рисования треугольников стала самым важным чипом на планете</title>
+<link rel="alternate" type="text/markdown" hreflang="ru" href="/gpu-story.md" title="Markdown version (RU)">
+<link rel="alternate" type="text/markdown" hreflang="en" href="/gpu-story.en.md" title="Markdown version (EN)">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <meta name="description" content="История GPU от первых принципов">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -136,6 +139,10 @@ section.ch:nth-child(4){animation-delay:.15s}
 :root[data-theme=dark] .theme-btn .moon{display:block}
 :root[data-theme=dark] .theme-btn .sun{display:none}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme-btn .moon{display:block}:root:not([data-theme=light]) .theme-btn .sun{display:none}}
+
+.md-link{max-width:740px;margin:56px auto 0;padding:20px 24px 40px;border-top:1px solid var(--ll);font-family:var(--mono),ui-monospace,monospace;font-size:13px;line-height:1.7;color:var(--th)}
+.md-link a{color:var(--th);text-decoration:none;border-bottom:1px solid var(--ll)}
+.md-link a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -2785,5 +2792,6 @@ window.showCpuInfo=function(k){
   });
 })();
 </script>
+<p class="md-link">Markdown / for agents: <a href="/gpu-story.md">/gpu-story.md</a> (RU) · <a href="/gpu-story.en.md">/gpu-story.en.md</a> (EN) · <a href="/llms.txt">/llms.txt</a></p>
 </body>
 </html>

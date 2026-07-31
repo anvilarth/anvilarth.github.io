@@ -1,0 +1,28 @@
+# Andrei Filatov
+
+> Research scientist and ML/DL engineer, Team Lead of Gen AI Computer Vision at Krea.
+> Writes long-form technical essays on machine learning, GPU architecture, and inference,
+> in Russian and English. Also runs the Russian-language Telegram channel t.me/awesome_dl.
+
+Every page on this site has a markdown twin at the same path with a `.md` extension.
+`llms-full.txt` contains the whole site as a single document.
+
+## About
+
+- [About Andrei Filatov](https://anvilarth.github.io/about.md): background, current work at Krea, publications, contacts
+
+## Posts
+
+- [Age of Autoresearch (RU)](https://anvilarth.github.io/autoresearch.md): how expertise moves from finding a solution to building the loop that finds it — autoresearch, agent-run experiment loops, oracles and stopping criteria, and what remains for the human
+- [How a thing that drew triangles became the most important chip on the planet (RU)](https://anvilarth.github.io/gpu-story.md): the GPU from fixed-function triangle rasterizer to the chip the AI industry runs on — rasterization, shaders, CUDA, tensor cores, memory hierarchy
+- [How a thing that drew triangles became the most important chip on the planet (EN)](https://anvilarth.github.io/gpu-story.en.md): English version of the GPU essay
+
+## Tools
+
+- [Realtime Video Generation Calculator](https://anvilarth.github.io/realtime-video-calculator.html): interactive estimate of when video generation becomes real-time
+
+## Optional
+
+- [Blog index](https://anvilarth.github.io/blog.html): human-facing list of all posts
+- [Telegram channel @awesome_dl](https://t.me/awesome_dl): short posts in Russian on ML, GPU, inference
+- [GitHub](https://github.com/anvilarth)

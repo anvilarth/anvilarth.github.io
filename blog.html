@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta property="og:title" content="Blog — Andrei Filatov">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <meta name="description" content="Blog posts about ML, GPU architecture, inference, and deep learning">
 <title>Blog | Andrei Filatov</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,6 +84,10 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 :root[data-theme=dark] .theme-btn .moon{display:block}
 :root[data-theme=dark] .theme-btn .sun{display:none}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme-btn .moon{display:block}:root:not([data-theme=light]) .theme-btn .sun{display:none}}
+
+.md-link{max-width:740px;margin:56px auto 0;padding:20px 24px 40px;border-top:1px solid var(--ll);font-family:var(--mono),ui-monospace,monospace;font-size:13px;line-height:1.7;color:var(--th)}
+.md-link a{color:var(--th);text-decoration:none;border-bottom:1px solid var(--ll)}
+.md-link a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -169,5 +174,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   });
 })();
 </script>
+<p class="md-link">Для агентов и LLM: <a href="/llms.txt">/llms.txt</a> · <a href="/llms-full.txt">/llms-full.txt</a> · <a href="/about.md">/about.md</a></p>
 </body>
 </html>
