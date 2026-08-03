@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Design Variants — Compare</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'JetBrains Mono',ui-monospace,monospace;background:#111114;color:#e8e8ec;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;border-bottom:1px solid #26262c;position:sticky;top:0;background:#111114;z-index:10}
+header h1{font-size:14px;font-weight:500;letter-spacing:.02em}
+header h1 span{color:#8b8cf9}
+header .hint{font-size:11px;color:#71717a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:24px 28px}
+.tile{border:1px solid #26262c;border-radius:12px;overflow:hidden;background:#18181c}
+.tile-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-size:12px}
+.tile-name{letter-spacing:.04em}
+.tile-name b{font-weight:600}
+.tag-a{color:#e07a4e}
+.tag-b{color:#8b8cf9}
+.tile-theme{color:#71717a;font-size:11px}
+.tile-open{color:#8b8cf9;text-decoration:none;font-size:11px}
+.tile-open:hover{text-decoration:underline}
+.tile-frame{position:relative;width:100%;overflow:hidden;background:#000}
+.tile-frame iframe{position:absolute;top:0;left:0;width:1280px;height:820px;border:0;transform-origin:top left;pointer-events:none}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>anvilarth.github.io <span>// design variants</span></h1>
+  <span class="hint">live previews · click "open full" to interact &amp; toggle theme</span>
+</header>
+
+<div class="grid" id="grid">
+  <div class="tile">
+    <div class="tile-head">
+      <span class="tile-name"><b class="tag-a">A</b> — Warm Paper</span>
+      <span class="tile-theme">light</span>
+      <a class="tile-open" href="variant-a.html?theme=light" target="_blank">open full ↗</a>
+    </div>
+    <div class="tile-frame"><iframe src="variant-a.html?theme=light" loading="lazy" title="Variant A light"></iframe></div>
+  </div>
+  <div class="tile">
+    <div class="tile-head">
+      <span class="tile-name"><b class="tag-a">A</b> — Warm Paper</span>
+      <span class="tile-theme">dark</span>
+      <a class="tile-open" href="variant-a.html?theme=dark" target="_blank">open full ↗</a>
+    </div>
+    <div class="tile-frame"><iframe src="variant-a.html?theme=dark" loading="lazy" title="Variant A dark"></iframe></div>
+  </div>
+  <div class="tile">
+    <div class="tile-head">
+      <span class="tile-name"><b class="tag-b">B</b> — Aurora Lab</span>
+      <span class="tile-theme">light</span>
+      <a class="tile-open" href="variant-b.html?theme=light" target="_blank">open full ↗</a>
+    </div>
+    <div class="tile-frame"><iframe src="variant-b.html?theme=light" loading="lazy" title="Variant B light"></iframe></div>
+  </div>
+  <div class="tile">
+    <div class="tile-head">
+      <span class="tile-name"><b class="tag-b">B</b> — Aurora Lab</span>
+      <span class="tile-theme">dark</span>
+      <a class="tile-open" href="variant-b.html?theme=dark" target="_blank">open full ↗</a>
+    </div>
+    <div class="tile-frame"><iframe src="variant-b.html?theme=dark" loading="lazy" title="Variant B dark"></iframe></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var W=1280,H=820;
+  function fit(){
+    document.querySelectorAll('.tile-frame').forEach(function(f){
+      var s=f.clientWidth/W;
+      f.style.height=(H*s)+'px';
+      f.querySelector('iframe').style.transform='scale('+s+')';
+    });
+  }
+  window.addEventListener('resize',fit);
+  fit();
+})();
+</script>
+</body>
+</html>

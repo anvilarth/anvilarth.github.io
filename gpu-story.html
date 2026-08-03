@@ -9,37 +9,60 @@
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <meta name="description" content="История GPU от первых принципов">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
-(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+(function(){try{var q=new URLSearchParams(location.search).get('theme');var t=(q==='dark'||q==='light')?q:localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
 </script>
 <style>
 :root{
-  --t:#1c1917;--ts:#57534e;--th:#a8a29e;--bg:#faf9f7;
-  --l:#1c1917;--ll:#e7e5e4;--accent:#b45309;--accent-soft:#fef3c7;
-  --serif:'Playfair Display',Georgia,serif;
-  --sans:'Source Sans 3','Source Sans Pro',sans-serif;
+  --t:#221d17;--ts:#5f574c;--th:#a2978a;--bg:#f7f4ee;
+  --l:#221d17;--ll:#e4ddd0;--card:#fffdf9;
+  --accent:#c2552f;--accent-soft:#f6e2d3;
+  --g1:#f6c189;--g2:#f3b3a2;--g3:#eed9ae;
+  --glow-op:.8;
+  --serif:'Newsreader',Georgia,serif;
+  --sans:'Inter',-apple-system,sans-serif;
   --mono:'JetBrains Mono',monospace;
-  --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")
+  --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E")
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){
-  --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
-  --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
+  --t:#ece5da;--ts:#b0a697;--th:#7d7466;--bg:#16130f;
+  --l:#ece5da;--ll:#332c23;--card:#1d1914;
+  --accent:#e07a4e;--accent-soft:#2e1b11;
+  --g1:#63301b;--g2:#502419;--g3:#37270f;
+  --glow-op:.8
 }}
 :root[data-theme=dark]{
-  --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
-  --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
+  --t:#ece5da;--ts:#b0a697;--th:#7d7466;--bg:#16130f;
+  --l:#ece5da;--ll:#332c23;--card:#1d1914;
+  --accent:#e07a4e;--accent-soft:#2e1b11;
+  --g1:#63301b;--g2:#502419;--g3:#37270f;
+  --glow-op:.8
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.8;color:var(--t);background:var(--bg);-webkit-font-smoothing:antialiased;background-image:var(--grain);background-repeat:repeat;background-size:256px}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);font-weight:400;font-size:19px;line-height:1.8;color:var(--t);background:var(--bg);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+
+/* ── Gradient background ── */
+.bg-gradient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bg-gradient::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(60% 50% at 82% -4%, var(--g1) 0%, transparent 72%),
+    radial-gradient(54% 46% at 8% 4%, var(--g2) 0%, transparent 72%),
+    radial-gradient(68% 54% at 50% 108%, var(--g3) 0%, transparent 74%);
+  opacity:var(--glow-op)
+}
+.bg-gradient::after{content:'';position:absolute;inset:0;background-image:var(--grain);background-repeat:repeat;background-size:256px}
 .c{max-width:740px;margin:0 auto;padding:0 28px}
 
 /* ── Header ── */
 header{padding:160px 0 48px;border-bottom:none;position:relative}
 header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
 header h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.5vw,52px);line-height:1.15;letter-spacing:-.025em;margin-bottom:20px}
-header .sub{font-size:16px;color:var(--ts);font-weight:300;line-height:1.7;max-width:520px}
-header .meta{margin-top:28px;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:300;letter-spacing:.04em}
+header .sub{font-size:16px;color:var(--ts);font-weight:400;line-height:1.7;max-width:520px}
+header .meta{margin-top:28px;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:400;letter-spacing:.04em}
 
 /* ── Chapters ── */
 .ch{padding:72px 0;position:relative}
@@ -48,12 +71,12 @@ header .meta{margin-top:28px;font-size:12px;color:var(--th);font-family:var(--mo
 
 /* ── Typography ── */
 h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,36px);line-height:1.25;margin-bottom:36px;letter-spacing:-.015em}
-h3{font-family:var(--sans);font-weight:600;font-size:17px;margin:48px 0 18px;color:var(--t);letter-spacing:-.01em;position:relative;padding-left:16px}
+h3{font-family:var(--serif);font-weight:600;font-size:20px;margin:48px 0 18px;color:var(--t);letter-spacing:-.015em;position:relative;padding-left:16px}
 h3::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--accent);border-radius:2px}
 p{margin-bottom:22px}
 strong{font-weight:600;color:var(--t)}
-code{font-family:var(--mono);font-size:14px;background:var(--ll);padding:2px 7px;border-radius:4px;font-weight:400}
-pre{font-family:var(--mono);font-size:13px;line-height:1.6;padding:20px 24px;background:var(--ll);border-radius:6px;margin:24px 0;overflow-x:auto;border:1px solid color-mix(in srgb,var(--ll),var(--t) 5%)}
+code{font-family:var(--mono);font-size:14px;background:color-mix(in srgb,var(--ll),transparent 35%);padding:2px 7px;border-radius:4px;font-weight:400}
+pre{font-family:var(--mono);font-size:13px;line-height:1.6;padding:20px 24px;background:var(--card);border-radius:10px;margin:24px 0;overflow-x:auto;border:1px solid var(--ll)}
 
 /* ── Blockquotes ── */
 blockquote{border-left:3px solid var(--accent);padding:20px 24px;margin:40px 0;font-style:italic;color:var(--ts);font-family:var(--serif);font-size:20px;line-height:1.6;background:color-mix(in srgb,var(--accent-soft),transparent 60%);border-radius:0 8px 8px 0;position:relative}
@@ -62,7 +85,7 @@ blockquote::before{content:'\201C';position:absolute;top:-8px;left:12px;font-siz
 /* ── Figures ── */
 .fig{margin:48px -40px;padding:0}
 .fig svg{width:calc(100% + 0px);height:auto;border-radius:8px;overflow:hidden;max-width:820px}
-.figc{font-size:12px;color:var(--th);margin-top:14px;font-family:var(--mono);font-weight:300;line-height:1.6;padding-left:2px;border-left:2px solid var(--ll);padding-left:12px}
+.figc{font-size:12px;color:var(--th);margin-top:14px;font-family:var(--mono);font-weight:400;line-height:1.6;padding-left:2px;border-left:2px solid var(--ll);padding-left:12px}
 .fig img{width:100%;border:0;border-radius:8px}
 
 /* ── Demos ── */
@@ -78,7 +101,7 @@ blockquote::before{content:'\201C';position:absolute;top:-8px;left:12px;font-siz
 .src a:hover{color:var(--accent);border-color:var(--accent)}
 .src li{margin-bottom:8px;list-style:none}
 .src li::before{content:"—";margin-right:10px;color:var(--th)}
-footer{padding:56px 0;border-top:none;text-align:center;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:300;position:relative}
+footer{padding:56px 0;border-top:none;text-align:center;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:400;position:relative}
 footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
 
 /* ── Controls ── */
@@ -89,7 +112,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 .pb{background:transparent;border:1px solid var(--ll);padding:6px 18px;font-size:12px;font-family:var(--mono);font-weight:400;color:var(--ts);cursor:pointer;transition:all .25s ease;border-radius:6px;letter-spacing:.02em}
 .pb:hover{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent-soft),transparent 70%)}
 .step-nav{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-.step-lbl{font-size:11px;color:var(--ts);cursor:pointer;transition:all .2s;font-family:var(--mono);font-weight:300;padding:3px 8px;border-radius:4px}
+.step-lbl{font-size:11px;color:var(--ts);cursor:pointer;transition:all .2s;font-family:var(--mono);font-weight:400;padding:3px 8px;border-radius:4px}
 .step-lbl:hover{color:var(--t);background:var(--ll)}
 .step-lbl.active{color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent-soft),transparent 40%)}
 .step-sep{width:16px;height:1px;background:var(--ll)}
@@ -107,7 +130,7 @@ section.ch:nth-child(3){animation-delay:.1s}
 section.ch:nth-child(4){animation-delay:.15s}
 
 /* ── Post nav ── */
-.post-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:12px 0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg),transparent 20%)}
+.post-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:12px 0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg),transparent 25%);border-bottom:1px solid color-mix(in srgb,var(--ll),transparent 55%)}
 .post-nav-inner{max-width:740px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center}
 .post-nav a{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none}
 .post-nav a:hover{color:var(--accent)}
@@ -118,7 +141,7 @@ section.ch:nth-child(4){animation-delay:.15s}
 
 /* ── Language switcher ── */
 .lang-switch{display:flex;gap:4px;padding:4px 6px;border:1px solid var(--ll);border-radius:6px}
-.lang-btn{font-family:var(--mono);font-size:11px;padding:3px 10px;background:0 0;border:none;color:var(--th);cursor:pointer;transition:all .2s;font-weight:300;border-radius:4px;letter-spacing:.02em}
+.lang-btn{font-family:var(--mono);font-size:11px;padding:3px 10px;background:0 0;border:none;color:var(--th);cursor:pointer;transition:all .2s;font-weight:400;border-radius:4px;letter-spacing:.02em}
 .lang-btn.active{color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent-soft),transparent 40%)}
 
 /* ── Responsive ── */
@@ -146,6 +169,7 @@ section.ch:nth-child(4){animation-delay:.15s}
 </style>
 </head>
 <body>
+<div class="bg-gradient"></div>
 <div class="c">
 <div class="post-nav"><div class="post-nav-inner"><a href="/" class="nav-logo">andrei<span>filatov</span></a><div class="nav-links"><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="/blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a><div class="lang-switch"><button class="lang-btn active" id="btn-ru" onclick="setLang('ru')">RU</button><button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button></div><button class="theme-btn" id="theme-btn" aria-label="Toggle theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button></div></div></div>
 
@@ -2410,7 +2434,7 @@ var PX=470,PY=30; // panel area
 
 // Colors
 var BG='#0c0a09',GRID='#2a2520',TXT='#a8a29e',ACC='#f59e0b',RED='#ef4444',GRN='#22c55e';
-var MONO='JetBrains Mono,monospace',SERIF='Playfair Display,serif';
+var MONO='JetBrains Mono,monospace',SERIF='Newsreader,serif';
 
 // ── Draw Quake scene into offscreen canvas ──
 var qc=document.createElement('canvas');
