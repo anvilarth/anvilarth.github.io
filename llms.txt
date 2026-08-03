@@ -15,6 +15,7 @@ Every page on this site has a markdown twin at the same path with a `.md` extens
 ## Posts
 
 - [Age of Autoresearch (RU)](https://anvilarth.github.io/autoresearch.md): how expertise moves from finding a solution to building the loop that finds it — autoresearch, agent-run experiment loops, oracles and stopping criteria, and what remains for the human
+- [Age of Autoresearch (EN)](https://anvilarth.github.io/autoresearch.en.md): English version of the autoresearch essay
 - [How a thing that drew triangles became the most important chip on the planet (RU)](https://anvilarth.github.io/gpu-story.md): the GPU from fixed-function triangle rasterizer to the chip the AI industry runs on — rasterization, shaders, CUDA, tensor cores, memory hierarchy
 - [How a thing that drew triangles became the most important chip on the planet (EN)](https://anvilarth.github.io/gpu-story.en.md): English version of the GPU essay
 
