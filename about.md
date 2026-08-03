@@ -32,16 +32,22 @@ deep learning course.
 
 ## Selected work
 
-- **Krea 2** — open-weights text-to-image foundation model trained from scratch at Krea.
+- **Krea 2** — open-weights text-to-image foundation model trained from scratch at Krea,
+  ranked second worldwide on style fidelity.
   [Technical report](https://www.krea.ai/blog/krea-2-technical-report)
 - **XLabs FLUX LoRAs** — open-source LoRA adapters for FLUX.1-dev, with training and inference
-  code. [Hugging Face](https://huggingface.co/XLabs-AI/flux-lora-collection) ·
+  code; the top adapter reached 500k downloads in its first month on Hugging Face.
+  [Hugging Face](https://huggingface.co/XLabs-AI/flux-lora-collection) ·
   [x-flux on GitHub](https://github.com/XLabs-AI/x-flux)
 - **Kandinsky 3.0 / 3.1 / 4.0** — family of text-to-image and text-to-video foundation models.
   Co-author of [the Kandinsky 3.0 technical report](https://arxiv.org/abs/2312.03511) and of
-  [Kandinsky 3: Text-to-Image Synthesis for Multifunctional Generative Framework](https://arxiv.org/abs/2410.21061);
+  [Kandinsky 3: Text-to-Image Synthesis for Multifunctional Generative Framework](https://aclanthology.org/2024.emnlp-demo.48/)
+  (EMNLP 2024 System Demonstrations);
   [Kandinsky 4.0](https://ai-forever.github.io/Kandinsky-4/K40/) adds video and video-to-audio
-  generation.
+  generation. Also led the Kandinsky 3 inpainting model end-to-end and a ControlNet-based
+  editing model trained on 256+ GPUs — shipped to
+  [fusionbrain.ai](https://fusionbrain.ai/en/) and inside GigaChat, 125k+ monthly users on
+  Telegram alone.
 - **Task Discovery** (NeurIPS 2022) — discovering tasks on which neural networks generalize
   well, by optimizing an agreement-score objective. Computer vision, meta-learning, PyTorch.
 - **Deep Learning course** — prepared and taught in a team of two. Covers neural network
@@ -49,6 +55,16 @@ deep learning course.
   https://github.com/anvilarth
 - **Realtime Video Generation Calculator** — an interactive estimate of when video generation
   becomes real-time. https://anvilarth.github.io/realtime-video-calculator.html
+- **ESQA: Event Sequences Question Answering** — adapting LLMs to event-sequence data,
+  handling multiple downstream tasks with little or no finetuning.
+  [Paper](https://arxiv.org/abs/2407.12833) · [GitHub](https://github.com/anvilarth/esqa)
+- **Simple Control Baselines for Evaluating Transfer Learning** — an evaluation standard for
+  transfer learning: control baselines, practices and metrics for calibrated comparison of
+  self-supervised models. [Paper](https://arxiv.org/abs/2202.03365) ·
+  [Project site](https://transfer-controls.epfl.ch)
+- **Fast Line Search for Multi-Task Learning** — step-size line search in the latent
+  representation space instead of the parameter space, with Daniil Merkulov.
+  [Paper](https://arxiv.org/abs/2110.00874)
 
 ## Writing
 

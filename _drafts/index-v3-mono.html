@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Andrei Filatov — Research Scientist, Member of Technical Staff at Krea. Generative computer vision, GPU architecture, inference.">
+<title>~/andrei — Andrei Filatov</title>
+<meta property="og:title" content="Andrei Filatov">
+<link rel="alternate" type="text/markdown" href="/about.md" title="Machine-readable profile">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Andrei Filatov",
+  "alternateName": ["Андрей Филатов", "anvilarth"],
+  "url": "https://anvilarth.github.io/",
+  "email": "mailto:filatovandreiv@gmail.com",
+  "jobTitle": "Member of Technical Staff",
+  "worksFor": {"@type": "Organization", "name": "Krea", "url": "https://www.krea.ai/"},
+  "address": {"@type": "PostalAddress", "addressLocality": "Dubai"},
+  "alumniOf": [
+    {"@type": "Organization", "name": "Kandinsky Labs", "url": "https://kandinskylab.ai/"},
+    {"@type": "Organization", "name": "VILAB, EPFL", "url": "https://vilab.epfl.ch/"},
+    {"@type": "Organization", "name": "Samsung AI Center", "url": "https://research.samsung.com/aicenter_moscow"}
+  ],
+  "knowsAbout": ["Machine Learning", "Deep Learning", "Computer Vision", "Generative Models", "GPU Architecture", "Inference Optimization"],
+  "sameAs": ["https://github.com/anvilarth", "https://t.me/awesome_dl"],
+  "mainEntityOfPage": "https://anvilarth.github.io/about.md"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── Palette: dark is primary, light is alternative ── */
+:root{
+  --bg:#0e0d0b; --bg-raise:#141210; --t:#d6d3cd; --ts:#8f8b83; --th:#5c5952;
+  --line:#2b2824; --line-strong:#3d3a34;
+  --accent:#f5a623; --accent-dim:#8a6220;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'IBM Plex Sans',-apple-system,sans-serif
+}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){
+  --bg:#f5f4f0; --bg-raise:#ffffff; --t:#24211c; --ts:#6e6a60; --th:#a39e92;
+  --line:#d8d5cc; --line-strong:#b8b4a8;
+  --accent:#b45309; --accent-dim:#d9a05b
+}}
+:root[data-theme=light]{
+  --bg:#f5f4f0; --bg-raise:#ffffff; --t:#24211c; --ts:#6e6a60; --th:#a39e92;
+  --line:#d8d5cc; --line-strong:#b8b4a8;
+  --accent:#b45309; --accent-dim:#d9a05b
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);font-size:16px;line-height:1.7;
+  color:var(--t);background:var(--bg);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility
+}
+::selection{background:var(--accent);color:var(--bg)}
+a{color:var(--t);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--th);transition:color .15s,text-decoration-color .15s}
+a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+h1,h2,h3{text-wrap:balance}
+p{text-wrap:pretty}
+
+/* ── Frame: visible column rails ── */
+.frame{max-width:1080px;margin:0 auto;padding:0 32px;border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh}
+
+/* ── Nav ── */
+nav{max-width:1080px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:20px 32px}
+.logo{font-family:var(--mono);font-size:15px;font-weight:600;text-decoration:none;letter-spacing:-.01em}
+.logo .tilde{color:var(--th)}
+.logo .name{color:var(--t)}
+.logo:hover .name{color:var(--accent)}
+.nav-links{display:flex;gap:28px;font-family:var(--mono);font-size:12px;align-items:center}
+.nav-links a{color:var(--ts);text-decoration:none}
+.nav-links a:hover{color:var(--accent)}
+.nav-links a::before{content:'./';color:var(--th)}
+#theme-btn{font-family:var(--mono);font-size:12px;background:none;border:1px solid var(--line-strong);color:var(--ts);padding:5px 12px;cursor:pointer;transition:color .15s,border-color .15s}
+#theme-btn:hover{color:var(--accent);border-color:var(--accent)}
+
+/* ── Section scaffolding ── */
+section{border-top:1px solid var(--line);padding:72px 0}
+.sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:44px}
+.sec-num{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent)}
+.sec-title{font-family:var(--mono);font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:var(--t)}
+.sec-rule{flex:1;height:1px;background:var(--line)}
+.sec-meta{font-family:var(--mono);font-size:11px;color:var(--th)}
+
+/* ── Hero ── */
+.hero{padding:96px 0 88px;border-top:none}
+.hero-status{font-family:var(--mono);font-size:12px;color:var(--ts);margin-bottom:36px}
+.hero-status .k{color:var(--th)}
+.hero-status .v{color:var(--accent)}
+.hero h1{font-family:var(--mono);font-weight:600;font-size:clamp(34px,5.6vw,58px);line-height:1.12;letter-spacing:-.02em}
+.hero h1 .cursor{display:inline-block;width:.58em;height:1em;background:var(--accent);vertical-align:-.12em;margin-left:.08em;animation:blink 1.06s steps(1,end) infinite}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.hero h1 .cursor{animation:none}}
+.hero-role{font-family:var(--mono);font-size:15px;color:var(--ts);margin-top:18px}
+.hero-role a{font-weight:500}
+.hero-desc{max-width:640px;margin-top:40px;color:var(--t);font-size:17px}
+.hero-desc+.hero-desc{margin-top:16px;color:var(--ts)}
+.hero-tags{font-family:var(--mono);font-size:12px;color:var(--th);margin-top:44px}
+.hero-tags span{margin-right:22px}
+.hero-tags span::before{content:'# ';color:var(--accent-dim)}
+
+/* ── Projects table ── */
+.ptable{width:100%;border-collapse:collapse;font-size:14px}
+.ptable th{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--th);text-align:left;padding:0 16px 12px 0;border-bottom:1px solid var(--line-strong)}
+.ptable th:last-child,.ptable td:last-child{padding-right:0}
+.ptable td{padding:20px 16px 20px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.ptable .yr{font-family:var(--mono);font-size:12px;color:var(--ts);white-space:nowrap;width:72px}
+.ptable .pj{width:44%}
+.ptable .pj .nm{font-family:var(--mono);font-weight:600;font-size:15px;text-decoration:none}
+.ptable .pj .ds{color:var(--ts);margin-top:6px;font-size:14px;line-height:1.6}
+.ptable .st{font-family:var(--mono);font-size:12px;color:var(--ts);line-height:1.9;width:26%}
+.ptable .lk{font-family:var(--mono);font-size:12px;line-height:1.9;white-space:nowrap}
+.ptable tr:hover td{background:var(--bg-raise)}
+
+/* ── Writing ── */
+.wlist{list-style:none}
+.wlist li{display:flex;align-items:baseline;gap:20px;padding:20px 0;border-bottom:1px solid var(--line)}
+.wlist li:first-child{border-top:1px solid var(--line)}
+.wlist .dt{font-family:var(--mono);font-size:12px;color:var(--th);width:92px;flex-shrink:0}
+.wlist .ti{font-family:var(--mono);font-size:15px;font-weight:500;flex:1}
+.wlist .ti a{text-decoration:none;font-weight:500}
+.wlist .ti a:hover{text-decoration:underline;text-underline-offset:3px}
+.wlist .mt{font-family:var(--mono);font-size:11px;color:var(--ts);white-space:nowrap}
+.wlist .mt .ru{color:var(--accent-dim)}
+
+/* ── Contact ── */
+.clist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.clist li{display:flex;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.clist li:nth-child(odd){border-top:1px solid var(--line)}
+.clist li:nth-child(even){border-top:1px solid var(--line)}
+.clist .kk{font-family:var(--mono);font-size:12px;color:var(--th);width:76px;flex-shrink:0}
+.clist .vv{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
+
+/* ── Footer ── */
+footer{border-top:1px solid var(--line);padding:28px 0 36px}
+footer .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--th)}
+
+/* ── Mobile ── */
+@media(max-width:760px){
+  .frame{padding:0 20px;border-left:none;border-right:none}
+  nav{border-left:none;border-right:none;padding:16px 20px}
+  section{padding:52px 0}
+  .hero{padding:64px 0 60px}
+  .ptable thead{display:none}
+  .ptable tr{display:block;padding:20px 0;border-bottom:1px solid var(--line)}
+  .ptable td{display:block;border:none;padding:0}
+  .ptable .yr{margin-bottom:6px}
+  .ptable .pj,.ptable .st,.ptable .lk{width:auto}
+  .ptable .st{margin-top:10px}
+  .ptable .lk{margin-top:4px}
+  .ptable tr:hover td{background:none}
+  .wlist li{flex-wrap:wrap;gap:6px 16px}
+  .wlist .mt{width:100%}
+  .clist{grid-template-columns:1fr}
+  .clist li:nth-child(even){border-top:none}
+  .nav-links{gap:16px}
+  .nav-links a::before{content:''}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#"><span class="tilde">~/</span><span class="name">andrei</span></a>
+  <div class="nav-links">
+    <a href="#projects">projects</a>
+    <a href="#writing">writing</a>
+    <a href="#contact">contact</a>
+    <button id="theme-btn" type="button">[light]</button>
+  </div>
+</nav>
+
+<div class="frame">
+
+  <header class="hero">
+    <div class="hero-status">
+      <span class="k">status:</span> <span class="v">MTS @ krea</span> <span class="k">·</span> dubai <span class="k">·</span> utc+4 <span class="k">·</span> open to interesting problems
+    </div>
+    <h1>Andrei Filatov<span class="cursor"></span></h1>
+    <div class="hero-role">Research Scientist — Member of Technical Staff at <a href="https://www.krea.ai/">Krea</a>, generative computer vision.</div>
+    <p class="hero-desc">
+      I train generative models and care about how they run. Before Krea:
+      <a href="https://kandinskylab.ai/">Kandinsky Labs</a>, <a href="https://vilab.epfl.ch/">VILAB, EPFL</a>
+      and <a href="https://research.samsung.com/aicenter_moscow">Samsung AI Center</a>.
+      Based in Dubai. I also lecture on deep learning.
+    </p>
+    <p class="hero-desc">
+      Пишу лонгриды про ML, GPU-архитектуру и инференс — разбираюсь в том, как это всё устроено на самом деле.
+    </p>
+    <div class="hero-tags">
+      <span>generative models</span><span>diffusion</span><span>gpu architecture</span><span>inference</span>
+    </div>
+  </header>
+
+  <section id="projects">
+    <div class="sec-head">
+      <span class="sec-num">[01]</span>
+      <h2 class="sec-title">Projects</h2>
+      <span class="sec-rule"></span>
+      <span class="sec-meta">5 entries</span>
+    </div>
+    <table class="ptable">
+      <thead>
+        <tr><th>year</th><th>project</th><th>stack</th><th>links</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="yr">2026</td>
+          <td class="pj">
+            <a class="nm" href="https://www.krea.ai/blog/krea-2-technical-report">Krea 2</a>
+            <div class="ds">Open-weights text-to-image foundation model, trained from scratch.</div>
+          </td>
+          <td class="st">Text-to-Image<br>Diffusion<br>Open Weights</td>
+          <td class="lk"><a href="https://www.krea.ai/blog/krea-2-technical-report">tech report</a></td>
+        </tr>
+        <tr>
+          <td class="yr">2024</td>
+          <td class="pj">
+            <a class="nm" href="https://huggingface.co/XLabs-AI/flux-lora-collection">XLabs FLUX LoRAs</a>
+            <div class="ds">Open-source LoRA adapters for FLUX.1-dev.</div>
+          </td>
+          <td class="st">LoRA<br>FLUX<br>Fine-tuning</td>
+          <td class="lk">
+            <a href="https://huggingface.co/XLabs-AI/flux-lora-collection">huggingface</a><br>
+            <a href="https://github.com/XLabs-AI/x-flux">github</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="yr">2023–24</td>
+          <td class="pj">
+            <a class="nm" href="https://arxiv.org/abs/2312.03511">Kandinsky 3.0 / 3.1 / 4.0</a>
+            <div class="ds">Family of text-to-image and text-to-video foundation models.</div>
+          </td>
+          <td class="st">Text-to-Image<br>Text-to-Video<br>Diffusion</td>
+          <td class="lk">
+            <a href="https://arxiv.org/abs/2312.03511">arxiv 3.0</a><br>
+            <a href="https://arxiv.org/abs/2410.21061">arxiv 3.1</a><br>
+            <a href="https://ai-forever.github.io/Kandinsky-4/K40/">page 4.0</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="yr">2022</td>
+          <td class="pj">
+            <a class="nm" href="https://taskdiscovery.epfl.ch">Task Discovery</a>
+            <div class="ds">NeurIPS 2022 — discovering the tasks neural networks generalize well on.</div>
+          </td>
+          <td class="st">PyTorch<br>Computer Vision<br>Meta-Learning</td>
+          <td class="lk"><a href="https://taskdiscovery.epfl.ch">project page</a></td>
+        </tr>
+        <tr>
+          <td class="yr">2022</td>
+          <td class="pj">
+            <a class="nm" href="https://github.com/intsystems/Deep-Learning-Course-2022">Deep Learning Course</a>
+            <div class="ds">Course on deep learning: basics, sequences, CV, RL, generative models.</div>
+          </td>
+          <td class="st">Teaching<br>Deep Learning</td>
+          <td class="lk"><a href="https://github.com/intsystems/Deep-Learning-Course-2022">github</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="writing">
+    <div class="sec-head">
+      <span class="sec-num">[02]</span>
+      <h2 class="sec-title">Writing</h2>
+      <span class="sec-rule"></span>
+      <span class="sec-meta"><a href="/blog.html">/blog.html</a></span>
+    </div>
+    <ul class="wlist">
+      <li>
+        <span class="dt">2026-07</span>
+        <span class="ti"><a href="/autoresearch.html">Age of Autoresearch</a></span>
+        <span class="mt"><span class="ru">[RU]</span> ~15 min</span>
+      </li>
+      <li>
+        <span class="dt">2026-03</span>
+        <span class="ti"><a href="/gpu-story.html">GPU Story: from triangles to AI chips</a></span>
+        <span class="mt">~20 min</span>
+      </li>
+      <li>
+        <span class="dt">2026-03</span>
+        <span class="ti"><a href="/realtime-video-calculator.html">Realtime Video Generation Calculator</a></span>
+        <span class="mt">interactive tool</span>
+      </li>
+    </ul>
+  </section>
+
+  <section id="contact">
+    <div class="sec-head">
+      <span class="sec-num">[03]</span>
+      <h2 class="sec-title">Contact</h2>
+      <span class="sec-rule"></span>
+      <span class="sec-meta">utc+4</span>
+    </div>
+    <ul class="clist">
+      <li><span class="kk">email</span><span class="vv"><a href="mailto:filatovandreiv@gmail.com">filatovandreiv@gmail.com</a></span></li>
+      <li><span class="kk">github</span><span class="vv"><a href="https://github.com/anvilarth">github.com/anvilarth</a></span></li>
+      <li><span class="kk">linkedin</span><span class="vv"><a href="https://linkedin.com/in/andrei-filatov">linkedin.com/in/andrei-filatov</a></span></li>
+      <li><span class="kk">telegram</span><span class="vv"><a href="https://t.me/awesome_dl">t.me/awesome_dl</a></span></li>
+      <li><span class="kk">resume</span><span class="vv"><a href="https://drive.google.com/file/d/1_yudui9m5TRWGtD9XvKc7eTBAn0hblvv/view?usp=sharing">cv.pdf (drive)</a></span></li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>
+  <div class="frame" style="min-height:0;border-left:none;border-right:none">
+    <div class="row">
+      <span>~/andrei — last build: 2026-08</span>
+      <span>set in IBM Plex</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btn=document.getElementById('theme-btn');
+  function label(){btn.textContent=(document.documentElement.getAttribute('data-theme')==='light'||( !document.documentElement.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme: light)').matches))?'[dark]':'[light]'}
+  label();
+  btn.addEventListener('click',function(){
+    var cur=(document.documentElement.getAttribute('data-theme'))||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next)}catch(e){}
+    label();
+  });
+})();
+</script>
+<script data-goatcounter="https://anvilarth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

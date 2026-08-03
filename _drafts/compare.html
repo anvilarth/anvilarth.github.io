@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Homepage redesign — comparison</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:ui-monospace,Menlo,monospace;background:#1c1a17;color:#e8e6e3;font-size:13px}
+header{display:flex;align-items:center;gap:24px;padding:14px 20px;border-bottom:1px solid #333;flex-wrap:wrap}
+header h1{font-size:14px;font-weight:600}
+header label{color:#8a837a;cursor:pointer;user-select:none}
+header input{accent-color:#f5a623}
+.board{display:grid;grid-template-columns:repeat(3,1fr);height:calc(100vh - 50px)}
+.board.single{grid-template-columns:1fr}
+.panel{display:flex;flex-direction:column;border-right:1px solid #333;min-width:0}
+.panel.hidden{display:none}
+.panel:last-child{border-right:none}
+.panel-head{padding:8px 14px;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center;background:#232019}
+.panel-head .name{font-weight:600}
+.panel-head .desc{color:#8a837a;font-size:11px}
+.panel-head a{color:#f5a623;text-decoration:none}
+.panel-head a:hover{text-decoration:underline}
+iframe{flex:1;width:100%;border:none;background:#fff}
+@media(max-width:900px){.board{grid-template-columns:1fr;height:auto}.panel{height:80vh;border-right:none;border-bottom:1px solid #333}}
+</style>
+</head>
+<body>
+<header>
+  <h1>index.html redesign — drafts</h1>
+  <label><input type="checkbox" checked data-panel="p1"> v1 editorial</label>
+  <label><input type="checkbox" checked data-panel="p2"> v2 tufte</label>
+  <label><input type="checkbox" checked data-panel="p3"> v3 mono</label>
+</header>
+<div class="board" id="board">
+  <div class="panel" id="p1">
+    <div class="panel-head">
+      <span><span class="name">v1 — editorial</span> <span class="desc">Newsreader serif, red accent, journal-like index lists</span></span>
+      <a href="index-v1-editorial.html" target="_blank">open ↗</a>
+    </div>
+    <iframe src="index-v1-editorial.html" title="v1 editorial"></iframe>
+  </div>
+  <div class="panel" id="p2">
+    <div class="panel-head">
+      <span><span class="name">v2 — tufte</span> <span class="desc">Source Serif, small caps, sidenotes, drop cap</span></span>
+      <a href="index-v2-tufte.html" target="_blank">open ↗</a>
+    </div>
+    <iframe src="index-v2-tufte.html" title="v2 tufte"></iframe>
+  </div>
+  <div class="panel" id="p3">
+    <div class="panel-head">
+      <span><span class="name">v3 — mono</span> <span class="desc">IBM Plex Mono, dark-first, terminal frame</span></span>
+      <a href="index-v3-mono.html" target="_blank">open ↗</a>
+    </div>
+    <iframe src="index-v3-mono.html" title="v3 mono"></iframe>
+  </div>
+</div>
+<script>
+var board=document.getElementById('board');
+document.querySelectorAll('input[data-panel]').forEach(function(cb){
+  cb.addEventListener('change',function(){
+    document.getElementById(cb.dataset.panel).classList.toggle('hidden',!cb.checked);
+    var visible=document.querySelectorAll('input[data-panel]:checked').length;
+    board.classList.toggle('single',visible===1);
+  });
+});
+</script>
+</body>
+</html>

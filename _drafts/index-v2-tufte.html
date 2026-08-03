@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Andrei Filatov — Research Scientist, Member of Technical Staff at Krea. Generative computer vision, GPU architecture, inference.">
+<title>Andrei Filatov — Research Scientist</title>
+<meta property="og:title" content="Andrei Filatov">
+<link rel="alternate" type="text/markdown" href="/about.md" title="Machine-readable profile">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Andrei Filatov",
+  "alternateName": ["Андрей Филатов", "anvilarth"],
+  "url": "https://anvilarth.github.io/",
+  "email": "mailto:filatovandreiv@gmail.com",
+  "jobTitle": "Member of Technical Staff",
+  "worksFor": {"@type": "Organization", "name": "Krea", "url": "https://www.krea.ai/"},
+  "address": {"@type": "PostalAddress", "addressLocality": "Dubai"},
+  "alumniOf": [
+    {"@type": "Organization", "name": "Kandinsky Labs", "url": "https://kandinskylab.ai/"},
+    {"@type": "Organization", "name": "VILAB, EPFL", "url": "https://vilab.epfl.ch/"},
+    {"@type": "Organization", "name": "Samsung AI Center", "url": "https://research.samsung.com/aicenter_moscow"}
+  ],
+  "knowsAbout": ["Machine Learning", "Deep Learning", "Computer Vision", "Generative Models", "GPU Architecture", "Inference Optimization"],
+  "sameAs": ["https://github.com/anvilarth", "https://t.me/awesome_dl"],
+  "mainEntityOfPage": "https://anvilarth.github.io/about.md"
+}
+</script>
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fffff8;
+  --ink:#111;
+  --ink-soft:#444;
+  --ink-faint:#8a8577;
+  --accent:#900;
+  --line:#d8d3c3;
+  --sel-bg:#900;
+  --sel-ink:#fffff8;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#1a1614;
+  --ink:#e8e2d9;
+  --ink-soft:#b8b0a4;
+  --ink-faint:#7d756a;
+  --accent:#d0775e;
+  --line:#3a332d;
+  --sel-bg:#d0775e;
+  --sel-ink:#1a1614;
+}}
+:root[data-theme=dark]{
+  --bg:#1a1614;
+  --ink:#e8e2d9;
+  --ink-soft:#b8b0a4;
+  --ink-faint:#7d756a;
+  --accent:#d0775e;
+  --line:#3a332d;
+  --sel-bg:#d0775e;
+  --sel-ink:#1a1614;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--serif);
+  font-optical-sizing:auto;
+  font-weight:400;
+  font-size:19px;
+  line-height:1.62;
+  color:var(--ink);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  counter-reset:sn 0;
+}
+::selection{background:var(--sel-bg);color:var(--sel-ink)}
+a{
+  color:var(--ink);
+  text-decoration:underline;
+  text-decoration-color:var(--ink-faint);
+  text-underline-offset:3px;
+  text-decoration-thickness:1px;
+  transition:color .15s,text-decoration-color .15s;
+}
+a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+p{text-wrap:pretty;margin-bottom:1.1em}
+h1,h2,h3{text-wrap:balance;font-weight:600}
+
+/* ── Layout: text column offset left, right margin for sidenotes ── */
+.page{
+  max-width:1080px;
+  margin:0 auto;
+  padding:0 32px;
+}
+.col{
+  max-width:640px;
+  position:relative;
+}
+
+/* ── Nav ── */
+nav{
+  padding:28px 0 24px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:64px;
+}
+nav .page{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px}
+.brand{
+  font-variant:small-caps;
+  letter-spacing:.06em;
+  font-size:20px;
+  font-weight:600;
+  text-decoration:none;
+}
+.nav-links{
+  display:flex;gap:22px;align-items:baseline;
+  font-family:var(--mono);
+  font-size:12.5px;
+}
+.nav-links a{color:var(--ink-soft);text-decoration:none}
+.nav-links a:hover{color:var(--accent)}
+#theme-btn{
+  font-family:var(--mono);
+  font-size:12.5px;
+  color:var(--ink-soft);
+  background:none;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:3px 10px;
+  cursor:pointer;
+}
+#theme-btn:hover{color:var(--accent);border-color:var(--accent)}
+
+/* ── Hero ── */
+.hero{margin-bottom:8px}
+.hero h1{
+  font-size:clamp(34px,5vw,46px);
+  font-weight:600;
+  letter-spacing:-.01em;
+  line-height:1.15;
+  margin-bottom:6px;
+}
+.hero .role{
+  font-variant:small-caps;
+  letter-spacing:.08em;
+  font-size:17px;
+  color:var(--ink-soft);
+  margin-bottom:2.2em;
+}
+.hero .lede::first-letter{
+  float:left;
+  font-size:3.35em;
+  line-height:.83;
+  padding:.06em .12em 0 0;
+  font-weight:600;
+  color:var(--accent);
+}
+.lede{margin-bottom:1.1em}
+.epigraph{
+  margin:2.6em 0 0 2.4em;
+  max-width:520px;
+  font-style:italic;
+  font-size:17.5px;
+  color:var(--ink-soft);
+}
+.epigraph .attr{
+  display:block;
+  margin-top:.5em;
+  font-style:normal;
+  font-variant:small-caps;
+  letter-spacing:.07em;
+  font-size:14.5px;
+  color:var(--ink-faint);
+}
+.epigraph .attr::before{content:"— "}
+
+/* ── Section separators & headings ── */
+.dinkus{
+  text-align:center;
+  color:var(--ink-faint);
+  letter-spacing:1.2em;
+  text-indent:1.2em;
+  font-size:15px;
+  margin:4.2em 0 3.6em;
+  user-select:none;
+}
+h2{
+  font-variant:small-caps;
+  letter-spacing:.09em;
+  font-weight:600;
+  font-size:24px;
+  margin-bottom:1.4em;
+}
+section{margin-bottom:1em}
+
+/* ── Projects ── */
+.proj{margin-bottom:2.4em}
+.proj h3{
+  font-size:20.5px;
+  font-weight:600;
+  line-height:1.3;
+  margin-bottom:.35em;
+}
+.proj h3 .num{
+  color:var(--ink-faint);
+  font-weight:400;
+  font-size:.82em;
+  margin-right:.45em;
+}
+.proj p{font-size:17.5px;color:var(--ink-soft);margin-bottom:.4em}
+.proj .meta{
+  font-family:var(--mono);
+  font-size:12.5px;
+  color:var(--ink-faint);
+  font-variant-numeric:tabular-nums;
+}
+.proj .meta a{color:var(--ink-soft);text-decoration-color:var(--line)}
+.proj .meta a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.proj .tags{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--ink-faint);
+  letter-spacing:.01em;
+}
+.proj .tags::before{content:"tags: "}
+
+/* ── Blog list ── */
+.post{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:24px;
+  padding:.55em 0;
+  border-bottom:1px dotted var(--line);
+}
+.post:last-child{border-bottom:none}
+.post .t{font-size:18px}
+.post .d{
+  font-family:var(--mono);
+  font-size:12.5px;
+  color:var(--ink-faint);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.blog-link{
+  font-variant:small-caps;
+  letter-spacing:.07em;
+  font-size:16px;
+}
+
+/* ── Contact ── */
+.contact-list{
+  list-style:none;
+  font-size:17.5px;
+}
+.contact-list li{
+  display:flex;
+  gap:1.4em;
+  padding:.32em 0;
+  align-items:baseline;
+}
+.contact-list .k{
+  font-variant:small-caps;
+  letter-spacing:.08em;
+  font-size:14.5px;
+  color:var(--ink-faint);
+  min-width:5.4em;
+}
+
+/* ── Sidenotes (tufte-css pattern) ── */
+.sidenote-toggle{display:none}
+.sidenote-num{
+  counter-increment:sn;
+  cursor:pointer;
+}
+.sidenote-num::after{
+  content:counter(sn);
+  font-family:var(--mono);
+  font-size:.62em;
+  vertical-align:super;
+  color:var(--accent);
+  margin:0 .1em;
+}
+.sidenote{
+  font-size:14.5px;
+  line-height:1.5;
+  color:var(--ink-soft);
+  font-style:normal;
+}
+.sidenote::before{
+  content:counter(sn) ". ";
+  font-family:var(--mono);
+  font-size:.8em;
+  color:var(--accent);
+}
+@media(min-width:1100px){
+  .sidenote{
+    position:absolute;
+    left:700px;
+    width:280px;
+    margin-top:-1.7em;
+  }
+  .sidenote-num{cursor:default}
+}
+@media(max-width:1099px){
+  .sidenote{display:none}
+  .sidenote-toggle:checked + .sidenote{
+    display:block;
+    margin:.6em 0 1em 1.4em;
+    padding-left:1em;
+    border-left:2px solid var(--line);
+  }
+}
+
+/* ── Footer ── */
+footer{
+  margin-top:4.5em;
+  padding:2em 0 3em;
+  border-top:1px solid var(--line);
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--ink-faint);
+  font-variant-numeric:tabular-nums;
+}
+
+@media(max-width:640px){
+  body{font-size:17.5px}
+  .page{padding:0 20px}
+  nav{margin-bottom:44px}
+  .epigraph{margin-left:1.2em}
+  .contact-list li{flex-direction:column;gap:.1em}
+  .post{flex-direction:column;gap:.1em}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="page">
+    <a class="brand" href="/">Andrei Filatov</a>
+    <div class="nav-links">
+      <a href="#projects">projects</a>
+      <a href="#writing">writing</a>
+      <a href="#contact">contact</a>
+      <button id="theme-btn" type="button" aria-label="toggle theme">◐ theme</button>
+    </div>
+  </div>
+</nav>
+
+<main class="page">
+<div class="col">
+
+  <header class="hero">
+    <h1>Andrei Filatov</h1>
+    <div class="role">Research Scientist · Member of Technical Staff, <a href="https://www.krea.ai/">Krea</a></div>
+
+    <p class="lede">I work on generative computer vision — training diffusion models from scratch and making them fast enough to feel alive. Before Krea, I was at <a href="https://kandinskylab.ai/">Kandinsky Labs</a>, <a href="https://vilab.epfl.ch/">VILAB, EPFL</a>, and <a href="https://research.samsung.com/aicenter_moscow">Samsung AI Center</a>. Based in Dubai.</p>
+
+    <p>I also lecture on deep learning and write longreads about ML, GPU architecture, and inference.<label for="sn-1" class="sidenote-num"></label><input type="checkbox" id="sn-1" class="sidenote-toggle"><span class="sidenote">Most of the writing happens in Russian on my Telegram channel <a href="https://t.me/awesome_dl">@awesome_dl</a>; the longreads get translated and live on the blog.</span> Иногда пишу лонгриды про то, как устроены GPU и почему инференс — это самая интересная часть современного ML.</p>
+
+    <blockquote class="epigraph">
+      What I cannot create, I do not understand.
+      <span class="attr">Richard Feynman, found on his blackboard</span>
+    </blockquote>
+  </header>
+
+  <div class="dinkus">* * *</div>
+
+  <section id="projects">
+    <h2>Selected Projects</h2>
+
+    <article class="proj">
+      <h3><span class="num">1.</span>Krea 2</h3>
+      <p>An open-weights text-to-image foundation model trained from scratch. Full pipeline, from data to the final checkpoint.</p>
+      <div class="meta"><a href="https://www.krea.ai/blog/krea-2-technical-report">technical report</a></div>
+      <div class="tags">Text-to-Image, Diffusion, Open Weights</div>
+    </article>
+
+    <article class="proj">
+      <h3><span class="num">2.</span>XLabs FLUX LoRAs</h3>
+      <p>Open-source LoRA adapters for FLUX.1-dev — realism, scenery, art styles, and the training framework behind them.</p>
+      <div class="meta"><a href="https://huggingface.co/XLabs-AI/flux-lora-collection">huggingface</a> · <a href="https://github.com/XLabs-AI/x-flux">github</a></div>
+      <div class="tags">LoRA, FLUX, Fine-tuning</div>
+    </article>
+
+    <article class="proj">
+      <h3><span class="num">3.</span>Kandinsky 3.0 / 3.1 / 4.0</h3>
+      <p>A family of text-to-image and text-to-video foundation models.<label for="sn-2" class="sidenote-num"></label><input type="checkbox" id="sn-2" class="sidenote-toggle"><span class="sidenote">I joined around 3.0 and stayed through 4.0 — three generations of watching a model learn to see.</span></p>
+      <div class="meta"><a href="https://arxiv.org/abs/2312.03511">arXiv:2312.03511</a> · <a href="https://arxiv.org/abs/2410.21061">arXiv:2410.21061</a> · <a href="https://ai-forever.github.io/Kandinsky-4/K40/">K4.0 page</a></div>
+      <div class="tags">Text-to-Image, Text-to-Video, Diffusion</div>
+    </article>
+
+    <article class="proj">
+      <h3><span class="num">4.</span>Task Discovery</h3>
+      <p>NeurIPS 2022. Discovering the tasks that neural networks generalize well on, instead of assuming we already know them.</p>
+      <div class="meta"><a href="https://taskdiscovery.epfl.ch">project page</a></div>
+      <div class="tags">PyTorch, Computer Vision, Meta-Learning</div>
+    </article>
+
+    <article class="proj">
+      <h3><span class="num">5.</span>Deep Learning Course</h3>
+      <p>A full course on deep learning: basics, sequences, computer vision, reinforcement learning, generative models.</p>
+      <div class="meta"><a href="https://github.com/intsystems/Deep-Learning-Course-2022">github</a></div>
+      <div class="tags">Teaching, Deep Learning</div>
+    </article>
+  </section>
+
+  <div class="dinkus">* * *</div>
+
+  <section id="writing">
+    <h2>Writing</h2>
+    <div class="post">
+      <span class="t"><a href="/autoresearch.html">Age of Autoresearch</a> <span style="color:var(--ink-faint);font-size:.85em">(RU)</span></span>
+      <span class="d">2026-07 · 15 min</span>
+    </div>
+    <div class="post">
+      <span class="t"><a href="/gpu-story.html">GPU Story: from triangles to AI chips</a></span>
+      <span class="d">2026-03 · 20 min</span>
+    </div>
+    <div class="post">
+      <span class="t"><a href="/realtime-video-calculator.html">Realtime Video Generation Calculator</a></span>
+      <span class="d">2026-03 · interactive</span>
+    </div>
+    <p style="margin-top:1.2em"><a class="blog-link" href="/blog.html">All posts on the blog →</a></p>
+  </section>
+
+  <div class="dinkus">* * *</div>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <ul class="contact-list">
+      <li><span class="k">email</span><a href="mailto:filatovandreiv@gmail.com">filatovandreiv@gmail.com</a></li>
+      <li><span class="k">github</span><a href="https://github.com/anvilarth">github.com/anvilarth</a></li>
+      <li><span class="k">linkedin</span><a href="https://linkedin.com/in/andrei-filatov">linkedin.com/in/andrei-filatov</a></li>
+      <li><span class="k">telegram</span><a href="https://t.me/awesome_dl">t.me/awesome_dl</a></li>
+      <li><span class="k">resume</span><a href="https://drive.google.com/file/d/1_yudui9m5TRWGtD9XvKc7eTBAn0hblvv/view?usp=sharing">pdf, google drive</a></li>
+    </ul>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="page">
+    <div class="col">© 2026 Andrei Filatov · set in Source Serif 4 &amp; JetBrains Mono</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b=document.getElementById('theme-btn');
+  b.addEventListener('click',function(){
+    var d=document.documentElement;
+    var cur=d.getAttribute('data-theme');
+    var next=cur==='dark'?'light':'dark';
+    if(!cur){next=window.matchMedia('(prefers-color-scheme: dark)').matches?'light':'dark'}
+    d.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next)}catch(e){}
+  });
+})();
+</script>
+<script data-goatcounter="https://anvilarth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

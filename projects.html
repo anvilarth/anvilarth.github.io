@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta property="og:title" content="Projects — Andrei Filatov">
+<link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+<meta name="description" content="Projects by Andrei Filatov — foundation models, generation platforms, papers and tools">
+<title>Projects | Andrei Filatov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>
+(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+</script>
+<style>
+:root{
+  --t:#1c1917;--ts:#57534e;--th:#a8a29e;--bg:#faf9f7;
+  --l:#1c1917;--ll:#e7e5e4;--accent:#b45309;--accent-soft:#fef3c7;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Source Sans 3','Source Sans Pro',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
+  --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
+}}
+:root[data-theme=dark]{
+  --t:#e7e5e4;--ts:#a8a29e;--th:#78716c;--bg:#0c0a09;
+  --l:#e7e5e4;--ll:#292524;--accent:#f59e0b;--accent-soft:#451a0310
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.8;color:var(--t);background:var(--bg);-webkit-font-smoothing:antialiased;background-image:var(--grain);background-repeat:repeat;background-size:256px}
+a{color:var(--t);text-decoration:none}
+
+.c{max-width:1140px;margin:0 auto;padding:0 28px}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg),transparent 20%)}
+nav .c{display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-family:var(--mono);font-size:14px;font-weight:400;letter-spacing:-.01em}
+.nav-logo span{color:var(--accent)}
+.nav-back{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s}
+.nav-back:hover{color:var(--accent)}
+.nav-back svg{width:16px;height:16px}
+
+/* ── Header ── */
+header{padding:140px 0 48px;position:relative}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+.section-label{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
+header h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.5vw,48px);line-height:1.15;letter-spacing:-.025em;margin-bottom:16px}
+header p{color:var(--ts);font-size:16px}
+
+/* ── Projects ── */
+.projects{display:grid;grid-template-columns:repeat(3,1fr);gap:44px 28px;padding:48px 0}
+.proj{display:flex;flex-direction:column}
+.proj-img{
+  display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top;
+  border:1px solid var(--ll);border-radius:8px;margin-bottom:14px;background:var(--ll);
+  transition:border-color .2s;
+}
+.proj-img:hover{border-color:color-mix(in srgb,var(--accent),transparent 50%)}
+.proj-head{margin-bottom:6px}
+.proj-title{font-family:var(--serif);font-weight:600;font-size:19px;line-height:1.3;letter-spacing:-.01em;margin-bottom:4px}
+.proj-date{font-family:var(--mono);font-size:11px;color:var(--th);letter-spacing:.04em}
+.proj-desc{color:var(--ts);font-size:14.5px;line-height:1.65;margin-bottom:12px;flex:1}
+.proj-desc b,.proj-desc strong{font-weight:500;color:var(--t)}
+.proj-links{display:flex;flex-wrap:wrap;gap:8px 18px}
+.proj-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--accent);transition:opacity .2s}
+.proj-link:hover{opacity:.7}
+
+/* ── Footer ── */
+footer{padding:48px 0;text-align:center;font-size:12px;color:var(--th);font-family:var(--mono);font-weight:300;position:relative}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
+
+@media(max-width:900px){
+  .projects{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  header{padding:100px 0 36px}
+  .projects{grid-template-columns:1fr}
+}
+
+.nav-links{align-items:center}
+.nav-right{display:flex;align-items:center;gap:20px}
+.theme-btn{background:0 0;border:none;padding:2px;color:var(--ts);cursor:pointer;display:flex;align-items:center;transition:color .2s;line-height:0}
+.theme-btn:hover{color:var(--accent)}
+.theme-btn svg{width:16px;height:16px}
+.theme-btn .moon{display:none}
+:root[data-theme=dark] .theme-btn .moon{display:block}
+:root[data-theme=dark] .theme-btn .sun{display:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme-btn .moon{display:block}:root:not([data-theme=light]) .theme-btn .sun{display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="c">
+    <a href="index.html" class="nav-logo">andrei<span>filatov</span></a>
+    <div class="nav-right"><a href="index.html" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to main
+    </a>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button></div>
+  </div>
+</nav>
+
+<div class="c">
+
+<header>
+  <p class="section-label">Selected Work</p>
+  <h1>Projects</h1>
+  <p>Foundation models, generation platforms, papers and tools — things shipped, not just started</p>
+</header>
+
+<div class="projects">
+
+  <div class="proj">
+    <a href="https://www.krea.ai/blog/krea-2-technical-report" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/krea2.jpg" alt="Krea 2 technical report" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">Krea 2</h2>
+      <span class="proj-date">2026 · Krea</span>
+    </div>
+    <p class="proj-desc">Open-weights text-to-image foundation model trained from scratch. Contributed to the style-conditioning system — <b>ranked second worldwide on style fidelity</b> — and co-led the Krea 2 Editing model training.</p>
+    <div class="proj-links">
+      <a href="https://www.krea.ai/blog/krea-2-technical-report" target="_blank" rel="noreferrer" class="proj-link">Technical report
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="realtime-video-calculator.html"><img class="proj-img" src="img/projects/calculator.jpg" alt="Realtime Video Generation Calculator" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">Realtime Video Generation Calculator</h2>
+      <span class="proj-date">2026 · Interactive tool</span>
+    </div>
+    <p class="proj-desc">First-principles compute estimator for diffusion and AR streaming video models — tweak the parameters and see when generation becomes realtime.</p>
+    <div class="proj-links">
+      <a href="realtime-video-calculator.html" class="proj-link">Open the tool
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="https://huggingface.co/XLabs-AI/flux-lora-collection" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/flux.jpg" alt="XLabs FLUX LoRA collection" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">XLabs FLUX LoRAs</h2>
+      <span class="proj-date">2024 · XLabs</span>
+    </div>
+    <p class="proj-desc">The first style adapters for FLUX, open-source together with the training and inference framework. The top adapter reached <b>500k downloads in its first month</b>.</p>
+    <div class="proj-links">
+      <a href="https://huggingface.co/XLabs-AI/flux-lora-collection" target="_blank" rel="noreferrer" class="proj-link">Hugging Face
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+      <a href="https://github.com/XLabs-AI/x-flux" target="_blank" rel="noreferrer" class="proj-link">x-flux on GitHub
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="https://github.com/FusionBrainLab/ESQA" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/esqa.jpg" alt="ESQA" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">ESQA: Event Sequences Question Answering</h2>
+      <span class="proj-date">2024 · Kandinsky Labs</span>
+    </div>
+    <p class="proj-desc">Adapting LLMs to event-sequence data — transactions, logs, user histories — solving multiple downstream tasks with <b>little or no finetuning</b>.</p>
+    <div class="proj-links">
+      <a href="https://arxiv.org/abs/2407.12833" target="_blank" rel="noreferrer" class="proj-link">Paper (arXiv)
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+      <a href="https://github.com/FusionBrainLab/ESQA" target="_blank" rel="noreferrer" class="proj-link">GitHub
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="https://ai-forever.github.io/Kandinsky-4/K40/" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/kandinsky.jpg" alt="Kandinsky 4.0" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">Kandinsky 3.0 / 3.1 / 4.0</h2>
+      <span class="proj-date">2023–2024 · Kandinsky Labs</span>
+    </div>
+    <p class="proj-desc">A family of text-to-image and text-to-video foundation models. Co-author of the 3.0 technical report and of the Kandinsky 3 framework paper at <b>EMNLP 2024</b>. Also led the Kandinsky 3 inpainting model end-to-end and a ControlNet-based editing model trained on <b>256+ GPUs</b> — shipped to fusionbrain.ai and inside GigaChat.</p>
+    <div class="proj-links">
+      <a href="https://arxiv.org/abs/2312.03511" target="_blank" rel="noreferrer" class="proj-link">Kandinsky 3.0 (arXiv)
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+      <a href="https://aclanthology.org/2024.emnlp-demo.48/" target="_blank" rel="noreferrer" class="proj-link">Kandinsky 3 (EMNLP 2024)
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+      <a href="https://ai-forever.github.io/Kandinsky-4/K40/" target="_blank" rel="noreferrer" class="proj-link">Kandinsky 4.0
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+      <a href="https://fusionbrain.ai/en/" target="_blank" rel="noreferrer" class="proj-link">fusionbrain.ai
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="https://taskdiscovery.epfl.ch" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/taskdiscovery.jpg" alt="Task Discovery" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">Task Discovery</h2>
+      <span class="proj-date">2022 · NeurIPS · VILAB, EPFL</span>
+    </div>
+    <p class="proj-desc">Discovering the tasks on which neural networks generalize well — by optimizing an agreement-score objective.</p>
+    <div class="proj-links">
+      <a href="https://taskdiscovery.epfl.ch" target="_blank" rel="noreferrer" class="proj-link">Project site
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+      <a href="https://arxiv.org/abs/2212.00261" target="_blank" rel="noreferrer" class="proj-link">Paper (arXiv)
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="https://transfer-controls.epfl.ch" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/baselines.jpg" alt="Simple Control Baselines" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">Simple Control Baselines for Evaluating Transfer Learning</h2>
+      <span class="proj-date">2022 · VILAB, EPFL</span>
+    </div>
+    <p class="proj-desc">An evaluation standard for transfer learning: control baselines, practices and metrics for a calibrated comparison of self-supervised models.</p>
+    <div class="proj-links">
+      <a href="https://arxiv.org/abs/2202.03365" target="_blank" rel="noreferrer" class="proj-link">Paper (arXiv)
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+      <a href="https://transfer-controls.epfl.ch" target="_blank" rel="noreferrer" class="proj-link">Project site
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="https://github.com/intsystems/Deep-Learning-Course-2022" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/course.jpg" alt="Deep Learning Course" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">Deep Learning Course</h2>
+      <span class="proj-date">2022 · Teaching</span>
+    </div>
+    <p class="proj-desc">A full deep learning course prepared and taught in a team of two: neural networks, sequences, computer vision, RL, generative models.</p>
+    <div class="proj-links">
+      <a href="https://github.com/intsystems/Deep-Learning-Course-2022" target="_blank" rel="noreferrer" class="proj-link">GitHub
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+
+  <div class="proj">
+    <a href="https://arxiv.org/abs/2110.00874" target="_blank" rel="noreferrer"><img class="proj-img" src="img/projects/linesearch.jpg" alt="Fast Line Search for Multi-Task Learning" loading="lazy"></a>
+    <div class="proj-head">
+      <h2 class="proj-title">Fast Line Search for Multi-Task Learning</h2>
+      <span class="proj-date">2021 · Paper</span>
+    </div>
+    <p class="proj-desc">Step-size line search in the latent representation space instead of the parameter space — faster convergence for multi-task models, validated on MNIST, CIFAR-10 and Cityscapes. With Daniil Merkulov.</p>
+    <div class="proj-links">
+      <a href="https://arxiv.org/abs/2110.00874" target="_blank" rel="noreferrer" class="proj-link">Paper (arXiv)
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  <div class="c">
+    Designed & built by Andrei Filatov · &copy; 2026
+  </div>
+</footer>
+
+<script data-goatcounter="https://anvilarth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById('theme-btn');
+  if(!btn)return;
+  var root=document.documentElement;
+  btn.addEventListener('click',function(){
+    var sysDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    var cur=root.getAttribute('data-theme')||(sysDark?'dark':'light');
+    var next=cur==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next)}catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
