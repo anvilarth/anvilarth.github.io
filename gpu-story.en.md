@@ -108,7 +108,7 @@ Let's look back. In three steps we designed a new type of processor. Threw out e
 
 This is exactly how NVIDIA engineers reasoned in the late 90s. Put it all together — and in 1999 the GeForce 256 arrives. They themselves called it "the world's first GPU." 17 million transistors, 120 MHz, 10 million polygons per second. The key feature — hardware Transform & Lighting: vertex transformations and lighting calculations moved entirely from the CPU to the graphics card for the first time. One chip — the entire rendering pipeline.
 
-![NVIDIA GeForce 256 — первый в мире GPU, 1999](https://anvilarth.github.io/geforce256.png)
+![NVIDIA GeForce 256 — первый в мире GPU, 1999](https://anvilarth.github.io/img/geforce256.jpg)
 
 _NVIDIA GeForce 256 (1999) · 17M transistors · 120 MHz · 10M polygons/sec · photo: Wikimedia Commons, public domain_
 

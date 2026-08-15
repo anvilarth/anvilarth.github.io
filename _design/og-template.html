@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  width:1200px;height:630px;overflow:hidden;position:relative;
+  font-family:'Newsreader',Georgia,serif;color:#221d17;
+  background:#f7f4ee;
+}
+.bg{position:absolute;inset:0;background:
+  radial-gradient(60% 50% at 88% -8%, #f6c189 0%, transparent 72%),
+  radial-gradient(54% 46% at 4% 8%, #f3b3a2 0%, transparent 72%),
+  radial-gradient(68% 54% at 50% 112%, #eed9ae 0%, transparent 74%);
+  opacity:.8}
+.grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E")}
+.frame{position:absolute;inset:36px;border:1px solid rgba(34,29,23,.14);border-radius:18px}
+.inner{position:absolute;inset:36px;padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between}
+.top{display:flex;justify-content:space-between;align-items:center}
+.label{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#c2552f}
+.site{font-family:'JetBrains Mono',monospace;font-size:20px;color:#5f574c}
+.site span{color:#c2552f}
+h1{font-weight:500;font-size:76px;line-height:1.08;letter-spacing:-.025em;max-width:980px}
+h1.long{font-size:58px}
+.bottom{display:flex;justify-content:space-between;align-items:flex-end}
+.author{font-size:30px;font-weight:500}
+.author small{display:block;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:400;color:#5f574c;margin-top:8px}
+.mark{width:64px;height:64px;border-radius:16px;background:#c2552f;color:#f7f4ee;display:flex;align-items:center;justify-content:center;font-style:italic;font-size:34px}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="grain"></div>
+<div class="frame"></div>
+<div class="inner">
+  <div class="top">
+    <div class="label" id="label"></div>
+    <div class="site">anvilarth<span>.github.io</span></div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="bottom">
+    <div class="author">Andrei Filatov<small id="tagline"></small></div>
+    <div class="mark">af</div>
+  </div>
+</div>
+<script>
+var q=new URLSearchParams(location.search);
+var t=q.get('title')||'Andrei Filatov';
+document.getElementById('title').textContent=t;
+if(t.length>60)document.getElementById('title').classList.add('long');
+document.getElementById('label').textContent=q.get('label')||'Research Scientist · ML/DL';
+document.getElementById('tagline').textContent=q.get('tagline')||'Member of Technical Staff @ Krea · Dubai';
+if(t==='Andrei Filatov'){var a=document.querySelector('.author');a.childNodes[0].remove();a.style.fontSize='1px'}
+</script>
+</body>
+</html>

@@ -4,10 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>История о том, как штука для рисования треугольников стала самым важным чипом на планете</title>
+<meta name="description" content="GPU history from first principles: rasterization, shaders, CUDA, tensor cores — how a triangle-drawing chip became the most important processor on the planet">
+<link rel="canonical" href="https://anvilarth.github.io/gpu-story.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="alternate icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Andrei Filatov">
+<meta property="og:title" content="GPU Story: How a Thing That Drew Triangles Became the Most Important Chip on the Planet">
+<meta property="og:description" content="GPU history from first principles: rasterization, shaders, CUDA, tensor cores">
+<meta property="og:url" content="https://anvilarth.github.io/gpu-story.html">
+<meta property="og:image" content="https://anvilarth.github.io/img/og/og-gpu-story.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-03">
+<meta property="article:author" content="Andrei Filatov">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GPU Story: How a Thing That Drew Triangles Became the Most Important Chip on the Planet">
+<meta name="twitter:description" content="GPU history from first principles: rasterization, shaders, CUDA, tensor cores">
+<meta name="twitter:image" content="https://anvilarth.github.io/img/og/og-gpu-story.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How a Thing That Drew Triangles Became the Most Important Chip on the Planet",
+  "description": "GPU history from first principles: rasterization, shaders, CUDA, tensor cores",
+  "author": {"@type": "Person", "name": "Andrei Filatov", "url": "https://anvilarth.github.io/"},
+  "datePublished": "2026-03",
+  "inLanguage": "ru",
+  "image": "https://anvilarth.github.io/img/og/og-gpu-story.jpg",
+  "mainEntityOfPage": "https://anvilarth.github.io/gpu-story.html"
+}
+</script>
 <link rel="alternate" type="text/markdown" hreflang="ru" href="/gpu-story.md" title="Markdown version (RU)">
 <link rel="alternate" type="text/markdown" hreflang="en" href="/gpu-story.en.md" title="Markdown version (EN)">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<meta name="description" content="История GPU от первых принципов">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -758,7 +790,7 @@ section.ch:nth-child(4){animation-delay:.15s}
 <p data-i18n="ch2-p-geforce256">Именно так рассуждали инженеры NVIDIA в конце 90-х. Складываем всё вместе — и в 1999 году появляется GeForce 256. Они сами назвали его «первым в мире GPU». 17 миллионов транзисторов, 120 МГц, 10 миллионов полигонов в секунду. Главное — аппаратный Transform & Lighting: трансформации вершин и расчёт освещения впервые целиком переехали с CPU на видеокарту. Один чип — весь конвейер рендеринга.</p>
 
 <div class="fig">
-<img src="geforce256.png" alt="NVIDIA GeForce 256 — первый в мире GPU, 1999" style="max-width:480px;display:block;margin:0 auto">
+<img src="img/geforce256.jpg" alt="NVIDIA GeForce 256 — первый в мире GPU, 1999" width="960" height="629" loading="lazy" style="max-width:480px;display:block;margin:0 auto">
 <p class="figc" data-i18n="ch2-figc-geforce256">NVIDIA GeForce 256 (1999) · 17M транзисторов · 120 МГц · 10M полигонов/с · фото: Wikimedia Commons, public domain</p>
 </div>
 
