@@ -64,7 +64,7 @@ deep learning course.
   becomes real-time. https://anvilarth.github.io/realtime-video-calculator.html
 - **ESQA: Event Sequences Question Answering** — adapting LLMs to event-sequence data,
   handling multiple downstream tasks with little or no finetuning.
-  [Paper](https://arxiv.org/abs/2407.12833) · [GitHub](https://github.com/anvilarth/esqa)
+  [Paper](https://arxiv.org/abs/2407.12833) · [GitHub](https://github.com/FusionBrainLab/ESQA)
 - **Simple Control Baselines for Evaluating Transfer Learning** — an evaluation standard for
   transfer learning: control baselines, practices and metrics for calibrated comparison of
   self-supervised models. [Paper](https://arxiv.org/abs/2202.03365) ·
