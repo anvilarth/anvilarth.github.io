@@ -212,6 +212,14 @@ p{margin-bottom:16px}
 .contact-email a:hover{border-color:var(--accent)}
 .contact .social-links{justify-content:center;margin-top:26px}
 
+/* ── Talks ── */
+.talk-list{margin-top:34px;border-bottom:1px solid var(--ll)}
+.talk{display:block;padding:22px 4px;border-top:1px solid var(--ll);transition:background .2s}
+.talk:hover{background:color-mix(in srgb,var(--card),transparent 40%)}
+.talk-meta{font-family:var(--mono);font-size:11px;color:var(--th);letter-spacing:.04em;display:block;margin-bottom:6px}
+.talk-title{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.01em;display:block;transition:color .2s}
+.talk:hover .talk-title{color:var(--accent)}
+
 /* ── Footer ── */
 footer{padding:48px 0;text-align:center;font-size:12px;color:var(--th);font-family:var(--mono);position:relative}
 footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
@@ -401,6 +409,19 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     All posts
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
+</section>
+
+<!-- ── Talks ── -->
+<section id="talks" class="fade-in">
+  <p class="section-label">Speaking</p>
+  <h2>Talks</h2>
+
+  <div class="talk-list">
+    <a class="talk" href="https://www.youtube.com/watch?v=LBk1_0ei9m4" target="_blank" rel="noreferrer">
+      <span class="talk-meta">2026 · Data Fest, Belgrade · Invited talk · 35 min</span>
+      <span class="talk-title">Real-time video generation: where we are and what comes next</span>
+    </a>
+  </div>
 </section>
 
 <!-- ── Contact ── -->
