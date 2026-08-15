@@ -252,7 +252,7 @@ That's what the next post is about.
 
 - [Fabian Giesen — A trip through the Graphics Pipeline](https://fgiesen.wordpress.com/2011/07/09/a-trip-through-the-graphics-pipeline-2011-index/)
 
-- [CMU 15-418 — GPU Architecture](http://15418.courses.cs.cmu.edu/spring2015/lecture/gpuarch/slide_003)
+- [CMU 15-418 — GPU Architecture](http://www.cs.cmu.edu/afs/cs/academic/class/15418-s18/www/)
 
 - [NVIDIA Blog — 25th Anniversary of GeForce 256](https://blogs.nvidia.com/blog/first-gpu-gaming-ai/)
 
@@ -282,7 +282,7 @@ That's what the next post is about.
 
 - [Wikipedia — Shader History (Shader Model evolution)](https://en.wikipedia.org/wiki/Shader#History)
 
-- [Groq — LPU Architecture (SRAM-only, deterministic inference)](https://groq.com/technology/)
+- [Groq — LPU Architecture (SRAM-only, deterministic inference)](https://groq.com/lpu/)
 
 - [Cerebras — Wafer-Scale Engine (850K cores, 44GB SRAM)](https://www.cerebras.net/chip/)
 
