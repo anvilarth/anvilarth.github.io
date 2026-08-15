@@ -49,6 +49,8 @@ h1.long{font-size:58px}
 </div>
 <script>
 var q=new URLSearchParams(location.search);
+var s=parseFloat(q.get('scale')||'1');
+if(s!==1){document.body.style.zoom=s}
 var t=q.get('title')||'Andrei Filatov';
 document.getElementById('title').textContent=t;
 if(t.length>60)document.getElementById('title').classList.add('long');
