@@ -11,6 +11,9 @@ generative computer vision. He is a Member of Technical Staff at [Krea](https://
 - Blog: https://anvilarth.github.io/blog.html
 - Telegram channel (Russian): https://t.me/awesome_dl — ML, GPU architecture, inference
 - GitHub: https://github.com/anvilarth
+- LinkedIn: https://www.linkedin.com/in/andrei-filatov
+- X (Twitter): https://x.com/anvilapex
+- Google Scholar: https://scholar.google.com/citations?user=xRNTrdcAAAAJ
 - Email: filatovandreiv@gmail.com
 
 ## Current work
