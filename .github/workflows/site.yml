@@ -1,0 +1,66 @@
+name: Site
+
+on:
+  push:
+    branches: [gh-pages]
+  pull_request:
+    branches: [gh-pages]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Sitemap + checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # gen_sitemap.py reads commit dates, so it needs the full history.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Regenerate sitemap.xml
+        run: python3 _design/gen_sitemap.py
+
+      - name: Run site checks
+        run: python3 _design/check_site.py
+
+      - name: Show sitemap diff
+        run: git --no-pager diff -- sitemap.xml || true
+
+      # On a pull request we only report; nothing is committed.
+      - name: Fail if sitemap is stale (pull request)
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ -n "$(git status --porcelain sitemap.xml)" ]; then
+            echo "::error file=sitemap.xml::sitemap.xml is out of date."
+            echo "Run: python3 _design/gen_sitemap.py"
+            exit 1
+          fi
+          echo "sitemap.xml is up to date"
+
+      # On a push to the live branch we fix it in place and commit back.
+      - name: Commit refreshed sitemap
+        if: github.event_name != 'pull_request'
+        run: |
+          if [ -z "$(git status --porcelain sitemap.xml)" ]; then
+            echo "sitemap.xml already up to date, nothing to commit"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          git commit -m "chore(seo): regenerate sitemap.xml [skip ci]"
+          git push
