@@ -34,6 +34,24 @@
   "url": "https://anvilarth.github.io/realtime-video-calculator.html"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "When will realtime AI video generation be possible?",
+     "acceptedAnswer": {"@type": "Answer", "text": "It already is for small distilled models at 480p: a 1.3B model at 4 steps runs in realtime on a single H100, and AR streaming models like LongLive reach 20+ FPS. Realtime at 14B-class quality needs roughly a B200/Rubin-class GPU at 4 steps with sparse attention — 2025–2026 hardware."}},
+    {"@type": "Question", "name": "What is MFU and why 40%?",
+     "acceptedAnswer": {"@type": "Answer", "text": "MFU (model FLOPs utilization) is the fraction of a GPU's theoretical peak compute that real workloads sustain. Even well-optimized inference rarely exceeds 40–50% of peak due to attention softmax, memory transfers and kernel launch gaps."}},
+    {"@type": "Question", "name": "Why do denoising steps dominate the cost?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Each denoising step is a full forward pass through the model, so steps multiply total compute linearly. Distilling from 50 steps to 4 gives a ~12.5x speedup with no hardware change."}},
+    {"@type": "Question", "name": "Can video generation run on a phone NPU?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Not yet for diffusion at usable quality: an 80-TOPS mobile NPU is 1–2 orders of magnitude short of realtime even for a distilled 1.3B model at 480p. AR streaming with INT4 quantization is the more plausible mobile path."}},
+    {"@type": "Question", "name": "How accurate are these compute estimates?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Within roughly ±2x of measured inference on optimized stacks. The model is calibrated against public benchmarks (Wan2.1/Wan2.2 parameters, LongLive's 24.8 FPS on H100) and extrapolated from there."}}
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -299,6 +317,49 @@
   .footer a { color: var(--ts); border-bottom: 1px solid var(--ll); transition: color .2s, border-color .2s; }
   .footer a:hover { color: var(--accent); border-color: var(--accent); }
 
+  /* ── Methodology / FAQ prose ── */
+  .prose {
+    margin-bottom: 2rem;
+  }
+  .prose h2 {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 2.2rem 0 0.7rem;
+  }
+  .prose h3 {
+    font-family: var(--sans);
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin: 1.4rem 0 0.35rem;
+  }
+  .prose p {
+    font-size: 0.92rem;
+    color: var(--ts);
+    margin-bottom: 0.8rem;
+  }
+  .prose p strong, .prose li strong { color: var(--t); font-weight: 600; }
+  .prose ul {
+    font-size: 0.92rem;
+    color: var(--ts);
+    margin: 0 0 0.8rem 1.2rem;
+  }
+  .prose li { margin-bottom: 0.35rem; }
+  .prose code {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    background: var(--accent-soft);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+  }
+  .prose a { color: var(--accent); }
+  .faq-item {
+    border-top: 1px solid var(--ll);
+    padding: 0.9rem 0;
+  }
+  .faq-item h3 { margin: 0 0 0.35rem; }
+
   .post-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:12px 0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg),transparent 25%);border-bottom:1px solid color-mix(in srgb,var(--ll),transparent 55%)}
   .post-nav-inner{max-width:860px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center}
   .post-nav a{font-family:var(--mono);font-size:12px;color:var(--ts);display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none}
@@ -489,6 +550,59 @@
       </select>
     </div>
   </div>
+</div>
+
+<div class="prose">
+<h2>How the estimate works</h2>
+<p>The calculator estimates the FLOPs required to generate one second of video from first principles, then divides by the effective throughput of the selected hardware. No black-box magic — every number on the page comes from the formulas below.</p>
+
+<h3>Token count</h3>
+<p>Video is processed as latent tokens, not pixels. A VAE compresses each frame spatially (<strong>8×8</strong> in Wan2.1, <strong>16×16</strong> in Wan2.2), and a patch size of 2 further halves each dimension, so a 720p frame becomes <code>1280/32 × 720/32 = 40 × 22</code> tokens per latent frame with 16×16 compression. Time is compressed 4× by the causal 3D-VAE: one second at 16 FPS becomes <code>1 + ⌊(16−1)/4⌋ = 4</code> latent frames. Total tokens per second of video = <code>latT × latH × latW</code>.</p>
+
+<h3>FLOPs per denoising step</h3>
+<p>Each DiT layer contributes three terms:</p>
+<ul>
+  <li><strong>Self-attention</strong>: <code>8·T·d² + 4·T²·d</code>, where T is tokens and d is the hidden dim. The quadratic <code>T²</code> term is what makes long, high-resolution video expensive — and it is the term that <strong>sparse attention</strong> divides (2×–6×).</li>
+  <li><strong>Cross-attention</strong> to the text prompt: calibrated to ~8.4 TFLOP per layer on a 14B model, scaled linearly with model size.</li>
+  <li><strong>FFN</strong>: <code>4·T·d·d_ff</code> — the largest linear term for typical sequence lengths.</li>
+</ul>
+<p>Hidden dimension and FFN size scale as <code>√(params/14B)</code> from the Wan2.1 14B reference; layer counts follow known architectures (24 layers at 1.3B up to 80 at 200B). Per-step FLOPs are then multiplied by the number of <strong>denoising steps</strong> — this is why distillation from 50 steps down to 4 is a ~12× speedup — and doubled when <strong>CFG</strong> is on, since classifier-free guidance runs both a conditional and an unconditional pass.</p>
+
+<h3>Hardware throughput</h3>
+<p>Peak TFLOPS of the selected GPU at the chosen precision are multiplied by <strong>40% MFU</strong> (model FLOPs utilization — the share of peak compute a well-optimized inference stack actually achieves). Multi-GPU setups apply a 0.7 scaling-efficiency factor for communication overhead. Mobile NPUs are converted at roughly <code>TOPS × 0.15</code> to FP16-equivalent TFLOPS.</p>
+
+<h3>AR streaming models</h3>
+<p>Autoregressive streaming models (e.g. <a href="https://github.com/NVlabs/LongLive">LongLive</a>) generate frame-by-frame with a local attention window, so cost scales ~linearly with pixels rather than quadratically. The estimate is calibrated to the published LongLive 1.3B benchmark — <strong>24.8 FPS at 480p on a single H100 in FP8</strong>, i.e. ~32 TFLOP per frame — and scaled by resolution and quantization.</p>
+
+<h3>Limitations</h3>
+<p>These are order-of-magnitude engineering estimates, not benchmarks. Memory-bandwidth-bound regimes (small batch, attention decode), kernel efficiency of specific stacks (FlashAttention, SageAttention, compile), and VAE decode cost are not modeled. Treat results within roughly ±2× as "correct".</p>
+
+<h2>FAQ</h2>
+
+<div class="faq-item">
+  <h3>When will realtime AI video generation be possible?</h3>
+  <p>It already is — for small distilled models at 480p. A 1.3B model at 4 steps runs in realtime on a single H100 today, and AR streaming models like LongLive hit 20+ FPS. The frontier question is when <strong>14B-class quality</strong> becomes realtime: on this calculator's numbers, that needs roughly a B200/Rubin-class GPU at 4 steps with sparse attention — i.e. 2025–2026 hardware.</p>
+</div>
+
+<div class="faq-item">
+  <h3>What is MFU and why 40%?</h3>
+  <p>MFU (model FLOPs utilization) is the fraction of a GPU's theoretical peak compute that real workloads sustain. Attention softmax, memory transfers, and kernel launch gaps mean even well-optimized inference rarely exceeds 40–50% of peak. Using peak numbers directly would overstate speed by 2.5×.</p>
+</div>
+
+<div class="faq-item">
+  <h3>Why do denoising steps dominate the cost?</h3>
+  <p>Each step is a full forward pass through the model, and steps multiply total compute linearly. Going from 50 steps (typical for quality) to 4 steps (distilled / few-step models like Turbo or Lightning variants) is a 12.5× speedup with no hardware change — the single largest lever after model size.</p>
+</div>
+
+<div class="faq-item">
+  <h3>Can video generation run on a phone NPU?</h3>
+  <p>Not yet for diffusion at usable quality: a 80-TOPS mobile NPU converts to roughly 12 effective FP16 TFLOPS, which is 1–2 orders of magnitude short of realtime even for a distilled 1.3B model at 480p. AR streaming with INT4 quantization is the more plausible mobile path — hence the INT8/INT4 options above.</p>
+</div>
+
+<div class="faq-item">
+  <h3>How accurate are these numbers?</h3>
+  <p>Within about ±2× of measured inference on optimized stacks. The model is calibrated against public benchmarks (Wan2.1/Wan2.2 architecture parameters, LongLive's published 24.8 FPS on H100) and extrapolated from there. Use it to compare configurations and hardware generations, not to budget a production deployment.</p>
+</div>
 </div>
 
 <div class="footer">
