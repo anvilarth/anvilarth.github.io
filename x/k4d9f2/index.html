@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="robots" content="noindex,nofollow">
+<title>Structural basis of gene therapy · for Elza</title>
+<style>
+  :root {
+    --bg: #0d0a0f;
+    --fg: #d8d4dc;
+    --dim: #9a94a3;
+    --gold: #c9934a;
+    --gold-bright: #f2c14e;
+    --paraiba: #00e5c9;
+    --line: #5a5360;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+  }
+  canvas { display: block; }
+
+  /* soft rose ambience + vignette over the WebGL canvas */
+  #overlay {
+    position: fixed; inset: 0; pointer-events: none; z-index: 2;
+    background:
+      radial-gradient(58% 44% at 50% 34%, rgba(4, 92, 82, 0.20), rgba(4, 92, 82, 0) 70%),
+      radial-gradient(120% 95% at 50% 46%, rgba(13, 10, 15, 0) 52%, rgba(13, 10, 15, 0.62) 100%);
+  }
+
+  .type {
+    position: fixed; z-index: 3; pointer-events: none;
+    text-transform: uppercase;
+    font-weight: 400;
+    letter-spacing: 0.34em;
+  }
+
+  #captions {
+    right: 4.5vw; bottom: 17vh;
+    text-align: right;
+    font-size: 11px;
+    line-height: 2.1;
+    color: var(--dim);
+  }
+  #captions .cap { transition: color .6s ease, opacity .6s ease; opacity: .45; }
+  #captions .cap.active { color: var(--fg); opacity: 1; }
+  #captions .cap.active .acc-hgd { color: var(--paraiba); }
+  #captions .cap.active .acc-gal { color: var(--gold-bright); }
+
+  #title {
+    left: 0; right: 0; bottom: 5.2vh;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 0.42em;
+    color: var(--fg);
+  }
+  #title .rule {
+    width: 24vw; max-width: 300px; height: 1px;
+    background: var(--line); opacity: .8;
+    margin: 0 auto 2.4vh auto;
+  }
+  #title .ded {
+    margin-top: 1.4vh;
+    font-size: 11px;
+    letter-spacing: 0.42em;
+    text-transform: none;
+    color: var(--gold);
+  }
+
+  #hint {
+    left: 4.5vw; bottom: 5.4vh;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    opacity: .55;
+  }
+
+  #modebar {
+    position: fixed; z-index: 4;
+    left: 50%; top: 4.2vh; transform: translateX(-50%);
+    display: flex; gap: 10px;
+  }
+  #modebar button {
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--dim);
+    background: rgba(216, 212, 220, 0.03);
+    border: 1px solid rgba(154, 148, 163, 0.28);
+    border-radius: 999px;
+    padding: 8px 18px 7px 20px;
+    cursor: pointer;
+    transition: all .35s ease;
+  }
+  #modebar button:hover { color: var(--fg); border-color: rgba(216, 212, 220, 0.55); }
+  #modebar button:focus-visible { outline: 1px solid var(--gold-bright); outline-offset: 2px; }
+  #modebar button.active { color: var(--gold-bright); border-color: var(--gold); }
+
+  #loader {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    transition: opacity 1.1s ease;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--dim);
+  }
+  #loader.gone { opacity: 0; pointer-events: none; }
+
+  @media (max-width: 700px) {
+    #captions { right: 5vw; bottom: 20vh; font-size: 9px; letter-spacing: 0.22em; }
+    #title { font-size: 10px; letter-spacing: 0.3em; }
+    #hint { display: none; }
+    #modebar button { padding: 7px 12px 6px 14px; font-size: 9px; }
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="overlay"></div>
+
+<div id="captions" class="type">
+  <div class="cap" data-cap="hgd">
+    <div>Homogentisate 1,2-dioxygenase</div>
+    <div><span class="acc-hgd">PDB 1EY2</span> · Alcaptonuria</div>
+  </div>
+  <div class="cap" data-cap="galns" style="margin-top:1.6vh">
+    <div>GALNS · N-acetylgalactosamine-6-sulfatase</div>
+    <div><span class="acc-gal">PDB 4FDI</span> · Morquio A</div>
+  </div>
+</div>
+
+<div id="title" class="type">
+  <div class="rule"></div>
+  <div>Structural basis of gene therapy</div>
+  <div class="ded">for Elza</div>
+</div>
+
+<div id="hint" class="type">drag&nbsp;·&nbsp;orbit&nbsp;&nbsp;&nbsp;scroll&nbsp;·&nbsp;zoom&nbsp;to&nbsp;cursor&nbsp;&nbsp;&nbsp;right-drag&nbsp;·&nbsp;pan&nbsp;&nbsp;&nbsp;1&nbsp;2&nbsp;3&nbsp;·&nbsp;view</div>
+
+<div id="modebar">
+  <button data-mode="hgd" class="active">HGD</button>
+  <button data-mode="galns">GALNS</button>
+  <button data-mode="both">Both</button>
+</div>
+
+<div id="loader">loading structures</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const BG = 0x0d0a0f;
+const PARAIBA = new THREE.Color('#00e5c9');
+const GOLD = new THREE.Color('#f2c14e');
+const FE_COLOR = new THREE.Color('#ffe9c4');
+
+/* ---------------------------------------------------------------- PDB ---- */
+
+function parsePDB(text) {
+  // returns { atoms: [{x,y,z,chain}], fe: [{x,y,z}] }
+  // MODEL/ENDMDL blocks (biological assembly) -> chain index 0..5
+  const atoms = [], fe = [];
+  let model = -1;
+  for (const line of text.split('\n')) {
+    const rec = line.slice(0, 6);
+    if (rec === 'MODEL ') { model++; continue; }
+    if (rec !== 'ATOM  ' && rec !== 'HETATM') continue;
+    const x = parseFloat(line.slice(30, 38));
+    const y = parseFloat(line.slice(38, 46));
+    const z = parseFloat(line.slice(46, 54));
+    if (Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(z)) continue;
+    const elem = line.slice(76, 78).trim().toUpperCase();
+    const name = line.slice(12, 16).trim().toUpperCase();
+    if (rec === 'HETATM') {
+      if (elem === 'FE' || name.startsWith('FE')) fe.push({ x, y, z });
+      continue; // skip waters / ligands
+    }
+    const chain = model >= 0 ? model : line.charCodeAt(21) - 65; // model idx or A/B/...
+    atoms.push({ x, y, z, chain });
+  }
+  return { atoms, fe };
+}
+
+function centerAtoms(list) {
+  const c = { x: 0, y: 0, z: 0 };
+  for (const a of list) { c.x += a.x; c.y += a.y; c.z += a.z; }
+  c.x /= list.length; c.y /= list.length; c.z /= list.length;
+  for (const a of list) { a.x -= c.x; a.y -= c.y; a.z -= c.z; }
+  return c;
+}
+
+/* ------------------------------------------------------------- points ---- */
+
+const POINT_VERT = /* glsl */`
+  attribute float aSize;
+  attribute vec3 aColor;
+  attribute float aOpacity;
+  varying vec3 vColor;
+  varying float vOpacity;
+  void main() {
+    vColor = aColor;
+    vOpacity = aOpacity;
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    gl_PointSize = clamp(aSize * (340.0 / -mv.z), 1.0, 90.0);
+    gl_Position = projectionMatrix * mv;
+  }
+`;
+
+const POINT_FRAG = /* glsl */`
+  varying vec3 vColor;
+  varying float vOpacity;
+  uniform float uSoft;   // sprite edge softness
+  uniform float uCore;   // hot core boost
+  uniform float uGlobal; // group fade
+  void main() {
+    vec2 uv = gl_PointCoord - 0.5;
+    float r = length(uv) * 2.0;
+    float alpha = pow(smoothstep(1.0, 1.0 - uSoft, r), 1.6);
+    vec3 col = vColor * (1.0 + uCore * pow(max(0.0, 1.0 - r), 3.0));
+    gl_FragColor = vec4(col, alpha * vOpacity * uGlobal);
+    if (gl_FragColor.a < 0.003) discard;
+  }
+`;
+
+function makePoints(atoms, colorFn, sizeFn, opts = {}) {
+  const n = atoms.length;
+  const pos = new Float32Array(n * 3);
+  const col = new Float32Array(n * 3);
+  const siz = new Float32Array(n);
+  const opa = new Float32Array(n);
+  const tmp = new THREE.Color();
+  for (let i = 0; i < n; i++) {
+    const a = atoms[i];
+    pos[i * 3] = a.x; pos[i * 3 + 1] = a.y; pos[i * 3 + 2] = a.z;
+    colorFn(a, tmp);
+    col[i * 3] = tmp.r; col[i * 3 + 1] = tmp.g; col[i * 3 + 2] = tmp.b;
+    siz[i] = sizeFn(a);
+    opa[i] = opts.opacity ?? 0.85;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('aColor', new THREE.BufferAttribute(col, 3));
+  geo.setAttribute('aSize', new THREE.BufferAttribute(siz, 1));
+  geo.setAttribute('aOpacity', new THREE.BufferAttribute(opa, 1));
+  const mat = new THREE.ShaderMaterial({
+    vertexShader: POINT_VERT,
+    fragmentShader: POINT_FRAG,
+    uniforms: {
+      uSoft: { value: opts.soft ?? 0.55 },
+      uCore: { value: opts.core ?? 0.6 },
+      uGlobal: { value: 1 },
+    },
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const pts = new THREE.Points(geo, mat);
+  pts.frustumCulled = false;
+  return pts;
+}
+
+/* ------------------------------------------------------------- scene ----- */
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(BG, 1);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(BG, 0.0018);
+
+const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 1, 2000);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.enablePan = true;              // right-drag / two-finger: explore details up close
+controls.screenSpacePanning = true;
+controls.zoomToCursor = true;           // wheel/pinch zooms into the point under the cursor
+controls.minDistance = 6;               // deep dive into the structure (was 30)
+controls.maxDistance = 600;
+
+/* ----------------------------------------------------------- molecules --- */
+
+const groups = { hgd: new THREE.Group(), galns: new THREE.Group() };
+scene.add(groups.hgd, groups.galns);
+
+const [hgdText, galText] = await Promise.all([
+  fetch('1EY2-assembly1.pdb1').then(r => r.text()),
+  fetch('4FDI.pdb').then(r => r.text()),
+]);
+
+const hgd = parsePDB(hgdText);
+const gal = parsePDB(galText);
+
+// centre each molecule; shift Fe sites by the same offset as their atoms
+const hgdC = centerAtoms(hgd.atoms);
+for (const f of hgd.fe) { f.x -= hgdC.x; f.y -= hgdC.y; f.z -= hgdC.z; }
+centerAtoms(gal.atoms);
+
+// HGD color: paraiba -> gold gradient across the 6 subunits
+const N_HGD_CHAINS = 6;
+function hgdColor(a, out) {
+  const t = Math.min(Math.max(a.chain, 0), N_HGD_CHAINS - 1) / (N_HGD_CHAINS - 1);
+  out.copy(PARAIBA).lerp(GOLD, t);
+}
+// slight per-atom brightness jitter for sparkle
+function jitter(a, f) {
+  const h = Math.sin(a.x * 12.9898 + a.y * 78.233 + a.z * 37.719) * 43758.5453;
+  return f * (0.75 + 0.5 * (h - Math.floor(h)));
+}
+
+const hgdPoints = makePoints(
+  hgd.atoms,
+  (a, out) => { hgdColor(a, out); out.multiplyScalar(jitter(a, 1.15)); },
+  () => 1.3 + Math.random() * 1.5,
+  { opacity: 0.85, soft: 0.45, core: 0.55 }
+);
+groups.hgd.add(hgdPoints);
+
+// Fe active sites: warm glowing pearls
+if (hgd.fe.length) {
+  const fePoints = makePoints(
+    hgd.fe,
+    (a, out) => out.copy(FE_COLOR),
+    () => 10.0,
+    { opacity: 1, soft: 0.95, core: 2.6 }
+  );
+  groups.hgd.add(fePoints);
+  groups.hgd.userData.fe = fePoints;
+}
+
+// GALNS: chain A gold, chain B paraiba
+function galColor(a, out) {
+  out.copy(a.chain === 0 ? GOLD : PARAIBA).multiplyScalar(jitter(a, 0.95));
+}
+const galPoints = makePoints(
+  gal.atoms,
+  galColor,
+  () => 1.3 + Math.random() * 1.5,
+  { opacity: 0.85, soft: 0.45, core: 0.55 }
+);
+groups.galns.add(galPoints);
+
+// GALNS smaller, lower-left (poster composition) in "both" mode
+groups.galns.scale.setScalar(0.72);
+groups.galns.position.set(-68, -50, 6);
+groups.hgd.position.set(10, 14, 0);
+
+/* ------------------------------------------------------------- camera ---- */
+
+const VIEWS = {
+  hgd:   { pos: new THREE.Vector3(0, 8, 195),  tgt: new THREE.Vector3(10, 14, 0) },
+  galns: { pos: new THREE.Vector3(-68, -44, 150), tgt: new THREE.Vector3(-68, -50, 6) },
+  both:  { pos: new THREE.Vector3(-16, -10, 260), tgt: new THREE.Vector3(-26, -18, 0) },
+};
+
+camera.position.copy(VIEWS.hgd.pos);
+controls.target.copy(VIEWS.hgd.tgt);
+
+let camAnim = null; // {fromPos,toPos,fromTgt,toTgt,t0,dur}
+function flyTo(view, dur = 1400) {
+  camAnim = {
+    fromPos: camera.position.clone(), toPos: view.pos.clone(),
+    fromTgt: controls.target.clone(), toTgt: view.tgt.clone(),
+    t0: performance.now(), dur,
+  };
+}
+const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+/* --------------------------------------------------------------- modes --- */
+
+const fades = { hgd: 1, galns: 1 };      // current
+const fadeTarget = { hgd: 1, galns: 0 }; // goal
+let mode = 'hgd';
+
+function setMode(m, fly = true) {
+  mode = m;
+  fadeTarget.hgd = (m === 'hgd' || m === 'both') ? 1 : 0;
+  fadeTarget.galns = (m === 'galns' || m === 'both') ? 1 : 0;
+  if (fly) flyTo(VIEWS[m]);
+  document.querySelectorAll('#modebar button').forEach(b =>
+    b.classList.toggle('active', b.dataset.mode === m));
+  document.querySelectorAll('#captions .cap').forEach(c => {
+    const k = c.dataset.cap;
+    c.classList.toggle('active', m === 'both' || m === k);
+  });
+}
+
+document.querySelectorAll('#modebar button').forEach(b =>
+  b.addEventListener('click', () => { setMode(b.dataset.mode); poke(); }));
+window.addEventListener('keydown', e => {
+  if (e.key === '1') { setMode('hgd'); poke(); }
+  else if (e.key === '2') { setMode('galns'); poke(); }
+  else if (e.key === '3') { setMode('both'); poke(); }
+});
+
+/* ------------------------------------------------------- auto-rotation --- */
+
+let lastInteract = performance.now();
+let interacting = false;
+function poke() { lastInteract = performance.now(); }
+controls.addEventListener('start', () => { interacting = true; camAnim = null; poke(); });
+controls.addEventListener('end', () => { interacting = false; poke(); });
+window.addEventListener('wheel', poke, { passive: true });
+
+/* --------------------------------------------------------------- loop ---- */
+
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const now = performance.now();
+
+  // camera fly transitions
+  if (camAnim) {
+    const t = Math.min((now - camAnim.t0) / camAnim.dur, 1);
+    const e = easeInOut(t);
+    camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, e);
+    controls.target.lerpVectors(camAnim.fromTgt, camAnim.toTgt, e);
+    if (t >= 1) camAnim = null;
+  }
+
+  // group fades
+  for (const k of ['hgd', 'galns']) {
+    fades[k] += (fadeTarget[k] - fades[k]) * Math.min(dt * 3.2, 1);
+    const g = groups[k];
+    g.visible = fades[k] > 0.02;
+    g.traverse(o => {
+      if (o.isPoints) o.material.uniforms.uGlobal.value = fades[k];
+    });
+  }
+
+  // gentle auto-rotation when idle
+  if (!interacting && !camAnim && now - lastInteract > 3000) {
+    for (const k of ['hgd', 'galns']) {
+      if (groups[k].visible) groups[k].rotation.y += dt * 0.08;
+    }
+  }
+
+  // Fe pearls slow pulse
+  const fe = groups.hgd.userData.fe;
+  if (fe) fe.material.uniforms.uCore.value = 2.6 + Math.sin(now * 0.0016) * 0.5;
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+setMode('hgd', false);
+animate();
+setTimeout(() => document.getElementById('loader').classList.add('gone'), 350);
+
+console.log(`HGD atoms: ${hgd.atoms.length}, Fe sites: ${hgd.fe.length}, GALNS atoms: ${gal.atoms.length}`);
+</script>
+</body>
+</html>
