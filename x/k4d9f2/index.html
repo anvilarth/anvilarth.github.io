@@ -158,6 +158,8 @@
 
 <div id="loader">loading structures</div>
 
+<script src="./hgd-data.js"></script>
+<script src="./galns-data.js"></script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -299,10 +301,9 @@ controls.maxDistance = 600;
 const groups = { hgd: new THREE.Group(), galns: new THREE.Group() };
 scene.add(groups.hgd, groups.galns);
 
-const [hgdText, galText] = await Promise.all([
-  fetch('1EY2-assembly1.pdb1').then(r => r.text()),
-  fetch('4FDI.pdb').then(r => r.text()),
-]);
+// structures inlined as JS globals (GitHub Pages stalls on large octet-stream fetches)
+const hgdText = window.HGD_PDB;
+const galText = window.GALNS_PDB;
 
 const hgd = parsePDB(hgdText);
 const gal = parsePDB(galText);
