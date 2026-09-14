@@ -64,3 +64,45 @@ jobs:
           git add sitemap.xml
           git commit -m "chore(seo): regenerate sitemap.xml [skip ci]"
           git push
+
+  lighthouse:
+    name: Lighthouse (${{ matrix.form-factor }})
+    runs-on: ubuntu-latest
+    needs: build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        form-factor: [mobile, desktop]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      # Node and the browser both ship with the ubuntu runner image, so the job
+      # needs no extra action; fail early and loudly if that ever changes.
+      - name: Check the toolchain
+        run: |
+          node --version
+          BIN="$(command -v google-chrome || command -v chromium-browser || true)"
+          if [ -z "$BIN" ]; then
+            echo "::error::no browser on the runner; install one in this job"
+            exit 1
+          fi
+          "$BIN" --version
+
+      # CLS, a11y and SEO are hard budgets and fail the job; the performance
+      # score and LCP/TBT only warn, because they track the runner's CPU.
+      # The full table lands in the job summary. --chrome-profile keeps the
+      # headless run in a dedicated --user-data-dir on the runner's scratch disk.
+      - name: Lighthouse budgets
+        run: |
+          python3 _design/perf_check.py \
+            --form-factor ${{ matrix.form-factor }} \
+            --runs 3 \
+            --chrome-profile "$RUNNER_TEMP/lighthouse-chrome-profile"

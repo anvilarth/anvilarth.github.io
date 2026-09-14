@@ -80,7 +80,7 @@
     --accent:#a44828;--accent-soft:#f6e2d3;
     --g1:#f6c189;--g2:#f3b3a2;--g3:#eed9ae;
     --glow-op:.8;
-    --green:#2d6a4f;--yellow:#8c6a00;--red:#9d0208;
+    --green:#2d6a4f;--yellow:#8c6a00;--red:#9d0208;--badge-fg:#fff;
     --serif:'Newsreader','Newsreader Fallback',Georgia,serif;
     --sans:'Inter','Inter Fallback',-apple-system,sans-serif;
     --mono:'JetBrains Mono','JetBrains Mono Fallback',monospace;
@@ -92,7 +92,7 @@
     --accent:#e07a4e;--accent-soft:#2e1b11;
     --g1:#63301b;--g2:#502419;--g3:#37270f;
     --glow-op:.8;
-    --green:#4ade80;--yellow:#fbbf24;--red:#f87171
+    --green:#4ade80;--yellow:#fbbf24;--red:#f87171;--badge-fg:#16130f
   }}
   :root[data-theme=dark]{
     --t:#ece5da;--ts:#b0a697;--th:#9a9080;--bg:#16130f;
@@ -100,7 +100,7 @@
     --accent:#e07a4e;--accent-soft:#2e1b11;
     --g1:#63301b;--g2:#502419;--g3:#37270f;
     --glow-op:.8;
-    --green:#4ade80;--yellow:#fbbf24;--red:#f87171
+    --green:#4ade80;--yellow:#fbbf24;--red:#f87171;--badge-fg:#16130f
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -280,9 +280,9 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
-  .badge-rt { background: var(--green); color: white; }
-  .badge-usable { background: var(--yellow); color: white; }
-  .badge-slow { background: var(--red); color: white; }
+  .badge-rt { background: var(--green); color: var(--badge-fg); }
+  .badge-usable { background: var(--yellow); color: var(--badge-fg); }
+  .badge-slow { background: var(--red); color: var(--badge-fg); }
 
   .result-details {
     display: grid;
@@ -443,7 +443,7 @@
         </select>
       </div>
       <div class="field">
-        <label style="display:flex; justify-content:space-between; align-items:center;">
+        <label for="steps" style="display:flex; justify-content:space-between; align-items:center;">
           Steps
           <span style="font-family:var(--mono); font-size:0.9rem; font-weight:500; color:var(--t);" id="steps-val">4</span>
         </label>
@@ -523,7 +523,7 @@
         </select>
       </div>
       <div class="field">
-        <label style="display:flex; justify-content:space-between; align-items:center;">
+        <label for="gpu-count" style="display:flex; justify-content:space-between; align-items:center;">
           GPU Count
           <span style="font-family:var(--mono); font-size:0.9rem; font-weight:500; color:var(--t);" id="gpu-count-val">1</span>
         </label>
@@ -535,7 +535,7 @@
     </div>
     <div id="mobile-params" style="display:none;">
       <div class="field">
-        <label style="display:flex; justify-content:space-between; align-items:center;">
+        <label for="tops" style="display:flex; justify-content:space-between; align-items:center;">
           NPU TOPS
           <span style="font-family:var(--mono); font-size:0.9rem; font-weight:500; color:var(--t);" id="tops-val">80</span>
         </label>
