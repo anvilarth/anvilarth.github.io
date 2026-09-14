@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Logo lab — anvilarth.github.io</title>
+<style>
+:root{
+  --t:#221d17;--ts:#5f574c;--th:#756d64;--bg:#f7f4ee;
+  --ll:#e4ddd0;--card:#fffdf9;
+  --accent:#c2552f;--accent-soft:#f6e2d3;
+  --sans:Inter,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.dark{
+  --t:#ece5da;--ts:#b0a697;--th:#887e6f;--bg:#16130f;
+  --ll:#332c23;--card:#1d1914;
+  --accent:#e07a4e;--accent-soft:#2e1b11;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:#efeae1;color:#221d17;padding:34px}
+h1{font-size:15px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#756d64;margin-bottom:22px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.panel{background:var(--bg);color:var(--t);border:1px solid var(--ll);border-radius:14px;padding:20px 22px}
+.name{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.desc{font-size:12.5px;color:var(--ts);margin-bottom:16px;line-height:1.5}
+.sizes{display:flex;align-items:flex-end;gap:20px;margin-bottom:16px}
+.sizes figure{display:flex;flex-direction:column;align-items:center;gap:6px}
+.sizes figcaption{font-family:var(--mono);font-size:9px;color:var(--th)}
+.s16 svg{width:16px;height:16px}.s32 svg{width:32px;height:32px}.s64 svg{width:64px;height:64px}
+.tile{background:var(--accent);border-radius:22%;display:grid;place-items:center}
+.tile svg{color:var(--bg)}
+.navbar{border-top:1px solid var(--ll);padding-top:14px;display:flex;align-items:center;gap:9px}
+.navbar svg{width:19px;height:19px;flex:none}
+.wordmark{font-family:var(--mono);font-size:14px;letter-spacing:-.01em}
+.wordmark b{font-weight:400;color:var(--accent)}
+.navlinks{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ts);letter-spacing:.02em}
+svg{display:block}
+</style></head><body>
+<h1>Logo lab · 4 directions</h1>
+
+<!-- ============ symbol definitions ============ -->
+<template id="defs">
+
+<!-- A · DENOISE : noise resolving into signal -->
+<svg data-id="A" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+  <g>
+    <circle cx="9"  cy="12" r="3.1" opacity=".26"/><circle cx="11" cy="30" r="3.1" opacity=".22"/>
+    <circle cx="8"  cy="47" r="3.1" opacity=".3"/><circle cx="13" cy="57" r="3.1" opacity=".18"/>
+    <circle cx="22" cy="9"  r="3.3" opacity=".45"/><circle cx="24" cy="26" r="3.3" opacity=".5"/>
+    <circle cx="21" cy="42" r="3.3" opacity=".42"/><circle cx="25" cy="55" r="3.3" opacity=".5"/>
+    <circle cx="38" cy="13" r="3.6" opacity=".72"/><circle cx="37" cy="28" r="3.6" opacity=".75"/>
+    <circle cx="38" cy="43" r="3.6" opacity=".7"/><circle cx="37" cy="55" r="3.6" opacity=".74"/>
+    <rect x="50" y="7" width="7.5" height="50" rx="3.75"/>
+  </g>
+</svg>
+
+<!-- B · LIGATURE : A and F sharing one stem -->
+<svg data-id="B" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M34 11 V54"/>
+  <path d="M34 11 L14 54"/>
+  <path d="M21.5 38 H34"/>
+  <path d="M34 11 H54"/>
+  <path d="M34 31 H48"/>
+</svg>
+
+<!-- C · HALF-DISC : solid half, open half -->
+<svg data-id="C" viewBox="0 0 64 64" aria-hidden="true">
+  <path d="M32 8 A24 24 0 0 0 32 56 Z" fill="currentColor"/>
+  <path d="M32 8 A24 24 0 0 1 32 56" fill="none" stroke="currentColor" stroke-width="7"/>
+  <circle cx="32" cy="32" r="4.6" fill="currentColor"/>
+</svg>
+
+<!-- D · KERNEL : a 3x3 convolution stencil -->
+<svg data-id="D" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+  <rect x="7"  y="7"  width="15" height="15" rx="3.4"/>
+  <rect x="42" y="7"  width="15" height="15" rx="3.4"/>
+  <rect x="24.5" y="24.5" width="15" height="15" rx="3.4"/>
+  <rect x="7"  y="42" width="15" height="15" rx="3.4"/>
+  <rect x="42" y="42" width="15" height="15" rx="3.4"/>
+  <rect x="24.5" y="7" width="15" height="15" rx="3.4" opacity=".22"/>
+  <rect x="7" y="24.5" width="15" height="15" rx="3.4" opacity=".22"/>
+  <rect x="42" y="24.5" width="15" height="15" rx="3.4" opacity=".22"/>
+  <rect x="24.5" y="42" width="15" height="15" rx="3.4" opacity=".22"/>
+</svg>
+
+</template>
+
+<div id="out"></div>
+
+<script>
+const meta = {
+  A:['Denoise','Noise on the left resolves into one clean bar — diffusion, and a nod to the grain already on the site.'],
+  B:['Ligature AF','A and F share a single stem. Geometric, drawn to match JetBrains Mono in the nav.'],
+  C:['Half-disc','Bauhaus circle: one half solid, one half outline, one point in the latent centre.'],
+  D:['Kernel','A 3×3 convolution stencil with the diagonal taps lit. Computer vision, stated literally.']
+};
+const defs = document.getElementById('defs').content;
+const out = document.getElementById('out');
+
+function sym(id){ return defs.querySelector(`svg[data-id="${id}"]`).cloneNode(true).outerHTML; }
+
+function panel(id, dark){
+  const [name, desc] = meta[id];
+  return `<div class="panel${dark?' dark':''}">
+    <div class="name">${id} · ${name}</div>
+    <div class="desc">${desc}</div>
+    <div class="sizes">
+      <figure><span class="s64" style="color:var(--accent)">${sym(id)}</span><figcaption>64</figcaption></figure>
+      <figure><span class="s32" style="color:var(--accent)">${sym(id)}</span><figcaption>32</figcaption></figure>
+      <figure><span class="s16" style="color:var(--accent)">${sym(id)}</span><figcaption>16</figcaption></figure>
+      <figure><span class="tile s32" style="width:46px;height:46px">${sym(id)}</span><figcaption>tile 46</figcaption></figure>
+      <figure><span class="tile s16" style="width:22px;height:22px">${sym(id)}</span><figcaption>tile 22</figcaption></figure>
+    </div>
+    <div class="navbar">
+      <span style="color:var(--accent)">${sym(id)}</span>
+      <span class="wordmark">andrei<b>filatov</b></span>
+      <span class="navlinks">Projects &nbsp; Blog &nbsp; Talks &nbsp; Contact</span>
+    </div>
+  </div>`;
+}
+
+out.innerHTML = Object.keys(meta).map(id => `<div class="row">${panel(id,false)}${panel(id,true)}</div>`).join('');
+</script>
+</body></html>

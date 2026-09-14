@@ -1,7 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <title>Andrei Filatov</title>
-  <rect width="64" height="64" rx="14" fill="#c2552f"/>
-  <g transform="translate(7.05 7.05) scale(0.78)" fill="#f7f4ee">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="180" height="180">
+  <rect width="64" height="64" fill="#c2552f"/>
+  <g transform="translate(10.4 10.4) scale(0.675)" fill="#f7f4ee">
     <circle cx="8"  cy="14" r="3"   opacity=".34"/>
     <circle cx="11" cy="33" r="3"   opacity=".34"/>
     <circle cx="8"  cy="50" r="3"   opacity=".34"/>
