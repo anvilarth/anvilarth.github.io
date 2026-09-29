@@ -106,3 +106,34 @@ jobs:
             --form-factor ${{ matrix.form-factor }} \
             --runs 3 \
             --chrome-profile "$RUNNER_TEMP/lighthouse-chrome-profile"
+
+  submit-sitemap:
+    name: Submit sitemap to Google
+    runs-on: ubuntu-latest
+    needs: build
+    # Only for real deploys of the live branch, never for pull requests.
+    if: github.event_name != 'pull_request'
+
+    steps:
+      # The build job may have pushed a regenerated sitemap.xml, so check out
+      # the branch tip rather than the triggering commit.
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Install client
+        run: pip install --quiet google-auth requests
+
+      # Waits (up to 10 min) for GitHub Pages to serve the new sitemap, then
+      # resubmits it via the Search Console API. Skips cleanly while the
+      # GSC_SERVICE_ACCOUNT secret is not configured.
+      - name: Submit sitemap.xml
+        env:
+          GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
+        run: python3 _design/submit_sitemap.py --wait
