@@ -21,6 +21,10 @@ OUT = ROOT / "sitemap.xml"
 
 # (path relative to repo root, url path, priority)
 # url path "" means the site root.
+#
+# HTML pages only. The .md mirrors and llms.txt are for LLM crawlers
+# (advertised in robots.txt / llms.txt); listing them here makes Google
+# treat them as duplicate copies of the articles.
 PAGES = [
     ("index.html",                     "",                              "1.0"),
     ("autoresearch.html",              "autoresearch.html",             "0.9"),
@@ -28,12 +32,6 @@ PAGES = [
     ("blog.html",                      "blog.html",                     "0.8"),
     ("projects.html",                  "projects.html",                 "0.8"),
     ("realtime-video-calculator.html", "realtime-video-calculator.html","0.7"),
-    ("about.md",                       "about.md",                      "0.6"),
-    ("autoresearch.md",                "autoresearch.md",               "0.6"),
-    ("autoresearch.en.md",             "autoresearch.en.md",            "0.6"),
-    ("gpu-story.md",                   "gpu-story.md",                  "0.6"),
-    ("gpu-story.en.md",                "gpu-story.en.md",               "0.6"),
-    ("llms.txt",                       "llms.txt",                      "0.5"),
 ]
 
 
