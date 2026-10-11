@@ -26,6 +26,7 @@ OUT = ROOT / "sitemap.xml"
 # (advertised in robots.txt / llms.txt); listing them here makes Google
 # treat them as duplicate copies of the articles.
 PAGES = [
+    ("preference-optimization.html", "preference-optimization.html", "0.9"),
     ("index.html",                     "",                              "1.0"),
     ("autoresearch.html",              "autoresearch.html",             "0.9"),
     ("gpu-story.html",                 "gpu-story.html",                "0.9"),

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="description" content="DPO для диффузионных моделей: выбор preference-пар, FiFA, manifold drift и сохранение качества winner.">
+<title>Preference Optimization for Diffusion models — Андрей Филатов</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/preference-optimization/vendor/katex/katex.min.css">
+<style>@font-face{font-family:Inter;src:url('fonts/inter-latin.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:Inter;src:url('fonts/inter-cyrillic.woff2') format('woff2');font-weight:100 900;font-display:swap;unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Newsreader;src:url('fonts/newsreader-latin.woff2') format('woff2');font-weight:400 600;font-display:swap}
+@font-face{font-family:Mono;src:url('fonts/jetbrains-mono-latin.woff2') format('woff2');font-weight:400 500;font-display:swap}
+:root{--bg:#f7f4ee;--paper:#fffdf9;--ink:#221d17;--muted:#675e53;--line:#ded7ca;--accent:#a44828;--soft:#efe5d8;--winner:#397568;--loser:#b66546;--serif:Newsreader,Georgia,serif;--sans:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--mono:Mono,monospace;color-scheme:light}
+:root[data-theme=dark]{--bg:#16130f;--paper:#211c16;--ink:#eee7dc;--muted:#b9afa0;--line:#3e342a;--accent:#ee9b72;--soft:#30251c;--winner:#86bfb0;--loser:#eaa17f;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.85 var(--sans);-webkit-font-smoothing:antialiased}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:4px}a:hover{text-decoration:none}button{font:inherit;color:inherit}button,a{-webkit-tap-highlight-color:transparent}:focus-visible{outline:3px solid var(--accent);outline-offset:5px}.skip{position:fixed;top:-80px;left:20px;z-index:20;background:var(--paper);padding:8px 16px}.skip:focus{top:8px}
+.topbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.topbar-inner{max-width:1240px;margin:auto;padding:17px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{color:var(--ink);text-decoration:none;font:13px var(--mono)}.brand span{color:var(--accent)}.nav-actions{display:flex;align-items:center;gap:24px;font-size:12px}.draft-tag{color:var(--muted)}.theme-toggle{border:1px solid var(--line);background:transparent;padding:5px 11px;border-radius:5px;font-size:12px;cursor:pointer}
+.layout{display:grid;grid-template-columns:210px minmax(0,810px);gap:68px;max-width:1160px;margin:0 auto;padding:0 28px}.sidebar{padding-top:108px}.toc-wrap{position:sticky;top:110px}.toc-label{font:11px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin:0 0 20px}.toc ol{list-style:none;padding:0;margin:0}.toc li{margin:0 0 14px;font-size:12px;line-height:1.55}.toc a{color:var(--muted);text-decoration:none;border-left:2px solid transparent;display:block;padding-left:13px}.toc a:hover,.toc a.active{color:var(--accent);border-left-color:var(--accent)}.source-link{display:block;margin:34px 0 0 15px;font-size:12px}.article-column{min-width:0}.article-header{padding:90px 0 45px;border-bottom:1px solid var(--line);margin-bottom:40px}.eyebrow{color:var(--accent);font:11px var(--mono);letter-spacing:.12em;margin:0 0 24px;text-transform:uppercase}h1{font:500 clamp(48px,6.4vw,86px)/.98 var(--serif);letter-spacing:-.045em;margin:0 0 22px;max-width:720px}.subtitle{font-size:22px;line-height:1.5;max-width:650px;margin:0 0 22px;color:var(--muted)}.metadata{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12px;color:var(--muted)}.metadata .author{color:var(--ink)}
+article p{margin:0 0 24px}article>p:first-child{font-size:21px;line-height:1.8}article strong{font-weight:600}article h2{font:500 35px/1.25 var(--serif);letter-spacing:-.025em;margin:76px 0 28px;padding-top:32px;border-top:1px solid var(--line);text-wrap:balance}article h3{font-size:21px;line-height:1.45;letter-spacing:-.02em;margin:42px 0 19px;font-weight:600}article h2,article h3{scroll-margin-top:90px}article ul{padding-left:23px}article li{padding-left:4px;margin-bottom:12px}article code{font-size:.87em;background:var(--soft);padding:2px 5px;border-radius:3px}article>p>a,article li>a{overflow-wrap:anywhere}
+figure{margin:38px -24px 44px}figure img{display:block;width:100%;height:auto;background:#fff;border:1px solid var(--line);padding:12px;border-radius:3px}figcaption{font-size:12px;line-height:1.75;color:var(--muted);padding:12px 24px 0;max-width:790px}.figure-narrow{max-width:650px;margin-left:auto;margin-right:auto}.equation{margin:32px 0;padding:26px 18px;overflow-x:auto;text-align:center;font:22px/1.6 Georgia,'Times New Roman',serif;border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}.equation sub{font-size:.62em}.fraction{display:inline-flex;flex-direction:column;vertical-align:middle;line-height:1.25;margin:0 8px}.fraction>span{padding:4px 10px}.fraction>span:first-child{border-bottom:1px solid currentColor}.equation-stack{display:flex;flex-direction:column;gap:10px}
+.demo{margin:36px 0;background:var(--paper);border:1px solid var(--line);padding:26px 30px;border-radius:5px}.demo .demo-label{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:12px}.demo>p{font-size:14px;line-height:1.7}.scenario-buttons{display:flex;flex-wrap:wrap;gap:8px;margin:23px 0 26px}.scenario-buttons button{border:1px solid var(--line);background:transparent;border-radius:4px;padding:8px 13px;font-size:12px;cursor:pointer}.scenario-buttons button.selected{background:var(--ink);border-color:var(--ink);color:var(--bg)}.bar-row{display:grid;grid-template-columns:56px 1fr 78px;align-items:center;gap:14px;font-size:12px;margin:17px 0}.bar-track{height:14px;background:var(--soft);border-radius:2px;overflow:hidden}.bar{height:100%;transition:width .25s}.winner{background:var(--winner)}.loser{background:var(--loser)}.bar-row strong{font:11px var(--mono);white-space:nowrap}.demo .demo-result{margin:25px 0 0;padding-top:17px;border-top:1px solid var(--line);font-size:13px}.editor-note{font-size:13px;color:var(--muted);padding:20px 0;border-top:1px solid var(--line);margin:35px 0}.editor-note summary{cursor:pointer;font-weight:600;color:var(--ink)}.editor-note p{margin:16px 0 0}.mobile-toc{display:none}.page-footer{font-size:12px;display:flex;justify-content:space-between;gap:20px;padding:36px 0 70px;color:var(--muted);border-top:1px solid var(--line);margin-top:55px}
+@media(min-width:1500px){.layout{max-width:1300px;grid-template-columns:220px minmax(0,850px);gap:85px}}@media(max-width:1050px){.layout{grid-template-columns:170px minmax(0,1fr);gap:34px;padding:0 28px}figure{margin-left:0;margin-right:0}figcaption{padding-left:0;padding-right:0}.equation{font-size:19px}}
+@media(max-width:780px){.layout{display:block;max-width:740px;padding:0 24px}.sidebar{display:none}.topbar-inner{padding:13px 22px}.draft-tag{display:none}.nav-actions{gap:14px}.article-header{padding-top:55px;margin-bottom:30px}h1{font-size:64px}.subtitle{font-size:20px}.mobile-toc{display:block;border-bottom:1px solid var(--line);padding:0 0 22px;margin:0 0 30px;font-size:14px}.mobile-toc summary{cursor:pointer;color:var(--accent)}.mobile-toc .toc{margin-top:20px}.mobile-toc .toc a{padding-left:0;border:0}article h2{font-size:30px;margin-top:54px}body{font-size:17px;line-height:1.85}article>p:first-child{font-size:19px}article h3{font-size:20px}.demo{padding:22px}.equation{font-size:18px;padding:20px 12px}.page-footer{flex-wrap:wrap}}
+@media(max-width:420px){.layout{padding:0 19px}.topbar-inner{padding:13px 19px}.nav-actions>a{display:none}h1{font-size:53px}.brand{font-size:12px}.subtitle{font-size:18px}.bar-row{gap:8px;grid-template-columns:49px 1fr 74px}.demo{padding:20px 16px}.equation{font-size:16px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar{transition:none}}@media print{.topbar,.sidebar,.mobile-toc,.scenario-buttons,.page-footer{display:none}.layout{display:block;max-width:none}.article-header{padding-top:0}body{font-size:11pt;background:white;color:black}.article-header h1{font-size:38pt}figure,.equation,.demo{break-inside:avoid}h2,h3{break-after:avoid}a{color:inherit}}
+
+/* Mathematical typesetting uses bundled KaTeX fonts, including offline. */
+.equation{font-family:inherit;line-height:1.5;white-space:normal;padding:28px 14px}.equation .katex-display{margin:0;min-width:max-content}.equation .katex{font-size:1.05em}.equation .katex-html{text-align:center}span[data-tex] .katex{font-size:1.05em}
+/* Sections are separated by whitespace, not repeated rules. */
+.article-header{border-bottom:0;margin-bottom:24px;padding-bottom:12px}
+article h2{border-top:0;padding-top:0;margin-top:58px}
+article>h2:first-child{margin-top:0}
+.equation{border:0;padding:16px 8px;margin:24px 0}
+.page-footer{border-top:0}.example{margin:30px 0 38px}.example img{padding:0;border:0;border-radius:5px}.example-prompt{font-size:14px;margin:0 0 12px!important;color:var(--muted)}.example-labels{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:14px;font-size:14px;line-height:1.6}.example-labels strong{display:block;color:var(--ink);font-size:15px}.example figcaption{padding:12px 0 0}.example .score{font-family:var(--mono);font-size:14px;color:var(--accent)}
+
+.method-tree{margin:32px 0 42px;font-size:15px;line-height:1.5}.method-root{text-align:center;max-width:440px;margin:auto;padding:18px;background:var(--soft);border-radius:8px}.method-tree strong,.method-tree span,.method-tree small{display:block}.method-root strong{font-size:21px;margin-bottom:5px}.method-tree span,.method-tree small{color:var(--muted)}.method-branches{display:grid;grid-template-columns:1fr 1fr;gap:24px}.method-branch{text-align:center}.method-tree .branch-arrow{font-size:27px;line-height:1.4;color:var(--accent)}.method-signal{padding:16px 10px;background:var(--paper);border-radius:8px}.method-signal strong{font-size:17px;margin-bottom:6px}.method-signal small{font-family:var(--mono);font-size:12px;margin-top:10px}.method-result{padding:15px 8px;background:var(--soft);border-radius:8px}.method-result strong{font-size:16px;margin-bottom:6px}.method-tree figcaption{padding:16px 0 0}@media(max-width:500px){.method-branches{gap:12px}.method-tree{font-size:12px}.method-root strong{font-size:18px}.method-signal strong,.method-result strong{font-size:14px}.method-signal small{font-size:10px}}
+
+.technical-note{margin:24px 0 32px;padding:16px 20px;background:var(--soft);border-radius:6px;color:var(--muted);font-size:14px;line-height:1.7}.technical-note>strong{display:block;margin-bottom:7px;font-size:12px;color:var(--ink)}.technical-note p{margin:0}
+
+.regularization-tree .method-branches{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.regularization-tree .method-result{height:calc(100% - 38px);box-sizing:border-box;padding:18px 12px}.regularization-tree .method-root{max-width:480px}@media(max-width:560px){.regularization-tree .method-branches{grid-template-columns:1fr;gap:6px}.regularization-tree .method-result{height:auto}.regularization-tree .branch-arrow{font-size:0}.regularization-tree .branch-arrow::after{content:"↓";font-size:24px}.regularization-tree{font-size:15px}}
+
+.closing-takeaway{margin:36px 0 44px;padding:24px 28px;background:var(--soft);border-radius:10px}.closing-takeaway p:first-child{margin-top:0}.closing-takeaway p:last-child{margin-bottom:0}@media(max-width:560px){.closing-takeaway{padding:20px}}
+.brand{display:flex;align-items:center;gap:7px}.brand .mark{width:25px;height:25px;color:var(--accent)}.brand span{margin-left:-7px}.language-label{color:var(--muted);font-family:var(--mono)}@media(max-width:420px){.nav-actions>a{display:block}.nav-actions{gap:10px}}
+</style>
+<link rel="canonical" href="https://anvilarth.github.io/preference-optimization.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Andrei Filatov">
+<meta property="og:title" content="Preference Optimization for Diffusion models">
+<meta property="og:description" content="DPO для диффузионных моделей: выбор preference-пар, FiFA, manifold drift и сохранение качества генерации.">
+<meta property="og:url" content="https://anvilarth.github.io/preference-optimization.html">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://anvilarth.github.io/assets/preference-optimization/visuals/selected/dpo_cinematic.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Preference Optimization for Diffusion models">
+<meta name="twitter:description" content="DPO для диффузионных моделей: выбор preference-пар, FiFA, manifold drift и сохранение качества генерации.">
+<meta name="twitter:image" content="https://anvilarth.github.io/assets/preference-optimization/visuals/selected/dpo_cinematic.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Preference Optimization for Diffusion models", "inLanguage": "ru", "datePublished": "2026-10-11", "author": {"@type": "Person", "name": "Andrei Filatov", "url": "https://anvilarth.github.io/"}, "mainEntityOfPage": "https://anvilarth.github.io/preference-optimization.html", "description": "DPO для диффузионных моделей: выбор preference-пар, FiFA, manifold drift и сохранение качества генерации."}</script>
+</head>
+<body>
+<a class="skip" href="#article">К статье</a>
+<nav class="topbar" aria-label="Навигация"><div class="topbar-inner">
+<a class="brand" href="https://anvilarth.github.io/"><svg class="mark" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><circle cx="8" cy="14" r="3" opacity=".26"/><circle cx="11" cy="33" r="3" opacity=".26"/><circle cx="8" cy="50" r="3" opacity=".26"/><circle cx="23" cy="18" r="3.5" opacity=".5"/><circle cx="25" cy="34" r="3.5" opacity=".5"/><circle cx="22" cy="48" r="3.5" opacity=".5"/><circle cx="38" cy="16" r="4" opacity=".78"/><circle cx="37" cy="32" r="4" opacity=".78"/><circle cx="38" cy="48" r="4" opacity=".78"/><rect x="49" y="9" width="8" height="46" rx="4"/></svg>andrei<span>filatov</span></a>
+<div class="nav-actions"><span class="language-label" lang="en">RU</span><a href="https://anvilarth.github.io/blog.html">Блог</a><button type="button" class="theme-toggle">Тёмная тема</button></div>
+</div></nav>
+<div class="layout">
+<aside class="sidebar" aria-label="Оглавление"><div class="toc-wrap"><p class="toc-label">В этой статье</p><div class="toc"><ol><li><a href="#_1">Чему учить после претренинга</a></li><li><a href="#dpo_1">Что оптимизирует DPO</a></li><li><a href="#_4">Какие пары действительно полезны</a></li><li><a href="#loss">Loss улучшается, картинки портятся</a></li><li><a href="#_7">Как удержать модель около хороших примеров</a></li><li><a href="#dpo_2">Где я использовал бы DPO</a></li><li><a href="#_8">Источники</a></li></ol></div></div></aside>
+<main class="article-column">
+<header class="article-header">
+<p class="eyebrow">Generative models / Post-training</p>
+<h1>Preference Optimization for Diffusion models</h1>
+<div class="metadata"><span class="author">Андрей Филатов</span><time datetime="2026-10-11">11 октября 2026</time><span>≈ 16 мин чтения</span></div>
+</header>
+<details class="mobile-toc"><summary>Оглавление</summary><div class="toc"><ol><li><a href="#_1">Чему учить после претренинга</a></li><li><a href="#dpo_1">Что оптимизирует DPO</a></li><li><a href="#_4">Какие пары действительно полезны</a></li><li><a href="#loss">Loss улучшается, картинки портятся</a></li><li><a href="#_7">Как удержать модель около хороших примеров</a></li><li><a href="#dpo_2">Где я использовал бы DPO</a></li><li><a href="#_8">Источники</a></li></ol></div></details>
+<article id="article"><h2 id="_1">Чему учить после претренинга</h2>
+<p>Претренинг уже даёт модели связь между текстом и изображением. По запросу про кота она должна выдавать кота; по запросу про ночной город — ночной город. Но внутри этого соответствия остаётся много вариантов. Один свет выглядит профессионально, другой — плоско. Одна текстура убедительна, другая похожа на пластиковую. В тексте запроса эти предпочтения могут вообще не быть сформулированы.</p>
+<figure class="example">
+<p class="example-prompt">Одна подпись: «Рыжий кот на деревянном подоконнике»</p>
+<img src="assets/preference-optimization/visuals/selected/pretraining.png" alt="Два рыжих кота на подоконнике: слева неудачный снимок со вспышкой, справа красивый снимок с естественным светом" loading="lazy" width="1774" height="887">
+<div class="example-labels"><div><strong>Подпись подходит</strong>Плоский свет, нечёткая шерсть, неудачный кадр.</div><div><strong>Подпись тоже подходит</strong>Мягкий свет, детали шерсти, аккуратная композиция.</div></div>
+<figcaption>Обе пары могут попасть в претренинг. При одинаковой подписи здесь нет явной метки «правый снимок лучше». Визуальные предпочтения могут отражаться в составе данных, но сам objective не задаёт это сравнение. Изображения сгенерированы для иллюстрации.</figcaption>
+</figure>
+
+<p>После претренинга модель уже умеет рисовать кота по запросу. Но до нужного нам качества её ещё нужно довести: хочется чаще получать красивую картинку справа, а не снимок со вспышкой слева. Обычная подпись не объясняет модели эту разницу — она подходит к обоим изображениям. Нужен следующий этап обучения, на котором мы явно зададим, какие результаты предпочитаем.</p>
+<p><strong>Это задача preference optimization:</strong> передать модели наши предпочтения, чтобы она чаще генерировала нужные результаты. Они могут касаться света и композиции, точности выполнения запроса, читаемости текста или отсутствия артефактов.</p>
+<p>Такой сигнал можно задать двумя способами: выбрать лучший результат из пары или оценить каждый результат числом. От этого зависит, как мы будем обучать модель.</p>
+<figure class="method-tree" aria-label="Preference optimization: парные предпочтения ведут к DPO, числовая оценка reward-моделью — к обучению через RL">
+<div class="method-root"><strong>Preference optimization</strong><span>Чаще генерировать то, что мы предпочитаем</span></div>
+<div class="method-branches">
+<div class="method-branch"><span class="branch-arrow" aria-hidden="true">↙</span><div class="method-signal"><strong>Парные предпочтения</strong><span>«Эта картинка лучше той»</span><small>winner / loser</small></div><span class="branch-arrow" aria-hidden="true">↓</span><div class="method-result"><strong>Direct Preference Optimization</strong><span>DPO: учиться на сравнении пары</span></div></div>
+<div class="method-branch"><span class="branch-arrow" aria-hidden="true">↘</span><div class="method-signal"><strong>Reward-модель / оценщик</strong><span>«Эта картинка получает score 0,9»</span><small>числовая оценка качества</small></div><span class="branch-arrow" aria-hidden="true">↓</span><div class="method-result"><strong>Reinforcement Learning</strong><span>RL: увеличивать ожидаемый reward</span></div></div>
+</div>
+
+</figure>
+
+<h3 id="dpo">DPO: учиться на парах</h3>
+<p><a href="https://arxiv.org/abs/2305.18290">DPO (Direct Preference Optimization)</a> удобно использовать, когда мы понимаем, какой результат нам нравится, но не можем нормально формализовать это предпочтение. Например, хочется более приятный свет, живую фактуру кожи или определённое настроение кадра. Как собрать всё это в одну оценку? Написать метрику или сделать reward-модель, которая точно передаёт наш вкус, бывает сложно. По сути, хочется оптимизировать <strong>vibe</strong>.</p>
+<p>При этом выбрать из двух картинок часто проще, чем объяснить своё предпочтение числом: «вот эта выглядит как надо». Для одного запроса собираем такую пару: выбранная картинка — <strong>winner</strong>, вторая — <strong>loser</strong>. На этих сравнениях DPO учит модель отдавать предпочтение результатам, которые нам нравятся. Так можно передать ей вкус фотографа или дизайнера через конкретные примеры.</p>
+<figure class="example">
+<p class="example-prompt">Один запрос: «Портрет девушки за столиком у окна в кафе»</p>
+<img src="assets/preference-optimization/visuals/selected/dpo_cinematic.png" alt="Одна сцена с девушкой в кафе: слева обычный плоский свет, справа кинематографичный боковой свет и выразительные тени" loading="lazy" width="1774" height="887">
+<div class="example-labels"><div><strong>Loser · обычное освещение</strong>Ровный плоский свет, кадр выглядит буднично.</div><div><strong>Winner · cinematic</strong>Боковой свет, объём и выразительные тени — здесь выбираем такой vibe.</div></div>
+<figcaption>Обе картинки соответствуют запросу. Предпочтение в этой паре — за кинематографичный свет. Изображения сгенерированы для иллюстрации.</figcaption>
+</figure>
+
+<h3 id="rl">RL: учиться по оценке результата</h3>
+<p>Во втором варианте генератор создаёт изображение, а reward-модель возвращает число: насколько результат соответствует выбранному критерию. <strong>RL (reinforcement learning)</strong> использует эти оценки, чтобы обновлять генератор в сторону более высокого ожидаемого reward. Затем модель генерирует новые результаты, и цикл повторяется.</p>
+<p>Например, хотим исправить надписи на изображениях. OCR распознаёт текст на вывеске, мы сравниваем его с запросом и получаем score. Генератор получает конкретный сигнал: правильная надпись оценивается выше, чем надпись с ошибкой.</p>
+<figure class="example">
+<p class="example-prompt">Запрос: «Фасад кафе с вывеской CAFE»</p>
+<img src="assets/preference-optimization/visuals/selected/ocr.png" alt="Два фасада кафе: на левой вывеске CAFE, на правой C4FE" loading="lazy" width="1774" height="887">
+<div class="example-labels"><div><strong>Изображение → OCR → score</strong>Текст: <code>CAFE</code><br><span class="score">4 / 4 символа → 1,00</span></div><div><strong>Изображение → OCR → score</strong>Текст: <code>C4FE</code><br><span class="score">3 / 4 символа → 0,75</span></div></div>
+<figcaption>Учебный пример reward: доля символов, совпавших с «CAFE» на своих позициях. Это расчёт по показанным строкам, а не измерение OCR-моделью. Обучение получает числовую оценку; оценщик также может помочь выбрать winner и loser. Изображения сгенерированы для иллюстрации.</figcaption>
+</figure>
+
+<h2 id="dpo_1">Что оптимизирует DPO</h2>
+<p>Для запроса <span data-tex="c"></span> есть два изображения: предпочтительное <span data-tex="x^w"></span> и отвергнутое <span data-tex="x^l"></span>. Введём неявный reward модели — логарифм отношения вероятности изображения у обучаемой модели к его вероятности у reference-модели:</p>
+<div class="equation" data-tex="r_\theta(x,c)=\log\frac{\pi_\theta(x\mid c)}{\pi_{\mathrm{ref}}(x\mid c)}"></div>
+
+<p>Почему берём именно отношение вероятностей? Нас интересует, насколько обучаемая модель стала предпочитать изображение по сравнению с исходной. Если вероятность выросла, отношение больше единицы, а логарифм положительный. Если упала — отрицательный. Так reference задаёт точку отсчёта для каждого изображения.</p>
+<p>Но в данных у нас нет численного reward: известно только, что <span data-tex="x^w"></span> предпочли <span data-tex="x^l"></span>. Чтобы связать reward с такой меткой, используем модель парных предпочтений Bradley–Terry. Она задаёт вероятность выбора winner через сигмоиду разницы reward:</p>
+<div class="equation" data-tex="P_\theta(x^w\succ x^l\mid c)=\sigma\!\left(\beta\left[r_\theta(x^w,c)-r_\theta(x^l,c)\right]\right)"></div>
+
+<p>При равных reward вероятность равна ½. Чем выше reward winner относительно loser, тем увереннее модель предсказывает выбор winner. Это предположение о том, как устроены предпочтения, а не следствие самой парной метки.</p>
+<p>Теперь хотим, чтобы модель присваивала наблюдаемым выборам высокую вероятность. Минимизируем отрицательный логарифм этой вероятности по датасету пар — получаем DPO-loss:</p>
+<div class="equation" data-tex="\mathcal{L}_{\mathrm{DPO}}(\theta)=-\mathbb{E}_{(c,x^w,x^l)\sim\mathcal{D}}\!\left[\log\sigma\!\left(\beta\left[r_\theta(x^w,c)-r_\theta(x^l,c)\right]\right)\right]"></div>
+
+<p>Внутри сигмоиды находится разница между winner и loser относительно reference. Хотим, чтобы модель сильнее предпочитала winner. Но сама функция видит именно <strong>разницу</strong>. Она не требует, чтобы каждый шаг отдельно улучшал абсолютное качество winner. К этому ограничению мы ещё вернёмся.</p>
+<h3 id="_2">Как перенести это на диффузию</h3>
+<p>В языковой модели мы можем вычислять вероятность заданной последовательности через вероятности токенов. В диффузионной модели изображение получается из процесса денойзинга, и напрямую подставить его likelihood в ту же формулу сложнее.</p>
+<p>Чтобы адаптировать DPO к диффузионным моделям, применим вариационную оценку, как в <a href="https://arxiv.org/abs/2311.12908">Diffusion-DPO</a>. Тогда loss можно записать через ошибки предсказания шума на winner и loser. Сначала обозначим разницы этих ошибок у обучаемой и reference-моделей:</p>
+<div class="equation" data-tex="\begin{aligned}\Delta_w &= \|\epsilon^w-\epsilon_\theta(x_t^w,t)\|_2^2-\|\epsilon^w-\epsilon_{\mathrm{ref}}(x_t^w,t)\|_2^2,\\[6pt]\Delta_l &= \|\epsilon^l-\epsilon_\theta(x_t^l,t)\|_2^2-\|\epsilon^l-\epsilon_{\mathrm{ref}}(x_t^l,t)\|_2^2.\end{aligned}"></div>
+
+<p>Итоговый loss:</p>
+<div class="equation" data-tex="L=-\mathbb{E}\!\left[\log\sigma\!\left(-\beta(\Delta_w-\Delta_l)\right)\right]"></div>
+
+<p>Вспомним пару портретов: один с обычным светом, другой — с cinematic. На претренинге модель училась восстанавливать оба изображения из шума. Теперь мы говорим ей: «при том же запросе хотим чаще получать второй вариант». DPO меняет обучение так, чтобы восстановление картинки с cinematic-светом получало преимущество перед восстановлением картинки с плоским светом. Через много таких пар модель может подхватить наше предпочтение в освещении, хотя мы нигде не записали, что именно делает свет красивым.</p>
+<aside class="technical-note" role="note">
+<strong>Примечание: flow matching</strong>
+<p>Для flow matching меняется то, что модель должна предсказать: вместо добавленного шума — направление и скорость движения от шума к изображению, то есть velocity. Дальше всё так же: считаем ошибку предсказания у обучаемой и reference-моделей для winner и loser.</p>
+</aside>
+
+<p>Посмотрим, как такое обучение меняет готовые изображения. Ниже — результаты SDXL до и после Diffusion-DPO на одних и тех же запросах.</p>
+<figure>
+<img src="assets/preference-optimization/figures/dpo-results.webp" alt="Верхний ряд — SDXL, нижний — DPO-SDXL: монах у круглого окна, портрет женщины, дракон и фигура на светящейся форме над водой" loading="lazy" width="1231" height="575">
+<figcaption>Сверху — SDXL, снизу — DPO-SDXL. Источник — <a href="https://arxiv.org/abs/2311.12908">Diffusion-DPO</a>.</figcaption>
+</figure>
+
+<p>В каждой паре изменения разные:</p>
+<ul>
+<li><strong>Монах.</strong> В исходной картинке помещение похоже на рисованную иллюстрацию с плоскими заливками. После DPO появляются глубокие тени, блики на круглой раме и более выраженные складки одежды. Сцена выглядит объёмнее.</li>
+<li><strong>Портрет.</strong> Вместо поясной фигуры с маленьким лицом получаем более крупный портрет. Лучше видны черты лица, пряди волос и отделка синего костюма; лицо сильнее выделяется на фоне цветного вихря.</li>
+<li><strong>Дракон.</strong> В верхнем ряду он почти целиком в тени. В нижнем — крупнее и лучше освещён: различимы чешуя на шее, гребень на спине и перепонки крыльев.</li>
+<li><strong>Сцена над водой.</strong> Вместо бесформенного светящегося объекта появляется фигура человека на чашеобразной форме. Цветное свечение отражается в воде. Здесь меняется уже сама структура объекта, а не только его свет или фактура.</li>
+</ul>
+<p>В этом и практический смысл DPO: через выбор картинок можно передать предпочтение к более объёмному свету, проработанным деталям и выразительной подаче, не задавая для каждого из этих качеств отдельную формулу.</p>
+<h3 id="_3">Что делать с β</h3>
+<p>В нашем loss есть параметр <span data-tex="\beta"></span>, который умножает разницу ошибок перед сигмоидой:</p>
+<div class="equation" data-tex="L=-\mathbb{E}\!\left[\log\sigma\!\left(-\underbrace{\beta}_{\text{масштаб}}(\Delta_w-\Delta_l)\right)\right]"></div>
+
+<p>β масштабирует разницу ошибок на winner и loser перед сигмоидой. При большом β даже небольшой перевес в пользу winner может сдвинуть сигмоиду близко к единице: пара уже выглядит уверенно разделённой, и сигнал от неё ослабевает. При меньшем β для такого насыщения нужен больший перевес.</p>
+<p>На практике β подбирают вместе с learning rate. Если сигнал от пар затухает слишком быстро, модель не успевает нормально пройти по данным и усвоить предпочтение. Нужно дать ей время поучиться, а не сразу загнать loss в насыщение. Поэтому важен баланс: насколько быстро меняется модель и насколько быстро выбранный β ослабляет сигнал.</p>
+<h2 id="_4">Какие пары действительно полезны</h2>
+<p>Для обучения нужны winner и loser. Но какие картинки выбирать в эти пары, чтобы модель выучила нужное нам предпочтение?</p>
+<h3 id="fifa">FiFA: разница, качество запроса, разнообразие</h3>
+<p>Самая неприятная ситуация для парного обучения — много примеров, где победитель определён неуверенно. Один разметчик предпочёл свет, другой — композицию, третий просто выбрал другую стилистику. Если собрать таких пар очень много, неопределённость не обязательно исчезнет.</p>
+<p>Разницу оценок winner и loser называют preference margin. Если оценщик почти не различает картинки, margin маленький; если уверенно предпочитает одну — большой. На примерах с котами-рыцарями и драконами это видно глазами: в low-margin парах оба варианта выглядят допустимыми, а в high-margin парах один явно нарушает запрос.</p>
+<figure>
+<img src="assets/preference-optimization/figures/preference-pairs.webp" alt="FiFA: high-margin и low-margin пары с котами-рыцарями и драконами; рядом распределение reward margin" loading="lazy" width="1253" height="461">
+<figcaption>Большой margin делает выбор понятнее. Маленький margin оставляет больше места для вкуса разметчика и ошибок оценщика. Источник — <a href="https://arxiv.org/abs/2410.10166">FiFA</a>.</figcaption>
+</figure>
+
+<p>На этом строится отбор в <a href="https://arxiv.org/abs/2410.10166">FiFA</a>. Метод учитывает три вещи: насколько явно winner лучше loser, насколько качественно сформулирован запрос и насколько разнообразны запросы в выбранном наборе. Пары ранжируются по общему score.</p>
+<aside class="technical-note" role="note"><strong>Как оценивает FiFA</strong><p>Preference margin оценивает proxy reward-модель, качество текста — LLM, разнообразие — оценка на основе соседей в пространстве представлений.</p></aside>
+
+<p>В своей практике я читаю эти три составляющие так. Во-первых, должно быть понятно, почему winner лучше. Во-вторых, запрос должен позволять судить о результате: по слову «кот» трудно понять, какой именно результат ожидался. В-третьих, выбранные примеры должны покрывать нужные домены. Если все сильные пары оказались портретами, нельзя автоматически ожидать того же улучшения в остальных сценах.</p>
+<p>Это не означает, что длинный промпт всегда лучше короткого. Детализация полезна тогда, когда она делает критерий выбора яснее. Много слов без понятного запроса не создают хороший preference-сигнал.</p>
+<figure>
+<img src="assets/preference-optimization/figures/fifa-results.webp" alt="График обучения DPO на полном наборе и после FiFA-фильтрации, рядом примеры генераций" loading="lazy" width="1325" height="616">
+<figcaption>В эксперименте FiFA отфильтрованные данные дают более быстрый рост PickScore. Источник — <a href="https://arxiv.org/abs/2410.10166">FiFA</a>.</figcaption>
+</figure>
+
+<p>Для меня вывод здесь такой: сначала стоит добиться понятного сигнала в каждой паре, а уже потом наращивать объём данных. Больше неоднозначных сравнений не обязательно означает больше полезного обучения.</p>
+<p>Я обычно собираю данные в несколько раундов: начинаю с автоматической или синтетической разметки, затем генерирую новые примеры улучшенной моделью и отдаю их людям.</p>
+<p>Человеческая разметка дорогая прежде всего организационно. Нужно договориться о критериях, объяснить их разметчикам, проверить согласованность. Если нужны именно профессиональные предпочтения, человека трудно заменить усреднением большого числа случайных голосов.</p>
+<p>Поэтому сначала я бы отбирал пары, в которых причина выбора уже понятна. Для такого отбора можно использовать reward-модель, а неоднозначные случаи оставить для ручной оценки.</p>
+<h3 id="_5">А если обе картинки хорошие?</h3>
+<p>Допустим, у двух плохих картинок margin большой. А у двух отличных — маленький. Неужели мы выберем первую пару только потому, что её проще различить?</p>
+<p>Нет: <strong>большой margin не заменяет хорошего winner</strong>. Хочется одновременно иметь сильный положительный пример и понятную разницу с отрицательным. Если winner сам по себе плохой, мы выбираем неудачную цель для модели.</p>
+<p>А две отличные картинки необязательно заставлять соревноваться. Если обе нам подходят, можно обучаться восстанавливать каждую из них без loser-компоненты — использовать их для SFT. Здесь мы уже отбираем хорошие примеры сами по себе, а не пытаемся найти худший внутри каждой пары.</p>
+<p>Моя исходная рекомендация проще: сначала обеспечить хороший winner и явно худший loser. Сложные правила для неоднозначных пар я бы добавлял после того, как этот базовый вариант заработал.</p>
+<h3 id="_6">Можно ли брать изображения другой модели?</h3>
+<p>Off-policy данные — одна из удобных сторон DPO. Пары можно собрать заранее; необязательно получать каждый пример из текущего checkpoint. Можно использовать и пары от разных генераторов: сильная модель даёт winner, более слабая — loser.</p>
+<p>Так можно получить понятный сигнал без сложной системы оценивания. Но вместе с качеством переносится характер генератора: свет, насыщенность, фактуры. Поэтому сходство результата с моделью-учителем само по себе ещё не доказывает, что мы выучили нужное предпочтение.</p>
+<p>Есть и отдельный вопрос про негативы. Если loser настолько далёк от текущего распределения, что наша модель почти никогда не выдаёт ничего похожего, насколько полезно от него отталкиваться? У меня нет универсального ответа. Мой опыт с более слабой и более сильной моделью был положительным, но из этого не следует, что чем хуже loser, тем лучше обучение. Вариант с внешним winner и on-policy loser остаётся отдельной гипотезой для проверки.</p>
+<h2 id="loss">Loss улучшается, картинки портятся</h2>
+<p>DPO-loss требует, чтобы модель лучше восстанавливала winner <strong>по сравнению с loser</strong>. Но это сравнение можно улучшить, даже если восстановление winner стало хуже: достаточно, чтобы восстановление loser ухудшилось ещё сильнее. Относительный перевес winner растёт, поэтому DPO-loss падает — хотя ошибки на обеих картинках растут.</p>
+<p>На графике из <a href="https://arxiv.org/abs/2511.03317">Diffusion-SDPO</a> показаны изменения ошибок относительно reference. Оранжевая линия — winner, зелёная — loser. Обе идут вверх: модель хуже восстанавливает оба изображения. Но ошибка на loser растёт быстрее, поэтому разность «winner − loser» — фиолетовая линия — уменьшается. Для DPO это нужное направление изменения разности, хотя восстановление winner ухудшается.</p>
+<figure class="figure-narrow">
+<img src="assets/preference-optimization/figures/winner-loser-loss.webp" alt="График из Diffusion-SDPO: ошибки winner и loser растут, хотя их разность движется в нужную сторону" loading="lazy" width="1051" height="583">
+<figcaption>Изменения ошибок относительно reference в ходе обучения. Источник — <a href="https://arxiv.org/abs/2511.03317">Diffusion-SDPO</a>.</figcaption>
+</figure>
+
+<p>На картинках это может выглядеть так: модель подхватила нужный cinematic-свет, но лица и руки стали искажаться. Предпочтение к освещению выучено, а способность рисовать правдоподобные объекты ухудшилась. Это обычный пример <strong>manifold drift</strong>: в погоне за предпочтением модель теряет саму способность нормально генерировать изображения.</p>
+<h2 id="_7">Как удержать модель около хороших примеров</h2>
+<p>Распространённая стратегия — по сути делать SFT на winner параллельно DPO. Для себя я бы выделил три метода, которые нахожу полезными в работе: DPO + SFT, BDPO и ThermoDPO.</p>
+<figure class="method-tree regularization-tree" aria-label="Три подхода к сохранению качества при preference optimization: SFT, BDPO и ThermoDPO">
+<div class="method-root"><strong>Учить предпочтение и сохранять качество генерации</strong></div>
+<div class="method-branches">
+<div class="method-branch"><span class="branch-arrow" aria-hidden="true">↙</span><div class="method-result"><strong>DPO + SFT</strong><span>Добавить отдельный loss восстановления winner</span></div></div>
+<div class="method-branch"><span class="branch-arrow" aria-hidden="true">↓</span><div class="method-result"><strong>BDPO</strong><span>Ограничить подавление loser → учиться повышать вероятность winner</span></div></div>
+<div class="method-branch"><span class="branch-arrow" aria-hidden="true">↘</span><div class="method-result"><strong>ThermoDPO</strong><span>Встроить восстановление winner в общий loss</span></div></div>
+</div>
+</figure>
+
+<h3 id="sft-winner">SFT на winner</h3>
+<p>Самый прямой способ — прибавить к DPO-loss обычный loss обучения на winner:</p>
+<div class="equation" data-tex="\mathcal{L}=\mathcal{L}_{\mathrm{DPO}}+\alpha\,\mathcal{L}_{\mathrm{SFT},\,\mathrm{winner}}"></div>
+
+<p>Модели приходится дополнительно учиться восстанавливать winner, чтобы loss не снижался только за счёт ухудшения loser.</p>
+<h3 id="bdpo-loser-">BDPO и ограничение loser-компоненты</h3>
+<p>SFT напрямую повышает вероятность хорошего примера. <a href="https://aclanthology.org/2025.findings-emnlp.433/">Bounded-DPO</a> для языковых моделей усиливает роль обучения на winner другим способом: ограничивает, насколько можно снизить loss одним подавлением loser.</p>
+<p>В обычном DPO модель может улучшать отношение вероятностей winner и loser, всё сильнее уменьшая вероятность loser. В BDPO вероятность loser заменяют смесью: часть берут у обучаемой модели, часть — у замороженной reference. Даже если вероятность loser у обучаемой модели станет почти нулевой, вклад reference останется. Поэтому уменьшать вероятность loser дальше становится всё менее выгодно.</p>
+<aside class="technical-note" role="note"><strong>Формула BDPO</strong><p>Здесь сохранены обозначения работы про языковые модели: x — запрос, y — ответ.</p>
+
+<div class="equation" data-tex="\mathcal{L}_{\mathrm{BDPO}}(\pi_\theta;\pi_{\mathrm{ref}}):=-\mathbb{E}_{\mathcal D}\!\left[\log\sigma\!\left(\beta\log\frac{\pi_\theta(y_w\mid x)}{\pi_{\mathrm{mix}}(y_l\mid x)}-\hat{s}_{\mathrm{ref}}(w;l)\right)\right]"></div>
+
+<div class="equation" data-tex="\pi_{\mathrm{mix}}(y\mid x)=\lambda\pi_\theta(y\mid x)+(1-\lambda)\pi_{\mathrm{ref}}(y\mid x),\quad\lambda\in(0,1)."></div>
+
+Здесь <span data-tex="y_w,y_l"></span> — выбранный и отвергнутый ответы, а <span data-tex="\hat{s}_{\mathrm{ref}}(w;l)"></span> — опорная разность предпочтений reference-модели.
+
+
+</aside>
+
+<p>Когда дальнейшее подавление loser почти перестаёт помогать, снижать loss приходится за счёт повышения вероятности winner. В этом связь BDPO с SFT: обучение сильнее направлено на хороший пример, хотя отдельный SFT-loss здесь не добавляется.</p>
+<h3 id="thermodpo-winner">ThermoDPO и привязка к winner</h3>
+<p>В <a href="https://arxiv.org/html/2608.20011v1">ThermoDPO</a> для flow-моделей связь с SFT ещё прямее: один loss объединяет сравнение пары и обычную задачу восстановления winner. Пока предпочтение не выучено, модель учится отличать winner от loser. Когда парное сравнение даёт мало сигнала, обучение на winner продолжается — ту же задачу мы отдельно добавляли через SFT-регуляризацию.</p>
+<figure>
+<img src="assets/preference-optimization/figures/manifold-drift.webp" alt="Схема FlowDPO и ThermoDPO: траектории из шума к предпочтительной области; привязка к winner уменьшает уход от manifold" loading="lazy" width="1311" height="608">
+<figcaption>Предпочтительное направление ещё не гарантирует, что конечный результат останется на manifold. Источник — <a href="https://arxiv.org/html/2608.20011v1">ThermoDPO</a>.</figcaption>
+</figure>
+
+<p>Для записи loss введём три величины. <span data-tex="E_w"></span> растёт, когда ошибка на winner уменьшается относительно reference; <span data-tex="E_l"></span> устроена так же для loser. <span data-tex="E_b"></span> вычисляется по reference и при обновлении модели не меняется:</p>
+<div class="equation" data-tex="E_w=-\frac{\Delta_\theta^w}{\tau(t)},\qquad E_l=-\frac{\Delta_\theta^l}{\tau(t)},\qquad E_b=\frac{\ell_{\mathrm{ref}}^w}{\tau(t)}."></div>
+
+<div class="equation" data-tex="\mathcal{L}_{\mathrm{ThermoDPO}}(\theta)=\mathbb{E}\!\left[-\tau(t)\,t^2\log\frac{e^{E_w}}{e^{E_w}+e^{E_l}+e^{E_b}}\right]."></div>
+
+<p>Здесь <span data-tex="\Delta_\theta^w,\Delta_\theta^l"></span> — разницы flow-matching ошибок обучаемой и reference-моделей, <span data-tex="\ell_{\mathrm{ref}}^w"></span> — ошибка reference на winner, а <span data-tex="\tau(t)"></span> — температура. Чтобы уменьшить loss, нужно увеличить долю winner в этой дроби.</p>
+<p>Когда winner уже уверенно выигрывает у loser, дальше ухудшать loser почти бесполезно для снижения loss. Модель продолжает учиться восстанавливать сам winner: одного выученного предпочтения теперь недостаточно.</p>
+<p>В toy-эксперименте ниже это видно в проекции спереди, на втором графике. Зелёные точки обычного DPO образуют дугу выше исходной поверхности: модель сдвинула генерацию, но ушла с manifold. Красные точки ThermoDPO остаются ближе к исходной форме. Здесь можно отдельно увидеть изменение предпочтений и то, насколько сохранилась геометрия данных.</p>
+<figure>
+<img src="assets/preference-optimization/figures/toy-manifold.webp" alt="Toy-эксперимент ThermoDPO: сравнение расположения сэмплов относительно исходного manifold" loading="lazy" width="1354" height="608">
+<figcaption>Иллюстрация различия между preference shift и уходом от исходного manifold. Источник — toy-эксперимент из <a href="https://arxiv.org/html/2608.20011v1">ThermoDPO</a>.</figcaption>
+</figure>
+
+<p>Практический смысл такой регуляризации — учить нужный свет или стиль, продолжая учить модель восстанавливать хорошие изображения. Одного преимущества перед loser для этого недостаточно.</p>
+<aside class="technical-note" role="note"><strong>Гипотеза: предсказание x₀</strong><p>Возможно, предсказание самого изображения <span data-tex="x_0"></span> упростит контроль качества при preference optimization. Пока это гипотеза: из смены target не следует, что manifold drift исчезнет.</p></aside>
+
+<h2 id="dpo_2">Где я использовал бы DPO</h2>
+<p>Я бы использовал DPO там, где предпочтение проще показать, чем описать метрикой: какой свет выглядит профессионально, какая композиция удачнее, какой стиль хочется получать. Пары позволяют передать эти решения модели, даже если отдельного reward для них нет.</p>
+<p>При этом выбор winner во многом определяет результат. Если брать хорошие картинки у другого генератора, вместе с качеством можно перенять его характерный свет и стиль. Даже CFG, с которым получены примеры, влияет на то, чему мы учим модель. Поэтому при сборе пар нужно понимать, какие свойства winner мы действительно хотим перенести в свои генерации.</p>
+<p>Если же задача конкретная — например, исправить нечитаемые надписи, — я бы смотрел в сторону RL с reward под эту задачу. Здесь можно оценивать, правильно ли написан текст, и учить модель улучшать именно этот результат. Ограничениями становятся качество оценщика и количество rollouts, которое мы можем себе позволить.</p>
+<p>DPO и RL при этом могут идти последовательно. Сначала через пары задаём общие визуальные предпочтения, затем через reward дорабатываем конкретные слабые места. Внутри самого DPO тоже можно сделать несколько раундов: начать с автоматической разметки, а после улучшения модели собрать новые пары и отдать их людям.</p>
+<p>Нужен ли отдельный SFT перед DPO? Если хорошие внешние примеры уже есть, можно использовать их как winner и обучать DPO вместе с SFT. Если пары собираются из собственных генераций, предварительный SFT может улучшить материал для следующего раунда: модель будет выдавать более качественных кандидатов в winner. Здесь порядок этапов зависит от того, откуда мы берём хорошие примеры.</p>
+<aside class="closing-takeaway" aria-label="Главная мысль">
+<p>DPO — это во многом работа с vibe в ваших данных. Нужно понимать, какое предпочтение вы хотите выучить и действительно ли выбранные пары его передают. Если нужен cinematic-свет, winner должен быть лучше именно по свету — иначе модель будет учить что-то другое.</p>
+<p>Дальше задача — аккуратно провести обучение: дать модели усвоить это предпочтение и не допустить manifold drift. В этом и смысл DPO: передать модели нужный вкус через примеры, сохранив её способность хорошо генерировать.</p>
+</aside>
+
+<h2 id="_8">Источники</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization</a></li>
+<li><a href="https://arxiv.org/abs/2311.12908">Diffusion Model Alignment Using Direct Preference Optimization</a></li>
+<li><a href="https://arxiv.org/abs/2410.10166">FiFA: Automated Filtering of Human Feedback Data</a></li>
+<li><a href="https://aclanthology.org/2025.findings-emnlp.433/">Rethinking DPO: The Role of Rejected Responses in Preference Misalignment — BDPO</a></li>
+<li><a href="https://arxiv.org/abs/2511.03317">Diffusion-SDPO: Safeguarded Direct Preference Optimization</a></li>
+<li><a href="https://arxiv.org/abs/2608.20011">Manifold Drift in Flow Preference Optimization — ThermoDPO</a></li>
+</ul></article>
+<footer class="page-footer"><span>Андрей Филатов · 2026</span><a href="/blog.html">Все статьи ↗</a></footer>
+</main></div>
+<script src="assets/preference-optimization/vendor/katex/katex.min.js"></script>
+<script>document.querySelectorAll("[data-tex]").forEach(el => katex.render(el.dataset.tex, el, {displayMode: el.classList.contains("equation"), throwOnError: true}));</script>
+<script>(() => {
+  const root = document.documentElement;
+  const themeButton = document.querySelector('.theme-toggle');
+  const setTheme = (theme) => {
+    root.dataset.theme = theme;
+    themeButton.textContent = theme === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+    themeButton.setAttribute('aria-label', themeButton.textContent);
+  };
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = localStorage.getItem('theme') || theme; } catch (_) {}
+  setTheme(theme);
+  themeButton.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    try { localStorage.setItem('theme', next); } catch (_) {}
+  });
+  const scenarios = {
+    good: {winner: 0.6, loser: 1.4, verdict: 'Ошибка на winner снизилась.'},
+    bad: {winner: 1.8, loser: 2.6, verdict: 'Ошибка на winner выросла, хотя разница ошибок та же.'}
+  };
+  const number = n => n.toFixed(1).replace('.', ',');
+  document.querySelectorAll('[data-scenario]').forEach(button => {
+    button.addEventListener('click', () => {
+      const scenario = scenarios[button.dataset.scenario];
+      if (!scenario) return;
+      document.querySelectorAll('[data-scenario]').forEach(other => {
+        const active = other === button;
+        other.classList.toggle('selected', active);
+        other.setAttribute('aria-pressed', String(active));
+      });
+      ['winner', 'loser'].forEach(kind => {
+        document.getElementById(kind + '-bar').style.width = (scenario[kind] / 3 * 100) + '%';
+        document.getElementById(kind + '-value').textContent = '1 → ' + number(scenario[kind]);
+      });
+      document.getElementById('demo-result').textContent =
+        'Winner: 1 → ' + number(scenario.winner) + '. Loser: 1 → ' + number(scenario.loser) +
+        '. Разница ошибок: ' + number(scenario.loser - scenario.winner) + '. ' + scenario.verdict;
+    });
+  });
+  const headings = Array.from(document.querySelectorAll('article h2'));
+  const links = Array.from(document.querySelectorAll('.sidebar .toc a'));
+  let scheduled = false;
+  const update = () => {
+    scheduled = false;
+    let active = headings[0];
+    headings.forEach(h => { if (h.getBoundingClientRect().top < 170) active = h; });
+    links.forEach(link => {
+      const current = Boolean(active && link.getAttribute('href') === '#' + active.id);
+      link.classList.toggle('active', current);
+      if (current) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  };
+  window.addEventListener('scroll', () => {
+    if (!scheduled) { scheduled = true; requestAnimationFrame(update); }
+  }, {passive:true});
+  update();
+})();
+</script>
+</body></html>
