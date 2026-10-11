@@ -1,0 +1,54 @@
+.post-toc {
+  position: relative;
+  margin: 28px 0 40px;
+  padding: 0 0 0 16px;
+  border-left: 1px solid var(--ll);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.post-toc-title {
+  margin-bottom: 12px;
+  color: var(--th);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+}
+.post-toc ol { list-style: none; padding: 0; margin: 0; }
+.post-toc li { margin: 0; padding: 0; }
+.post-toc a {
+  display: block;
+  padding: 6px 8px;
+  border: 0;
+  border-left: 2px solid transparent;
+  color: var(--ts);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.post-toc .post-toc-sub a { padding-left: 20px; font-size: 12px; }
+.post-toc a:hover, .post-toc a[aria-current] {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+.post-toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toc-target { scroll-margin-top: 100px; }
+@media (min-width: 1280px) {
+  .post-toc {
+    position: fixed;
+    top: 100px;
+    left: max(20px, calc(50vw - 650px));
+    width: 180px;
+    max-height: calc(100vh - 124px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    margin: 0;
+    padding-left: 12px;
+  }
+}
+@media (max-width: 1279px) {
+  .post-toc { max-height: 280px; overflow-y: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
