@@ -1,9 +1,9 @@
 /* Shared contents navigation for published blog posts. */
 (() => {
   function init() {
-    const main = document.querySelector('main');
+    const main = document.querySelector('main') || document.querySelector('.c');
     if (!main) return;
-    const headings = [...main.querySelectorAll('h2, h3')];
+    const headings = [...main.querySelectorAll('h2, .src h3')];
     if (!headings.length) return;
     const nav = document.createElement('nav');
     nav.className = 'post-toc';
@@ -21,7 +21,7 @@
       }
       heading.classList.add('toc-target');
       const item = document.createElement('li');
-      if (heading.tagName === 'H3') item.className = 'post-toc-sub';
+      // Only chapters and sources belong in the sidebar.
       const link = document.createElement('a');
       link.href = `#${heading.id}`;
       item.append(link);

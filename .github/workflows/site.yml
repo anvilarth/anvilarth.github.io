@@ -34,6 +34,9 @@ jobs:
       - name: Regenerate sitemap.xml
         run: python3 _design/gen_sitemap.py
 
+      - name: Check shared longread template
+        run: python3 _design/longread_template.py --check
+
       - name: Run site checks
         run: python3 _design/check_site.py
 

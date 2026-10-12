@@ -395,6 +395,11 @@
   :root[data-theme=dark] .theme-btn .sun{display:none}
   @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme-btn .moon{display:block}:root:not([data-theme=light]) .theme-btn .sun{display:none}}
 </style>
+<!-- shared-agent-footer --><style>.md-link{max-width:none;margin:0 0 56px;padding:20px 0 0;border-top:1px solid var(--ll);font-family:var(--mono);font-size:13px;font-weight:400;line-height:1.7;color:var(--th);text-align:left}
+.md-link a{color:var(--th);text-decoration:none;border-bottom:1px solid var(--ll)}
+.md-link a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.template-ru{display:none}html[lang=ru] .template-ru{display:inline}html[lang=ru] .template-en{display:none}
+</style><!-- /shared-agent-footer -->
 </head>
 <body>
 
@@ -629,6 +634,7 @@
   Based on <a href="https://github.com/Wan-Video/Wan2.1">Wan2.1</a> architecture, calibrated against real benchmarks.
   <br>All estimates assume 40% MFU. Actual performance may vary.
 </div>
+<p class="md-link" data-template="agent-links"><span class="template-ru">Весь сайт для LLM-агентов:</span><span class="template-en">The full site for LLM agents:</span> <a href="https://anvilarth.github.io/llms.txt">/llms.txt</a>, <a href="https://anvilarth.github.io/llms-full.txt">/llms-full.txt</a>.</p>
 </main>
 
 <script>
