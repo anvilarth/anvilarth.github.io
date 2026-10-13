@@ -13,6 +13,7 @@ files not yet committed.
 """
 
 import re
+import json
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -28,7 +29,7 @@ OUT = ROOT / "sitemap.xml"
 # HTML pages only. The .md mirrors and llms.txt are for LLM crawlers
 # (advertised in robots.txt / llms.txt); listing them here makes Google
 # treat them as duplicate copies of the articles.
-PAGES = [
+BASE_PAGES = [
     ("preference-optimization.html", "preference-optimization.html", "0.9"),
     ("index.html",                     "",                              "1.0"),
     ("autoresearch.html",              "autoresearch.html",             "0.9"),
@@ -37,6 +38,8 @@ PAGES = [
     ("projects.html",                  "projects.html",                 "0.8"),
     ("realtime-video-calculator.html", "realtime-video-calculator.html","0.7"),
 ]
+LOCALES = json.loads((ROOT / '_design/locales.json').read_text())
+PAGES = BASE_PAGES + [(slug + '.ru.html', slug + '.ru.html', '0.9') for slug in LOCALES]
 
 
 def git_lastmod(rel_path: str) -> str | None:
@@ -65,7 +68,8 @@ def lastmod_for(rel_path: str) -> str | None:
     if not path.exists():
         print(f"  ! missing file, skipped: {rel_path}", file=sys.stderr)
         return None
-    return declared_lastmod(path) or git_lastmod(rel_path) or mtime_lastmod(path)
+    source_path = rel_path.replace('.ru.html', '.html')
+    return declared_lastmod(path) or git_lastmod(source_path) or mtime_lastmod(ROOT / source_path)
 
 
 def build() -> str:

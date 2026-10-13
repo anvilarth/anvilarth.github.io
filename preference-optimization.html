@@ -7,6 +7,9 @@
 <title>Direct Preference Optimization (DPO) for Diffusion Models: A Practical Guide</title>
 <meta name="description" content="What is DPO and how the DPO loss works for diffusion and flow models: preference pairs, FiFA filtering, beta, learning rate, manifold drift, image quality.">
 <link rel="canonical" href="https://anvilarth.github.io/preference-optimization.html">
+<link rel="alternate" hreflang="en" href="https://anvilarth.github.io/preference-optimization.html">
+<link rel="alternate" hreflang="ru" href="https://anvilarth.github.io/preference-optimization.ru.html">
+<link rel="alternate" hreflang="x-default" href="https://anvilarth.github.io/preference-optimization.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Andrei Filatov">
 <meta property="og:title" content="Direct Preference Optimization (DPO) for Diffusion Models">
@@ -61,6 +64,7 @@ span[data-tex] .katex{font-size:1.05em}
 span[data-i18n]{display:inline;color:inherit;font:inherit}
 footer a{color:inherit;text-decoration:none;border-bottom:1px solid var(--ll)}
 </style>
+<script src="language-links.js"></script>
 <!-- shared-longread-template -->
 <style data-template="longread">
 @font-face{font-family:'Inter';font-style:normal;font-weight:400 600;font-display:swap;src:url(fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
@@ -414,7 +418,7 @@ section.ch:nth-child(4){animation-delay:.15s}
 <body>
 <a class="skip" href="#article" data-i18n="t190">Skip to article</a>
 <div class="bg-gradient" aria-hidden="true"></div>
-<div class="post-nav"><div class="post-nav-inner"><a href="index.html" class="nav-logo"><svg class="mark" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><circle cx="8" cy="14" r="3" opacity=".26"/><circle cx="11" cy="33" r="3" opacity=".26"/><circle cx="8" cy="50" r="3" opacity=".26"/><circle cx="23" cy="18" r="3.5" opacity=".5"/><circle cx="25" cy="34" r="3.5" opacity=".5"/><circle cx="22" cy="48" r="3.5" opacity=".5"/><circle cx="38" cy="16" r="4" opacity=".78"/><circle cx="37" cy="32" r="4" opacity=".78"/><circle cx="38" cy="48" r="4" opacity=".78"/><rect x="49" y="9" width="8" height="46" rx="4"/></svg>andrei<span>filatov</span></a><div class="nav-links"><a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a><div class="lang-switch"><button class="lang-btn" id="btn-ru" onclick="setLang('ru')">RU</button><button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button></div><button class="theme-btn" id="theme-btn" aria-label="Toggle theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button></div></div></div>
+<div class="post-nav"><div class="post-nav-inner"><a href="index.html" class="nav-logo"><svg class="mark" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><circle cx="8" cy="14" r="3" opacity=".26"/><circle cx="11" cy="33" r="3" opacity=".26"/><circle cx="8" cy="50" r="3" opacity=".26"/><circle cx="23" cy="18" r="3.5" opacity=".5"/><circle cx="25" cy="34" r="3.5" opacity=".5"/><circle cx="22" cy="48" r="3.5" opacity=".5"/><circle cx="38" cy="16" r="4" opacity=".78"/><circle cx="37" cy="32" r="4" opacity=".78"/><circle cx="38" cy="48" r="4" opacity=".78"/><rect x="49" y="9" width="8" height="46" rx="4"/></svg>andrei<span>filatov</span></a><div class="nav-links"><a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Main</a><a href="blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</a><div class="lang-switch"><a class="lang-btn" id="btn-ru" data-language="ru" hreflang="ru" lang="ru" href="preference-optimization.ru.html">RU</a><a class="lang-btn active" id="btn-en" data-language="en" hreflang="en" lang="en" href="preference-optimization.html" aria-current="page">EN</a></div><button class="theme-btn" id="theme-btn" aria-label="Toggle theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button></div></div></div>
 
 <main class="c">
 <header><h1>Direct Preference Optimization (DPO) for Diffusion Models</h1><p class="meta" data-i18n="t188">Andrei Filatov · October 11, 2026 · ~20 min read</p></header>
@@ -632,41 +636,14 @@ Here </span><span data-tex="y_w,y_l"></span><span data-i18n="t147"> are the chos
     ['ru', 'en'].forEach(value => {
       const button = document.getElementById('btn-' + value);
       button.classList.toggle('active', value === lang);
-      button.setAttribute('aria-pressed', String(value === lang));
+      button.setAttribute('aria-current', value === lang ? 'page' : 'false');
     });
     document.getElementById('theme-btn').setAttribute('aria-label', lang === 'ru' ? 'Переключить тему' : 'Toggle theme');
     document.getElementById('theme-btn').title = lang === 'ru' ? 'Переключить тему' : 'Toggle theme';
     // Change language after the headings so the shared contents navigation reads the new text.
     root.lang = lang;
-    if (updateURL) {
-      const url = new URL(location.href);
-      if (!url.hash || ['#ru', '#en'].includes(url.hash)) {
-        url.hash = lang === 'ru' ? 'ru' : '';
-        url.searchParams.delete('lang');
-      } else {
-        // Keep section links when switching language midway through the article.
-        url.searchParams.set('lang', lang);
-      }
-      history.replaceState(null, '', url);
-    }
   };
-  function languageFromURL() {
-    if (location.hash === '#ru') return 'ru';
-    if (location.hash === '#en') return 'en';
-    return new URLSearchParams(location.search).get('lang') === 'ru' ? 'ru' : 'en';
-  }
-  setLang(languageFromURL(), false);
-  window.addEventListener('hashchange', () => {
-    if (location.hash === '#ru' || location.hash === '#en') setLang(languageFromURL(), false);
-  });
-  // Preserve RU when a contents link replaces #ru with a chapter anchor.
-  document.addEventListener('click', event => {
-    const link = event.target.closest('a[href^="#"]');
-    if (!link || language !== 'ru') return;
-    const url = new URL(location.href);
-    url.searchParams.set('lang', 'ru');
-    history.replaceState(null, '', url);
-  });
+  setLang(root.lang, false);
   document.getElementById('theme-btn').addEventListener('click', () => {
     const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     const next = current === 'dark' ? 'light' : 'dark';
@@ -676,5 +653,6 @@ Here </span><span data-tex="y_w,y_l"></span><span data-i18n="t147"> are the chos
 })();
 </script>
 
+<script data-goatcounter="https://anvilarth.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

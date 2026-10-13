@@ -3,8 +3,8 @@
 python3 _design/bake_en.py          # bake T[key].en into every [data-i18n] element
 python3 _design/bake_en.py --check  # fail when static HTML drifts from T
 
-Russian stays a client-side toggle (#ru): search engines index English only.
-Edit both languages in the page's `var T = {...}`, then run this script.
+English HTML is the editable source. build_publication.py also produces static
+Russian pages from the same translation data. Never edit generated RU files.
 """
 import html, json, re, subprocess, sys
 from html.parser import HTMLParser
@@ -12,6 +12,9 @@ from html.parser import HTMLParser
 VOID = {'area','base','br','col','embed','hr','img','input','link','meta','source','track','wbr'}
 
 def load_T(src):
+    embedded = re.search(r'<script id="translations" type="application/json">(.*?)</script>', src, re.S)
+    if embedded:
+        return json.loads(embedded.group(1))
     start = src.index('var T')
     end = src.index('function setLang', start)
     js = src[start:end]
@@ -71,7 +74,7 @@ def bake(src, lang='en'):
     return out, len(f.hits)
 
 SITE = __import__('pathlib').Path(__file__).resolve().parent.parent
-PAGES = ('gpu-story.html', 'autoresearch.html')
+PAGES = ('gpu-story.html', 'autoresearch.html', 'preference-optimization.html')
 
 if __name__ == '__main__':
     stale = []

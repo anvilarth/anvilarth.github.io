@@ -37,6 +37,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Check publication outputs (Latest, analytics, languages)
+        run: python3 -B _design/build_publication.py --check
+
       - name: Regenerate sitemap.xml
         run: python3 _design/gen_sitemap.py
 

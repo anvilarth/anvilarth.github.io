@@ -1,0 +1,5 @@
+# Local credentials must never reach GitHub Pages or Git history.
+.env
+.env.*
+__pycache__/
+*.pyc

@@ -394,6 +394,13 @@
   :root[data-theme=dark] .theme-btn .moon{display:block}
   :root[data-theme=dark] .theme-btn .sun{display:none}
   @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme-btn .moon{display:block}:root:not([data-theme=light]) .theme-btn .sun{display:none}}
+
+.share-calculation{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 28px}
+.share-calculation button{font:500 12px var(--mono);color:var(--accent);background:var(--card);border:1px solid var(--ll);border-radius:6px;padding:10px 14px;cursor:pointer}
+.share-calculation button:hover{border-color:var(--accent)}
+.share-calculation button:focus-visible,.share-calculation input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+#share-status{font:12px/1.5 var(--sans);color:var(--ts)}
+#share-url{width:100%;box-sizing:border-box;padding:10px;color:var(--t);background:var(--card);border:1px solid var(--ll);border-radius:6px;font:12px var(--mono)}
 </style>
 <!-- shared-agent-footer --><style>.md-link{max-width:none;margin:0 0 56px;padding:20px 0 0;border-top:1px solid var(--ll);font-family:var(--mono);font-size:13px;font-weight:400;line-height:1.7;color:var(--th);text-align:left}
 .md-link a{color:var(--th);text-decoration:none;border-bottom:1px solid var(--ll)}
@@ -421,6 +428,12 @@
     <div><div class="detail-val" id="r-pflops">—</div><div class="detail-label">PFLOP/step</div></div>
     <div><div class="detail-val" id="r-ratio">—</div><div class="detail-label">Realtime ratio</div></div>
   </div>
+</div>
+
+<div class="share-calculation">
+  <button type="button" id="share-calculation">Copy calculation link</button>
+  <span id="share-status" role="status" aria-live="polite"></span>
+  <input id="share-url" type="text" readonly hidden aria-label="Calculation link">
 </div>
 
 <div id="when-rt" class="when-rt" style="display:none;"></div>
@@ -637,6 +650,7 @@
 <p class="md-link" data-template="agent-links"><span class="template-ru">Весь сайт для LLM-агентов:</span><span class="template-en">The full site for LLM agents:</span> <a href="https://anvilarth.github.io/llms.txt">/llms.txt</a>, <a href="https://anvilarth.github.io/llms-full.txt">/llms-full.txt</a>.</p>
 </main>
 
+<script src="calculator-links.js"></script>
 <script>
 // ── GPU specs ──
 const GPUS = {
@@ -875,6 +889,7 @@ function compute() {
 }
 
 // Init
+restoreCalculatorState();
 updateUI();
 compute();
 </script>
