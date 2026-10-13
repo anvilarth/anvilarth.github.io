@@ -14,7 +14,7 @@ Some articles have Markdown versions linked below; Preference Optimization is av
 
 ## Posts
 
-- [Preference Optimization for Diffusion models (EN/RU)](https://anvilarth.github.io/preference-optimization.html): DPO, preference-pair selection, FiFA, manifold drift, and preserving generation quality; English by default, Russian via #ru
+- [Direct Preference Optimization (DPO) for Diffusion Models (EN/RU)](https://anvilarth.github.io/preference-optimization.html): DPO, preference-pair selection, FiFA, manifold drift, and preserving generation quality; English by default, Russian via #ru
 
 - [Age of Autoresearch (RU)](https://anvilarth.github.io/autoresearch.md): how expertise moves from finding a solution to building the loop that finds it — autoresearch, agent-run experiment loops, oracles and stopping criteria, and what remains for the human
 - [Age of Autoresearch (EN)](https://anvilarth.github.io/autoresearch.en.md): English version of the autoresearch essay
@@ -23,7 +23,7 @@ Some articles have Markdown versions linked below; Preference Optimization is av
 
 ## Tools
 
-- [Realtime Video Generation Calculator](https://anvilarth.github.io/realtime-video-calculator.html): interactive estimate of when video generation becomes real-time
+- [Real-Time Video Generation Calculator](https://anvilarth.github.io/realtime-video-calculator.html): interactive estimate of when video generation becomes real-time
 
 ## Optional
 

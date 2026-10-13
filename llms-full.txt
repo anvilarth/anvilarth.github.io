@@ -60,7 +60,7 @@ deep learning course.
 - **Deep Learning course** — prepared and taught in a team of two. Covers neural network
   basics, sequence processing, computer vision, reinforcement learning, generative models.
   https://github.com/anvilarth
-- **Realtime Video Generation Calculator** — an interactive estimate of when video generation
+- **Real-Time Video Generation Calculator** — an interactive estimate of when video generation
   becomes real-time. https://anvilarth.github.io/realtime-video-calculator.html
 - **ESQA: Event Sequences Question Answering** — adapting LLMs to event-sequence data,
   handling multiple downstream tasks with little or no finetuning.
