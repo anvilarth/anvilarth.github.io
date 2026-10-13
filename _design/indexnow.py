@@ -6,9 +6,9 @@ Usage (CI):
     python3 _design/indexnow.py --all                 # every page in the sitemap
 
 Options:
-    --before/--after  commit range of the push; only pages whose HTML (or
-                      assets/<slug>/ files) changed in that range are sent
-    --all             send every page from gen_sitemap.PAGES
+    --before/--after  commit range of the push; sends pages whose HTML or
+                      assets/<slug>/ files changed, plus pages new in sitemap.xml
+    --all             send every page listed in sitemap.xml
     --wait            poll the live site until the key file is served
                       (GitHub Pages deploys asynchronously)
     --dry-run         print what would be sent, send nothing
@@ -32,7 +32,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "_design"))
-from gen_sitemap import BASE, PAGES  # noqa: E402
+from gen_sitemap import BASE  # noqa: E402
+import xml.etree.ElementTree as ET  # noqa: E402
+import os  # noqa: E402
 
 HOST = "anvilarth.github.io"
 ENDPOINT = "https://api.indexnow.org/indexnow"
@@ -55,22 +57,54 @@ def arg(name: str) -> str | None:
     return None
 
 
+NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+
+
+def sitemap_locs(xml_text: str) -> list[str]:
+    """<loc> values of a sitemap, in order. The sitemap is the source of truth:
+    whatever gen_sitemap.py publishes, IndexNow covers, new pages included."""
+    root = ET.fromstring(xml_text)
+    return [el.text.strip() for el in root.findall("sm:url/sm:loc", NS) if el.text]
+
+
 def all_urls() -> list[str]:
-    return [BASE + url_path for _, url_path, _ in PAGES]
+    return sitemap_locs((ROOT / "sitemap.xml").read_text(encoding="utf-8"))
+
+
+def file_for(loc: str) -> str:
+    rel = loc[len(BASE):] or "index.html"
+    return rel + "index.html" if rel.endswith("/") else rel
+
+
+def git(*args: str) -> str:
+    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True,
+                          text=True, check=True).stdout
 
 
 def changed_urls(before: str, after: str) -> list[str]:
-    out = subprocess.run(
-        ["git", "diff", "--name-only", before, after],
-        cwd=ROOT, capture_output=True, text=True, check=True,
-    ).stdout.split()
-    changed = set(out)
+    """Pages whose HTML or assets/<slug>/ changed, plus pages that are new in
+    the sitemap since `before`."""
+    changed = set(git("diff", "--name-only", before, after).split())
+    try:
+        old_locs = set(sitemap_locs(git("show", f"{before}:sitemap.xml")))
+    except (subprocess.CalledProcessError, ET.ParseError):
+        old_locs = set()
     urls = []
-    for rel_path, url_path, _ in PAGES:
-        slug = rel_path.removesuffix(".html")
-        if rel_path in changed or any(f.startswith(f"assets/{slug}/") for f in changed):
-            urls.append(BASE + url_path)
+    for loc in all_urls():
+        rel = file_for(loc)
+        slug = rel.removesuffix(".html")
+        if (loc not in old_locs or rel in changed
+                or any(f.startswith(f"assets/{slug}/") for f in changed)):
+            urls.append(loc)
     return urls
+
+
+def summary(lines: list[str]) -> None:
+    """Append to the GitHub Actions job summary (no-op outside CI)."""
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write("\n".join(lines) + "\n")
 
 
 def wait_for_key(key: str, timeout_s: int = 600, step_s: int = 20) -> None:
@@ -107,6 +141,7 @@ def main() -> int:
 
     if not urls:
         print("no published pages changed; nothing to send")
+        summary(["### IndexNow", "", "No published pages changed in this push; nothing sent."])
         return 0
 
     payload = {
@@ -131,13 +166,20 @@ def main() -> int:
     )
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
-            print(f"IndexNow accepted {len(urls)} url(s): HTTP {r.status}")
-            return 0
+            status = r.status
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", "replace")[:500]
         # 422 = URLs/key mismatch, 403 = key file not reachable, 429 = too often.
         print(f"::error::IndexNow HTTP {exc.code}: {body}", file=sys.stderr)
+        summary(["### IndexNow ❌", "", f"HTTP {exc.code}: `{body[:200]}`"])
         return 1
+
+    print(f"IndexNow accepted {len(urls)} url(s): HTTP {status}")
+    summary(["### IndexNow ✅", "",
+             f"Sent {len(urls)} URL(s) to Bing, Yandex, Seznam and other "
+             f"IndexNow engines (HTTP {status}):", ""]
+            + [f"- {u}" for u in urls])
+    return 0
 
 
 if __name__ == "__main__":
