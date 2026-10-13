@@ -70,7 +70,17 @@ def wait_for_deploy(timeout_s: int = 600, step_s: int = 20) -> bool:
 def main() -> int:
     raw = os.environ.get("GSC_SERVICE_ACCOUNT", "").strip()
     if not raw:
-        print("::notice::GSC_SERVICE_ACCOUNT is not set; skipping sitemap submit")
+        # A warning, not a notice: a green job that never reaches Google is
+        # easy to miss. Still exit 0 so the deploy is not blocked.
+        print("::warning::GSC_SERVICE_ACCOUNT is not set; sitemap NOT submitted "
+              "to Google (see the setup steps at the top of submit_sitemap.py)")
+        summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary_path:
+            with open(summary_path, "a", encoding="utf-8") as fh:
+                fh.write("### Google sitemap submit ⚠️\n\n"
+                         "Skipped: the `GSC_SERVICE_ACCOUNT` secret is not set, "
+                         "so Google only sees changes on its own recrawl. "
+                         "Setup steps: `_design/submit_sitemap.py`.\n")
         return 0
 
     try:

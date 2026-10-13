@@ -10,14 +10,20 @@ on:
 permissions:
   contents: write
 
+# Pin the runner image: ubuntu-latest moves to Ubuntu 26 on 2026-10-19 and the
+# Lighthouse job relies on the browser preinstalled in the image. Bump on purpose.
+
+# Superseded PR runs are cancelled; deploys of the live branch queue instead,
+# because cancelling one would drop its Google / IndexNow submissions (the next
+# run only compares against its own "before" commit).
 concurrency:
   group: site-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
     name: Sitemap + checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -73,7 +79,7 @@ jobs:
 
   lighthouse:
     name: Lighthouse (${{ matrix.form-factor }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
 
     strategy:
@@ -115,7 +121,7 @@ jobs:
 
   submit-sitemap:
     name: Submit sitemap to Google
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     # Only for real deploys of the live branch, never for pull requests.
     if: github.event_name != 'pull_request'
@@ -146,7 +152,7 @@ jobs:
 
   indexnow:
     name: Ping IndexNow (Bing, Yandex)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     # Only for real deploys of the live branch, never for pull requests.
     if: github.event_name != 'pull_request'
