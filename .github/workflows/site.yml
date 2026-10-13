@@ -143,3 +143,32 @@ jobs:
         env:
           GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
         run: python3 _design/submit_sitemap.py --wait
+
+  indexnow:
+    name: Ping IndexNow (Bing, Yandex)
+    runs-on: ubuntu-latest
+    needs: build
+    # Only for real deploys of the live branch, never for pull requests.
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          # indexnow.py diffs the pushed commit range to pick changed pages.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      # Sends only the pages changed in this push (all pages on a manual run),
+      # after waiting for Pages to serve the key file. No secret needed: the
+      # key is public by design and lives at /<key>.txt.
+      - name: Send changed URLs
+        run: |
+          python3 _design/indexnow.py --wait \
+            --before "${{ github.event.before }}" \
+            --after "${{ github.sha }}"
