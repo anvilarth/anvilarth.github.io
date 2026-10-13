@@ -164,11 +164,13 @@ jobs:
         with:
           python-version: '3.12'
 
-      # Sends only the pages changed in this push (all pages on a manual run),
-      # after waiting for Pages to serve the key file. No secret needed: the
-      # key is public by design and lives at /<key>.txt.
+      # Sends the pages whose sitemap <lastmod> changed in this push, or that
+      # are new in the sitemap (all pages on a manual run), once Pages serves
+      # the key file. --after HEAD is the branch tip, so it includes the
+      # sitemap the build job may just have regenerated. No secret needed:
+      # the key is public by design and lives at /<key>.txt.
       - name: Send changed URLs
         run: |
           python3 _design/indexnow.py --wait \
             --before "${{ github.event.before }}" \
-            --after "${{ github.sha }}"
+            --after HEAD

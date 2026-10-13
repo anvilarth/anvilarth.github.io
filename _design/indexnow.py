@@ -2,12 +2,12 @@
 """Ping IndexNow (Bing, Yandex, Seznam, Naver...) about pages changed in a deploy.
 
 Usage (CI):
-    python3 _design/indexnow.py --before <sha> --after <sha> --wait
+    python3 _design/indexnow.py --before <sha> --after HEAD --wait
     python3 _design/indexnow.py --all                 # every page in the sitemap
 
 Options:
-    --before/--after  commit range of the push; sends pages whose HTML or
-                      assets/<slug>/ files changed, plus pages new in sitemap.xml
+    --before/--after  commits to compare sitemap.xml between; sends pages whose
+                      <lastmod> changed, plus pages new in the sitemap
     --all             send every page listed in sitemap.xml
     --wait            poll the live site until the key file is served
                       (GitHub Pages deploys asynchronously)
@@ -60,20 +60,20 @@ def arg(name: str) -> str | None:
 NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
 
-def sitemap_locs(xml_text: str) -> list[str]:
-    """<loc> values of a sitemap, in order. The sitemap is the source of truth:
-    whatever gen_sitemap.py publishes, IndexNow covers, new pages included."""
+def sitemap_entries(xml_text: str) -> dict[str, str]:
+    """{loc: lastmod} of a sitemap, in document order. The sitemap is the
+    single source of truth: IndexNow sends exactly what it says changed."""
     root = ET.fromstring(xml_text)
-    return [el.text.strip() for el in root.findall("sm:url/sm:loc", NS) if el.text]
+    out: dict[str, str] = {}
+    for url in root.findall("sm:url", NS):
+        loc = (url.findtext("sm:loc", "", NS) or "").strip()
+        if loc:
+            out[loc] = (url.findtext("sm:lastmod", "", NS) or "").strip()
+    return out
 
 
 def all_urls() -> list[str]:
-    return sitemap_locs((ROOT / "sitemap.xml").read_text(encoding="utf-8"))
-
-
-def file_for(loc: str) -> str:
-    rel = loc[len(BASE):] or "index.html"
-    return rel + "index.html" if rel.endswith("/") else rel
+    return list(sitemap_entries((ROOT / "sitemap.xml").read_text(encoding="utf-8")))
 
 
 def git(*args: str) -> str:
@@ -82,21 +82,16 @@ def git(*args: str) -> str:
 
 
 def changed_urls(before: str, after: str) -> list[str]:
-    """Pages whose HTML or assets/<slug>/ changed, plus pages that are new in
-    the sitemap since `before`."""
-    changed = set(git("diff", "--name-only", before, after).split())
+    """Pages whose <lastmod> changed between the two sitemaps, plus pages new
+    in the sitemap. gen_sitemap.py keeps lastmod honest (articles use their
+    JSON-LD dateModified, so a template-only rebuild changes nothing), and
+    IndexNow follows it, so the engines hear the same story as the sitemap."""
+    new = sitemap_entries(git("show", f"{after}:sitemap.xml"))
     try:
-        old_locs = set(sitemap_locs(git("show", f"{before}:sitemap.xml")))
+        old = sitemap_entries(git("show", f"{before}:sitemap.xml"))
     except (subprocess.CalledProcessError, ET.ParseError):
-        old_locs = set()
-    urls = []
-    for loc in all_urls():
-        rel = file_for(loc)
-        slug = rel.removesuffix(".html")
-        if (loc not in old_locs or rel in changed
-                or any(f.startswith(f"assets/{slug}/") for f in changed)):
-            urls.append(loc)
-    return urls
+        old = {}
+    return [loc for loc, lastmod in new.items() if old.get(loc) != lastmod]
 
 
 def summary(lines: list[str]) -> None:
