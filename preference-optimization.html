@@ -3,23 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preference Optimization for Diffusion models</title>
-<meta name="description" content="DPO for diffusion models: preference pairs, FiFA, manifold drift, and preserving generation quality.">
+<!-- seo-head -->
+<title>Preference Optimization for Diffusion Models: Diffusion-DPO in Practice</title>
+<meta name="description" content="DPO for diffusion and flow models: choosing preference pairs, FiFA filtering, beta and learning rate, manifold drift, and how to keep generation quality.">
 <link rel="canonical" href="https://anvilarth.github.io/preference-optimization.html">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Andrei Filatov">
-<meta property="og:title" content="Preference Optimization for Diffusion models">
+<meta property="og:title" content="Preference Optimization for Diffusion Models">
 <meta property="og:description" content="DPO for diffusion models: preference pairs, FiFA, manifold drift, and preserving generation quality.">
 <meta property="og:url" content="https://anvilarth.github.io/preference-optimization.html">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="ru_RU">
 <meta property="og:image" content="https://anvilarth.github.io/assets/preference-optimization/visuals/selected/dpo_cinematic.png">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-10-11">
+<meta property="article:modified_time" content="2026-10-13">
+<meta property="article:author" content="Andrei Filatov">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Preference Optimization for Diffusion models">
+<meta name="twitter:creator" content="@anvilapex">
+<meta name="twitter:title" content="Preference Optimization for Diffusion Models">
 <meta name="twitter:description" content="DPO for diffusion models: preference pairs, FiFA, manifold drift, and preserving generation quality.">
 <meta name="twitter:image" content="https://anvilarth.github.io/assets/preference-optimization/visuals/selected/dpo_cinematic.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Preference Optimization for Diffusion models", "inLanguage": ["en", "ru"], "datePublished": "2026-10-11", "author": {"@type": "Person", "name": "Andrei Filatov", "url": "https://anvilarth.github.io/"}, "mainEntityOfPage": "https://anvilarth.github.io/preference-optimization.html", "description": "DPO for diffusion models: preference pairs, FiFA, manifold drift, and preserving generation quality."}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Preference Optimization for Diffusion Models: Diffusion-DPO in Practice", "description": "DPO for diffusion and flow models: choosing preference pairs, FiFA filtering, beta and learning rate, manifold drift, and how to keep generation quality.", "author": {"@type": "Person", "@id": "https://anvilarth.github.io/#person", "name": "Andrei Filatov", "url": "https://anvilarth.github.io/"}, "datePublished": "2026-10-11", "dateModified": "2026-10-13", "inLanguage": "en", "image": "https://anvilarth.github.io/assets/preference-optimization/visuals/selected/dpo_cinematic.png", "mainEntityOfPage": "https://anvilarth.github.io/preference-optimization.html"}</script>
+<!-- /seo-head -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="assets/preference-optimization/vendor/katex/katex.min.css">
 <script>(function(){try{var q=new URLSearchParams(location.search).get('theme');var t=(q==='dark'||q==='light')?q:localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
 <style>/* Article-specific equations, examples and diagrams. */

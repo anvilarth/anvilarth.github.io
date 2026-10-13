@@ -37,6 +37,9 @@ jobs:
       - name: Check shared longread template
         run: python3 _design/longread_template.py --check
 
+      - name: Check static English text of bilingual posts
+        run: python3 _design/bake_en.py --check
+
       - name: Run site checks
         run: python3 _design/check_site.py
 

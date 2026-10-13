@@ -5,11 +5,14 @@ Usage:
     python3 _design/gen_sitemap.py           # write sitemap.xml
     python3 _design/gen_sitemap.py --check   # exit 1 if sitemap.xml is stale
 
-lastmod is the author date of the last commit that touched the file,
-in W3C / ISO-8601 form with timezone offset. Falls back to the file's
-mtime for files not yet committed.
+lastmod is the page's JSON-LD dateModified when it declares one (articles:
+a template-only rebuild must not look like a content update). Otherwise it
+is the author date of the last commit that touched the file, in W3C /
+ISO-8601 form with timezone offset, falling back to the file's mtime for
+files not yet committed.
 """
 
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -52,12 +55,17 @@ def mtime_lastmod(path: Path) -> str:
     return ts.astimezone().replace(microsecond=0).isoformat()
 
 
+def declared_lastmod(path: Path) -> str | None:
+    match = re.search(r'"dateModified":\s*"([^"]+)"', path.read_text(encoding="utf-8"))
+    return match.group(1) if match else None
+
+
 def lastmod_for(rel_path: str) -> str | None:
     path = ROOT / rel_path
     if not path.exists():
         print(f"  ! missing file, skipped: {rel_path}", file=sys.stderr)
         return None
-    return git_lastmod(rel_path) or mtime_lastmod(path)
+    return declared_lastmod(path) or git_lastmod(rel_path) or mtime_lastmod(path)
 
 
 def build() -> str:
