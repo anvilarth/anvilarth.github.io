@@ -20,6 +20,7 @@ W, H = 1280, 720
 
 PROJECTS = [
     # (output name, label, title_html, tag, domain)
+    ("krea3",         "2026 · Krea",            "<em>Krea</em> 3",                    "image editing",     "krea.ai"),
     ("krea2",         "2026 · Krea",            "<em>Krea</em> 2",                    "foundation model",  "krea.ai"),
     ("calculator",    "2026 · Interactive tool", "Realtime <em>Video</em> Calculator", "first-principles",  "anvilarth.github.io"),
     ("flux",          "2024 · XLabs",            "XLabs <em>FLUX</em> LoRAs",          "style adapters",    "huggingface.co"),
