@@ -17,7 +17,7 @@ Communicate with the user in Russian. Keep repository instructions in English.
     `/<slug>.html`, `post.md` / `post.en.md` as `/<slug>.md` / `/<slug>.en.md`
     (Markdown mirrors for LLMs), every other file under `/assets/<slug>/`.
     An empty `DRAFT` file keeps the post out of the build.
-  - `pages/` — hand-made pages (home, blog, projects, calculator), published at
+  - `pages/` — hand-made pages (home, blog, projects), published at
     the site root. `static/` — files copied to the root as is (icons, fonts,
     robots, llms.txt, verification files).
   - `templates/longread/` — the shared longread template. `builder/` — the
