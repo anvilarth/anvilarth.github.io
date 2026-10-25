@@ -82,6 +82,8 @@ jobs:
     name: Lighthouse (${{ matrix.form-factor }})
     runs-on: ubuntu-24.04
     needs: build
+    # Slow and noisy: run only on demand (Actions → Site → Run workflow).
+    if: github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
