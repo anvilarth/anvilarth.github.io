@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Pre-deploy sanity checks for anvilarth.github.io.
 
 Checks:

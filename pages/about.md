@@ -73,7 +73,7 @@ deep learning course.
 
 Long-form technical essays, in Russian and English, on ML, GPU architecture, and inference.
 
-- [Age of Autoresearch](https://anvilarth.github.io/autoresearch.html) ([markdown](https://anvilarth.github.io/autoresearch.md))
+- [Age of Autoresearch](https://anvilarth.github.io/autoresearch.html) ([RU markdown](https://anvilarth.github.io/autoresearch.md), [EN markdown](https://anvilarth.github.io/autoresearch.en.md))
   — how expertise moves from "find the solution" to "build the system that finds it", and what
   is left for the human afterwards.
 - [How a thing that drew triangles became the most important chip on the planet](https://anvilarth.github.io/gpu-story.html)

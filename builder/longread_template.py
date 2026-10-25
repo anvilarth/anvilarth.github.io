@@ -4,7 +4,7 @@ Used by build_publication.py and by the article builders in tg_channel.
 """
 import re
 
-from .paths import ROOT, TEMPLATE
+from .paths import TEMPLATE
 START = '<!-- shared-longread-template -->'
 END = '<!-- /shared-longread-template -->'
 
@@ -15,8 +15,9 @@ def footer():
 def apply_template(page, slug):
     page = re.sub(re.escape(START) + r'.*?' + re.escape(END) + r'\n?', '', page, flags=re.S)
     # All pages receive the exact same styles; embedding also works on file://.
-    css = (TEMPLATE / 'style.css').read_text() + (TEMPLATE / 'footer.css').read_text() + '\n' + (ROOT / 'static/post-toc.css').read_text()
+    css = (TEMPLATE / 'style.css').read_text() + (TEMPLATE / 'footer.css').read_text() + '\n' + (TEMPLATE / 'post-toc.css').read_text()
     page = re.sub(r'<script\b[^>]*src=[\"\']/post-toc.js[\"\'][^>]*></script>', '', page)
+    page = re.sub(r'<link\b[^>]*href=[\"\']/post-toc.css[\"\'][^>]*>\n?', '', page)
     toc = (TEMPLATE / 'post-toc.js').read_text()
     block = START + '\n<style data-template="longread">' + css + '</style>\n<script data-template="toc">' + toc + '</script>\n' + END + '\n'
     assert '</head>' in page

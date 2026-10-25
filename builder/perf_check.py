@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Lighthouse budgets for anvilarth.github.io, mobile and desktop.
 
 Serves the working tree over HTTP, runs Lighthouse against every page in

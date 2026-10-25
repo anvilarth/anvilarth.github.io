@@ -5,10 +5,10 @@ All published longreads use this template: GPU Story, Autoresearch, Preference O
 - `footer.html` and `footer.css`: identical bilingual agent-links block for all four blog articles, including the realtime video calculator. No per-article Markdown links.
 - `style.css`: common fonts, palette, navigation, typography, chapters, callouts, sources and footer.
 - `nav.html`: navigation markup for new article builders; preserve `setLang`, `btn-ru`, `btn-en`, `theme-btn` when wiring controls.
-- `post-toc.js` and `../../static/post-toc.css`: chapter-only sidebar, including sources.
+- `post-toc.js` and `post-toc.css`: chapter-only sidebar, including sources.
 - `../../builder/longread_template.py`: embeds the common styles and renders the same bilingual footer, with exactly the same two links on every article: `/llms.txt` and `/llms-full.txt`.
 
-The template is applied at build time (`uv run builder build`); sources never contain its output. A new longread is registered in `builder/locales.json`.
+The build strips and re-applies everything between the `<!-- shared-longread-template -->` markers in a post, so never edit that block in a source: edit the files here. To add a longread, follow the publication workflow in `../../AGENTS.md`.
 
 Use `<aside class="closing-takeaway"><p>…</p><p>…</p></aside>` for an explicitly selected concluding callout. It remains highlighted in both themes and both languages. Do not infer or rewrite a conclusion automatically.
 

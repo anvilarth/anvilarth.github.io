@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Ping IndexNow (Bing, Yandex, Seznam, Naver...) about pages changed in a deploy.
 
 Usage (CI, after `builder build`):

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Submit sitemap.xml to Google Search Console after a deploy.
 
 Usage (CI):

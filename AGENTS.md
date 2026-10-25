@@ -17,15 +17,20 @@ Communicate with the user in Russian. Keep repository instructions in English.
     `/<slug>.html`, `post.md` / `post.en.md` as `/<slug>.md` / `/<slug>.en.md`
     (Markdown mirrors for LLMs), every other file under `/assets/<slug>/`.
     An empty `DRAFT` file keeps the post out of the build.
-  - `pages/` — hand-made pages (home, blog, projects), published at
-    the site root. `static/` — files copied to the root as is (icons, fonts,
-    robots, llms.txt, verification files).
+  - `pages/` — hand-made pages (home, blog, projects, `about.md` profile),
+    published at the site root. `static/` — files copied to the root as is
+    (icons, fonts, robots, `llms.txt`, shared scripts, images). Some are used
+    without any link from the site, so keep them at their URLs: `favicon.ico`
+    (browsers request it), `googlef9829f193c6aa21c.html` (Search Console
+    ownership), the IndexNow key `b16ed2af….txt`, and `img/og/banner-2x.jpg`
+    (the GitHub profile README embeds it).
   - `templates/` — never published: the shared longread template
     (`longread/`) and the sources of generated images (`og.html` for social
     cards, `apple-touch-icon.svg`, `project-covers.py` for project covers).
     `builder/` — the Python build (`uv run builder ...`).
 - `dist/` is the build output: never edit or commit it. GitHub Actions builds it
-  and deploys it to Pages. `*.ru.html` and `sitemap.xml` exist only in `dist/`.
+  and deploys it to Pages. `*.ru.html`, `sitemap.xml` and `llms-full.txt`
+  (the profile plus every Markdown mirror) exist only in `dist/`.
 - English `post.html` files hold the bilingual translation data and are the
   source for localized output.
 - Do not create Markdown mirrors of articles unless the user asks for them.
