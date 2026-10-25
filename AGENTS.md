@@ -4,8 +4,9 @@ Communicate with the user in Russian. Keep repository instructions in English.
 
 ## Scope and sources
 
-- GitHub Pages publishes `gh-pages`. `master` is an older application, not the
-  current website. Check the branch and working changes before editing.
+- `master` is the only branch; GitHub Pages publishes it. Do not create
+  long-lived branches. The pre-2026-10 `master` application history is kept only
+  as local tags `archive/master-*`. Check working changes before editing.
 - Preserve the existing design and unrelated content. Use scoped commits.
 - DPO's editorial source and builder live in the adjacent `tg_channel` project,
   under `posts/preference_optimization/`. Follow that project's instructions if
@@ -46,6 +47,39 @@ CI rejects stale generated publication files. Do not bypass failing checks.
 The user has paused test execution: do not run unit, integration, smoke or
 browser test suites unless explicitly requested. Structural/source checks above
 remain enabled. Do not disable existing CI as part of unrelated work.
+
+## Web interface rules
+
+Every page and article builder (including builders in `tg_channel`) follows
+these rules, adapted from the Vercel Web Interface Guidelines
+(https://vercel.com/design/guidelines) for a static reading site. Check new
+pages against them before publication.
+
+- Static HTML carries the page's language. Text, `alt`, `aria-label` and
+  `title` are baked in that language; JavaScript may switch languages but must
+  never be what puts the page's own language on screen. A page marked
+  `lang="ru"` must not ship English text in its markup.
+- Russian text binds short words (`в`, `к`, `с`, `и`, `на`, `по`, `не`, ...) and
+  numbers to the next word with non-breaking spaces. Use «» quotes, `…` and `—`.
+- Headings use `text-wrap: balance`; paragraphs, list items and captions use
+  `text-wrap: pretty`.
+- Any horizontally scrollable region (wide KaTeX formulas, code, tables) gets
+  `tabindex="0"` so keyboard users can scroll it.
+- Interactive targets are at least 24px, and 44px under `pointer: coarse`;
+  expand padding with a matching negative margin instead of moving the layout.
+  Controls set `touch-action: manipulation`.
+- Visible `:focus-visible` outlines, a skip link to the article, and
+  `scroll-margin-top` on every linked heading so the sticky nav never covers it.
+- Set `color-scheme` (light/dark, following `data-theme`) and `theme-color`
+  metas for both schemes; a manual theme switch also updates `theme-color`.
+- Honour `prefers-reduced-motion`; animate only `transform` and `opacity`;
+  never use `transition: all`.
+- Images declare `width`/`height`; only above-the-fold images load eagerly.
+  Preload the body-text font file for the page's language.
+- Navigation uses real links; state worth sharing (language, theme, section)
+  lives in the URL. Never block zoom or paste.
+- Do not apply Vercel's brand copywriting rules (Title Case, `&` for "and",
+  second person) to article prose; the author's editorial rules govern text.
 
 ## Language pages and tools
 

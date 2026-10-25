@@ -2,9 +2,9 @@ name: Site
 
 on:
   push:
-    branches: [gh-pages]
+    branches: [master]
   pull_request:
-    branches: [gh-pages]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -135,7 +135,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: gh-pages
+          ref: master
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -164,7 +164,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: gh-pages
+          ref: master
           # indexnow.py diffs the pushed commit range to pick changed pages.
           fetch-depth: 0
 
