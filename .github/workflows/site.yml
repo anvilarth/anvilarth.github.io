@@ -8,77 +8,75 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 # Pin the runner image: ubuntu-latest moves to Ubuntu 26 on 2026-10-19 and the
 # Lighthouse job relies on the browser preinstalled in the image. Bump on purpose.
 
 # Superseded PR runs are cancelled; deploys of the live branch queue instead,
-# because cancelling one would drop its Google / IndexNow submissions (the next
-# run only compares against its own "before" commit).
+# because cancelling one would drop its Google / IndexNow submissions.
 concurrency:
   group: site-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
-    name: Sitemap + checks
+    name: Build + checks
     runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          # gen_sitemap.py reads commit dates, so it needs the full history.
+          # The sitemap takes lastmod from commit dates, so it needs the full history.
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.2
         with:
           python-version: '3.12'
 
-      - name: Check publication outputs (Latest, analytics, languages)
-        run: python3 -B _design/build_publication.py --check
-
-      - name: Regenerate sitemap.xml
-        run: python3 _design/gen_sitemap.py
-
-      - name: Check shared longread template
-        run: python3 _design/longread_template.py --check
-
-      - name: Check static English text of bilingual posts
-        run: python3 _design/bake_en.py --check
+      - name: Build dist/
+        run: uv run --frozen builder build
 
       - name: Run site checks
-        run: python3 _design/check_site.py
+        run: uv run --frozen builder check
 
-      - name: Show sitemap diff
-        run: git --no-pager diff -- sitemap.xml || true
-
-      # On a pull request we only report; nothing is committed.
-      - name: Fail if sitemap is stale (pull request)
-        if: github.event_name == 'pull_request'
-        run: |
-          if [ -n "$(git status --porcelain sitemap.xml)" ]; then
-            echo "::error file=sitemap.xml::sitemap.xml is out of date."
-            echo "Run: python3 _design/gen_sitemap.py"
-            exit 1
-          fi
-          echo "sitemap.xml is up to date"
-
-      # On a push to the live branch we fix it in place and commit back.
-      - name: Commit refreshed sitemap
+      # IndexNow sends the pages whose lastmod changed against what is live now,
+      # so keep the current live sitemap before this deploy replaces it.
+      - name: Save the live sitemap
         if: github.event_name != 'pull_request'
-        run: |
-          if [ -z "$(git status --porcelain sitemap.xml)" ]; then
-            echo "sitemap.xml already up to date, nothing to commit"
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sitemap.xml
-          git commit -m "chore(seo): regenerate sitemap.xml [skip ci]"
-          git push
+        run: curl -fsS "https://anvilarth.github.io/sitemap.xml?nocache=$(date +%s)" -o live-sitemap.xml || touch live-sitemap.xml
+
+      - name: Keep the live sitemap for IndexNow
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: live-sitemap
+          path: live-sitemap.xml
+
+      - name: Upload the site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-24.04
+    needs: build
+    if: github.event_name != 'pull_request'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5
 
   lighthouse:
     name: Lighthouse (${{ matrix.form-factor }})
@@ -93,9 +91,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.2
         with:
           python-version: '3.12'
 
@@ -111,13 +111,16 @@ jobs:
           fi
           "$BIN" --version
 
+      - name: Build dist/
+        run: uv run --frozen builder build
+
       # CLS, a11y and SEO are hard budgets and fail the job; the performance
       # score and LCP/TBT only warn, because they track the runner's CPU.
       # The full table lands in the job summary. --chrome-profile keeps the
       # headless run in a dedicated --user-data-dir on the runner's scratch disk.
       - name: Lighthouse budgets
         run: |
-          python3 _design/perf_check.py \
+          uv run --frozen builder perf \
             --form-factor ${{ matrix.form-factor }} \
             --runs 3 \
             --chrome-profile "$RUNNER_TEMP/lighthouse-chrome-profile"
@@ -125,25 +128,21 @@ jobs:
   submit-sitemap:
     name: Submit sitemap to Google
     runs-on: ubuntu-24.04
-    needs: build
-    # Only for real deploys of the live branch, never for pull requests.
-    if: github.event_name != 'pull_request'
+    needs: deploy
 
     steps:
-      # The build job may have pushed a regenerated sitemap.xml, so check out
-      # the branch tip rather than the triggering commit.
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: master
+          fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.2
         with:
           python-version: '3.12'
 
-      - name: Install client
-        run: pip install --quiet google-auth requests
+      - name: Build dist/
+        run: uv run --frozen builder build
 
       # Waits (up to 10 min) for GitHub Pages to serve the new sitemap, then
       # resubmits it via the Search Console API. Skips cleanly while the
@@ -151,35 +150,34 @@ jobs:
       - name: Submit sitemap.xml
         env:
           GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
-        run: python3 _design/submit_sitemap.py --wait
+        run: uv run --frozen --group seo builder submit-sitemap --wait
 
   indexnow:
     name: Ping IndexNow (Bing, Yandex)
     runs-on: ubuntu-24.04
-    needs: build
-    # Only for real deploys of the live branch, never for pull requests.
-    if: github.event_name != 'pull_request'
+    needs: deploy
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: master
-          # indexnow.py diffs the pushed commit range to pick changed pages.
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.2
         with:
           python-version: '3.12'
 
-      # Sends the pages whose sitemap <lastmod> changed in this push, or that
-      # are new in the sitemap (all pages on a manual run), once Pages serves
-      # the key file. --after HEAD is the branch tip, so it includes the
-      # sitemap the build job may just have regenerated. No secret needed:
-      # the key is public by design and lives at /<key>.txt.
+      - name: Build dist/
+        run: uv run --frozen builder build
+
+      - name: Get the sitemap that was live before this deploy
+        uses: actions/download-artifact@v8
+        with:
+          name: live-sitemap
+
+      # Sends the pages whose sitemap <lastmod> changed in this deploy, or that
+      # are new in the sitemap, once Pages serves the key file. No secret
+      # needed: the key is public by design and lives at /<key>.txt.
       - name: Send changed URLs
-        run: |
-          python3 _design/indexnow.py --wait \
-            --before "${{ github.event.before }}" \
-            --after HEAD
+        run: uv run --frozen builder indexnow --wait --previous live-sitemap.xml

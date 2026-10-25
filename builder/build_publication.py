@@ -1,22 +1,18 @@
-#!/usr/bin/env python3
-"""Build/check Latest, analytics and static language pages from existing sources.
+"""Finish the pages in dist/: shared template, analytics, static language pages and Latest.
 
-Run before gen_sitemap.py. --check is read-only and fails on stale outputs.
+Runs on the copies in dist/, before the sitemap is generated.
 Blog cards supply Latest copy; article JSON-LD supplies publication dates.
 """
-import argparse
 import html
 import json
 import re
 from datetime import datetime
-from pathlib import Path
 
-from bake_en import Finder, bake, load_T
-from longread_template import apply_template, apply_tool_footer
+from .bake_en import Finder, bake, load_T
+from .longread_template import apply_template, apply_tool_footer
+from .paths import BASE, DIST, ROOT
 
-ROOT = Path(__file__).resolve().parent.parent
-BASE = 'https://anvilarth.github.io/'
-LOCALES = json.loads((ROOT / '_design/locales.json').read_text())
+LOCALES = json.loads((ROOT / 'builder/locales.json').read_text())
 ANALYTICS = '<script data-goatcounter="https://anvilarth.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>'
 
 
@@ -142,8 +138,8 @@ def latest_block(blog, pages):
 
 
 def build():
-    from gen_sitemap import BASE_PAGES
-    pages = {name: (ROOT / name).read_text() for name, _, _ in BASE_PAGES}
+    from .gen_sitemap import BASE_PAGES
+    pages = {name: (DIST / name).read_text() for name, _, _ in BASE_PAGES}
     for slug in LOCALES:
         name = slug + '.html'
         source = analytics(apply_template(language_runtime(pages[name]), slug))
@@ -159,21 +155,6 @@ def build():
     return pages
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--check', action='store_true')
-    args = parser.parse_args()
-    changed = []
+def write():
     for name, content in build().items():
-        path = ROOT / name
-        if not path.exists() or path.read_text() != content:
-            changed.append(name)
-            if not args.check:
-                path.write_text(content)
-    if changed and args.check:
-        raise SystemExit('Stale publication outputs: ' + ', '.join(changed) + '; run python3 -B _design/build_publication.py')
-    print('Publication outputs: ' + (', '.join(changed) or 'up to date'))
-
-
-if __name__ == '__main__':
-    main()
+        (DIST / name).write_text(content)

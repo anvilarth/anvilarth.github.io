@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Ping IndexNow (Bing, Yandex, Seznam, Naver...) about pages changed in a deploy.
 
-Usage (CI):
-    python3 _design/indexnow.py --before <sha> --after HEAD --wait
-    python3 _design/indexnow.py --all                 # every page in the sitemap
+Usage (CI, after `builder build`):
+    uv run builder indexnow --previous live-sitemap.xml --wait
+    uv run builder indexnow --all                     # every page in the sitemap
 
 Options:
-    --before/--after  commits to compare sitemap.xml between; sends pages whose
-                      <lastmod> changed, plus pages new in the sitemap
+    --previous FILE   the sitemap that was live before this deploy; sends pages
+                      whose <lastmod> changed, plus pages new in the sitemap
     --all             send every page listed in sitemap.xml
     --wait            poll the live site until the key file is served
                       (GitHub Pages deploys asynchronously)
@@ -15,7 +15,7 @@ Options:
 
 How it works: the key is not a secret. IndexNow proves site ownership by
 fetching https://anvilarth.github.io/<key>.txt and checking that it contains
-the key, so the key file lives in the repo root. One request to
+the key, so the key file is published at the site root. One request to
 api.indexnow.org is shared with every participating search engine.
 
 Google does not use IndexNow; submit_sitemap.py covers Google.
@@ -23,30 +23,26 @@ Google does not use IndexNow; submit_sitemap.py covers Google.
 
 import json
 import re
-import subprocess
 import sys
 import time
 import urllib.error
 import urllib.request
+import os
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "_design"))
-from gen_sitemap import BASE  # noqa: E402
-import xml.etree.ElementTree as ET  # noqa: E402
-import os  # noqa: E402
+from .paths import BASE, DIST
 
 HOST = "anvilarth.github.io"
 ENDPOINT = "https://api.indexnow.org/indexnow"
-ZERO_SHA = "0" * 40
 
 
 def find_key() -> str:
-    for path in ROOT.glob("*.txt"):
+    for path in DIST.glob("*.txt"):
         if re.fullmatch(r"[0-9a-f]{32}", path.stem):
             if path.read_text(encoding="utf-8").strip() == path.stem:
                 return path.stem
-    raise SystemExit("::error::no IndexNow key file (<32 hex>.txt) in the repo root")
+    raise SystemExit("::error::no IndexNow key file (<32 hex>.txt) in dist/")
 
 
 def arg(name: str) -> str | None:
@@ -73,23 +69,18 @@ def sitemap_entries(xml_text: str) -> dict[str, str]:
 
 
 def all_urls() -> list[str]:
-    return list(sitemap_entries((ROOT / "sitemap.xml").read_text(encoding="utf-8")))
+    return list(sitemap_entries((DIST / "sitemap.xml").read_text(encoding="utf-8")))
 
 
-def git(*args: str) -> str:
-    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True,
-                          text=True, check=True).stdout
-
-
-def changed_urls(before: str, after: str) -> list[str]:
-    """Pages whose <lastmod> changed between the two sitemaps, plus pages new
-    in the sitemap. gen_sitemap.py keeps lastmod honest (articles use their
+def changed_urls(previous: Path) -> list[str]:
+    """Pages whose <lastmod> changed against the previously live sitemap, plus
+    pages new in it. gen_sitemap.py keeps lastmod honest (articles use their
     JSON-LD dateModified, so a template-only rebuild changes nothing), and
     IndexNow follows it, so the engines hear the same story as the sitemap."""
-    new = sitemap_entries(git("show", f"{after}:sitemap.xml"))
+    new = sitemap_entries((DIST / "sitemap.xml").read_text(encoding="utf-8"))
     try:
-        old = sitemap_entries(git("show", f"{before}:sitemap.xml"))
-    except (subprocess.CalledProcessError, ET.ParseError):
+        old = sitemap_entries(previous.read_text(encoding="utf-8"))
+    except (OSError, ET.ParseError):
         old = {}
     return [loc for loc, lastmod in new.items() if old.get(loc) != lastmod]
 
@@ -123,16 +114,11 @@ def wait_for_key(key: str, timeout_s: int = 600, step_s: int = 20) -> None:
 
 def main() -> int:
     key = find_key()
-    before, after = arg("--before"), arg("--after")
-
-    if "--all" in sys.argv or not before or before == ZERO_SHA or not after:
+    previous = arg("--previous")
+    if "--all" in sys.argv or not previous:
         urls = all_urls()
     else:
-        try:
-            urls = changed_urls(before, after)
-        except subprocess.CalledProcessError:
-            print("::notice::commit range not available, sending every page")
-            urls = all_urls()
+        urls = changed_urls(Path(previous))
 
     if not urls:
         print("no published pages changed; nothing to send")

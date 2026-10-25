@@ -1,12 +1,8 @@
-"""Keep English as the static, indexable text of bilingual longreads.
+"""Bake a language from a page's translation data into its static HTML.
 
-python3 _design/bake_en.py          # bake T[key].en into every [data-i18n] element
-python3 _design/bake_en.py --check  # fail when static HTML drifts from T
-
-English HTML is the editable source. build_publication.py also produces static
-Russian pages from the same translation data. Never edit generated RU files.
+build_publication.py uses it for both the English and the Russian page.
 """
-import html, json, re, subprocess, sys
+import html, json, re, subprocess
 from html.parser import HTMLParser
 
 VOID = {'area','base','br','col','embed','hr','img','input','link','meta','source','track','wbr'}
@@ -72,20 +68,3 @@ def bake(src, lang='en'):
         val = T[key][lang] if is_html else html.escape(T[key][lang], quote=False)
         out = out[:start] + val + out[end:]
     return out, len(f.hits)
-
-SITE = __import__('pathlib').Path(__file__).resolve().parent.parent
-PAGES = ('gpu-story.html', 'autoresearch.html', 'preference-optimization.html')
-
-if __name__ == '__main__':
-    stale = []
-    for name in PAGES:
-        path = SITE / name
-        src = path.read_text(encoding='utf-8')
-        out, n = bake(src)
-        if out != src:
-            stale.append(name)
-            if '--check' not in sys.argv:
-                path.write_text(out, encoding='utf-8')
-    if '--check' in sys.argv and stale:
-        raise SystemExit('Static English text is stale: ' + ', '.join(stale) + ' (run python3 _design/bake_en.py)')
-    print('Static English text: ' + ('verified' if '--check' in sys.argv else 'baked'))

@@ -38,7 +38,7 @@ from pathlib import Path
 from urllib.parse import unquote
 
 BASE = "https://anvilarth.github.io/"
-ROOT = Path(__file__).resolve().parent.parent
+from .paths import DIST as ROOT
 NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 LIGHTHOUSE = "lighthouse@12"
 

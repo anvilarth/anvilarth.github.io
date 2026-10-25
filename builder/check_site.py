@@ -19,11 +19,9 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 BASE = "https://anvilarth.github.io/"
-ROOT = Path(__file__).resolve().parent.parent
+from .paths import DIST as ROOT
 NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
-# Files that exist on disk but are deliberately not linked / not in the sitemap.
-IGNORED_PREFIXES = ("_design/", "_drafts/", ".git/", ".github/")
 
 errors: list[str] = []
 warnings: list[str] = []

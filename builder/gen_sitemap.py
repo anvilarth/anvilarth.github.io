@@ -1,15 +1,11 @@
-#!/usr/bin/env python3
-"""Regenerate sitemap.xml with lastmod taken from git commit dates.
-
-Usage:
-    python3 _design/gen_sitemap.py           # write sitemap.xml
-    python3 _design/gen_sitemap.py --check   # exit 1 if sitemap.xml is stale
+"""Write dist/sitemap.xml with lastmod taken from the source files' history.
 
 lastmod is the page's JSON-LD dateModified when it declares one (articles:
 a template-only rebuild must not look like a content update). Otherwise it
-is the author date of the last commit that touched the file, in W3C /
-ISO-8601 form with timezone offset, falling back to the file's mtime for
-files not yet committed.
+is the author date of the last commit that changed the page's source file,
+following renames so that moving a file does not count as an update, in
+W3C / ISO-8601 form with timezone offset, falling back to the file's mtime
+for files not yet committed.
 """
 
 import re
@@ -19,11 +15,11 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-BASE = "https://anvilarth.github.io/"
-ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "sitemap.xml"
+from .paths import BASE, DIST, ROOT
 
-# (path relative to repo root, url path, priority)
+OUT = DIST / "sitemap.xml"
+
+# (path relative to dist/, url path, priority)
 # url path "" means the site root.
 #
 # HTML pages only. The .md mirrors and llms.txt are for LLM crawlers
@@ -38,19 +34,25 @@ BASE_PAGES = [
     ("projects.html",                  "projects.html",                 "0.8"),
     ("realtime-video-calculator.html", "realtime-video-calculator.html","0.7"),
 ]
-LOCALES = json.loads((ROOT / '_design/locales.json').read_text())
+LOCALES = json.loads((ROOT / 'builder/locales.json').read_text())
 PAGES = BASE_PAGES + [(slug + '.ru.html', slug + '.ru.html', '0.9') for slug in LOCALES]
 
 
-def git_lastmod(rel_path: str) -> str | None:
+def git_lastmod(source: Path) -> str | None:
+    # --follow keeps history across moves; pure renames (R100) are not edits.
     try:
-        out = subprocess.run(
-            ["git", "log", "-1", "--format=%aI", "--", rel_path],
+        log = subprocess.run(
+            ["git", "log", "--follow", "--name-status", "--format=%x00%aI", "--",
+             source.relative_to(ROOT).as_posix()],
             cwd=ROOT, capture_output=True, text=True, check=True,
-        ).stdout.strip()
-        return out or None
-    except (subprocess.CalledProcessError, FileNotFoundError):
+        ).stdout
+    except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
         return None
+    for entry in log.split("\0")[1:]:
+        date, _, status = entry.strip().partition("\n")
+        if not status.strip().startswith("R100"):
+            return date
+    return None
 
 
 def mtime_lastmod(path: Path) -> str:
@@ -63,22 +65,22 @@ def declared_lastmod(path: Path) -> str | None:
     return match.group(1) if match else None
 
 
-def lastmod_for(rel_path: str) -> str | None:
-    path = ROOT / rel_path
+def lastmod_for(rel_path: str, sources: dict[str, Path]) -> str | None:
+    path = DIST / rel_path
     if not path.exists():
         print(f"  ! missing file, skipped: {rel_path}", file=sys.stderr)
         return None
-    source_path = rel_path.replace('.ru.html', '.html')
-    return declared_lastmod(path) or git_lastmod(source_path) or mtime_lastmod(ROOT / source_path)
+    source = sources[rel_path.replace('.ru.html', '.html')]
+    return declared_lastmod(path) or git_lastmod(source) or mtime_lastmod(source)
 
 
-def build() -> str:
+def build(sources: dict[str, Path]) -> str:
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ]
     for rel_path, url_path, priority in PAGES:
-        lastmod = lastmod_for(rel_path)
+        lastmod = lastmod_for(rel_path, sources)
         if lastmod is None:
             continue
         loc = BASE + url_path
@@ -91,20 +93,6 @@ def build() -> str:
     return "\n".join(lines) + "\n"
 
 
-def main() -> int:
-    new = build()
-    check = "--check" in sys.argv
-    old = OUT.read_text(encoding="utf-8") if OUT.exists() else ""
-    if new == old:
-        print("sitemap.xml is up to date")
-        return 0
-    if check:
-        print("sitemap.xml is STALE - run: python3 _design/gen_sitemap.py", file=sys.stderr)
-        return 1
-    OUT.write_text(new, encoding="utf-8")
+def write(sources: dict[str, Path]) -> None:
+    OUT.write_text(build(sources), encoding="utf-8")
     print(f"wrote {OUT.relative_to(ROOT)} ({len(PAGES)} urls)")
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

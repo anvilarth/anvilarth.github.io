@@ -1,0 +1,21 @@
+[project]
+name = "anvilarth-site"
+version = "0.1.0"
+description = "Build and publish anvilarth.github.io"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+builder = "builder.__main__:main"
+
+[dependency-groups]
+# Only the Google sitemap submission needs third-party packages.
+seo = ["google-auth==2.62.0", "requests==2.34.2"]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "builder"
+module-root = ""

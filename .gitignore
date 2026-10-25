@@ -3,3 +3,7 @@
 .env.*
 __pycache__/
 *.pyc
+
+# Built site and local environment.
+dist/
+.venv/

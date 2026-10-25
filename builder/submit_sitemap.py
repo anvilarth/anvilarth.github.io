@@ -2,7 +2,7 @@
 """Submit sitemap.xml to Google Search Console after a deploy.
 
 Usage (CI):
-    GSC_SERVICE_ACCOUNT='<service account JSON>' python3 _design/submit_sitemap.py
+    GSC_SERVICE_ACCOUNT='<service account JSON>' uv run builder submit-sitemap
 
 Options:
     --wait        poll the live site until the deployed sitemap.xml matches
@@ -37,14 +37,14 @@ from urllib.parse import quote
 
 SITE = "https://anvilarth.github.io/"
 SITEMAP = SITE + "sitemap.xml"
-ROOT = Path(__file__).resolve().parent.parent
+from .paths import DIST
 SCOPE = "https://www.googleapis.com/auth/webmasters"
 API = "https://www.googleapis.com/webmasters/v3/sites/{site}/sitemaps/{feed}"
 
 
 def wait_for_deploy(timeout_s: int = 600, step_s: int = 20) -> bool:
     """Poll the live sitemap until it matches the repo copy."""
-    expected = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+    expected = (DIST / "sitemap.xml").read_text(encoding="utf-8")
     deadline = time.time() + timeout_s
     while True:
         try:
@@ -80,7 +80,7 @@ def main() -> int:
                 fh.write("### Google sitemap submit ⚠️\n\n"
                          "Skipped: the `GSC_SERVICE_ACCOUNT` secret is not set, "
                          "so Google only sees changes on its own recrawl. "
-                         "Setup steps: `_design/submit_sitemap.py`.\n")
+                         "Setup steps: `builder/submit_sitemap.py`.\n")
         return 0
 
     try:
