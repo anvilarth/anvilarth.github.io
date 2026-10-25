@@ -12,38 +12,56 @@ Communicate with the user in Russian. Keep repository instructions in English.
   under `posts/preference_optimization/`. Follow that project's instructions if
   editing its prose. After importing any rebuilt article, run this site's
   publication build; do not publish the raw builder output directly.
-- Root English HTML files contain the bilingual translation data and are the
-  source for localized output. `*.ru.html` files are generated: never edit them.
+- Repository layout. Only these folders hold site sources:
+  - `posts/<slug>/` — one folder per article. `post.html` is published as
+    `/<slug>.html`, `post.md` / `post.en.md` as `/<slug>.md` / `/<slug>.en.md`
+    (Markdown mirrors for LLMs), every other file under `/assets/<slug>/`.
+    An empty `DRAFT` file keeps the post out of the build.
+  - `pages/` — hand-made pages (home, blog, projects, calculator), published at
+    the site root. `static/` — files copied to the root as is (icons, fonts,
+    robots, llms.txt, verification files).
+  - `templates/longread/` — the shared longread template. `builder/` — the
+    Python build (`uv run builder ...`). `design/` — design sketches and old
+    drafts, never published.
+- `dist/` is the build output: never edit or commit it. GitHub Actions builds it
+  and deploys it to Pages. `*.ru.html` and `sitemap.xml` exist only in `dist/`.
+- English `post.html` files hold the bilingual translation data and are the
+  source for localized output.
 - Do not create Markdown mirrors of articles unless the user asks for them.
 - Never commit credentials. `.env` is local, ignored, and must have mode `0600`.
   Never echo its contents or private keys in logs, PRs or tool output.
 
 ## Required publication workflow
 
-1. Edit the relevant source HTML / translation data. For a new article, add its
-   card to `blog.html`, register the page in `_design/gen_sitemap.py`, and register
-   bilingual metadata in `_design/locales.json` when both translations exist.
+Dependencies are managed with uv (`pyproject.toml`, committed `uv.lock`, plain
+PyPI). The build itself needs only the standard library.
+
+1. Edit the post in `posts/<slug>/`. For a new article, add its card to
+   `pages/blog.html`, register the page in `BASE_PAGES` in
+   `builder/gen_sitemap.py`, and register bilingual metadata in
+   `builder/locales.json` when both translations exist. Posts built in
+   `tg_channel` are synced by their `publish_build.py` into `posts/<slug>/`.
 2. Keep JSON-LD `datePublished` equal to the real first publication date.
    Change `dateModified` for substantive content changes only; template, analytics
    and language build changes must not pretend that the article was rewritten.
-3. Run `python3 -B _design/build_publication.py`. This applies the shared template,
-   bakes both languages, ensures one GoatCounter loader per public page, and
-   derives homepage Latest from the most recently published article in the blog.
-   Never maintain the homepage Latest card by hand.
-4. Run `python3 -B _design/gen_sitemap.py`, then the read-only checks:
-   `python3 -B _design/build_publication.py --check`,
-   `python3 -B _design/bake_en.py --check`,
-   `python3 -B _design/longread_template.py --check`,
-   `python3 -B _design/check_site.py`, and `git diff --check`.
-   Sitemap dates for non-articles depend on Git history: regenerate after the
-   content commit and commit the resulting sitemap before pushing.
-5. Review the exact diff and stage only the intended files. Publication needs
+3. Run `uv run builder build` (add `--drafts` to include draft posts), then
+   `uv run builder check` and `git diff --check`. The build applies the shared
+   template, bakes both languages, ensures one GoatCounter loader per public
+   page, derives the homepage Latest card from the newest article in the blog
+   (never maintain it by hand) and writes the sitemap. Preview with
+   `uv run builder serve`.
+4. Review the exact diff and stage only the intended files. Publication needs
    user authorization; when already authorized in the conversation, proceed.
+5. Pushing to `master` publishes: the `Site` workflow builds `dist/`, deploys
+   it to Pages, runs Lighthouse, and submits the sitemap to Google and changed
+   URLs to IndexNow.
 6. After publishing, verify the deployed pages and assets, the live sitemap,
    Pages deployment and search-submission jobs. A successful API submission is
    not proof of crawling or indexing. Report these states separately.
 
-CI rejects stale generated publication files. Do not bypass failing checks.
+Sitemap `lastmod` comes from `dateModified` for articles and from Git history
+(ignoring pure renames) for other pages.
+Do not bypass failing checks.
 The user has paused test execution: do not run unit, integration, smoke or
 browser test suites unless explicitly requested. Structural/source checks above
 remain enabled. Do not disable existing CI as part of unrelated work.
