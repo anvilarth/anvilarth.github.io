@@ -4,17 +4,16 @@
 Editorial layout, same for every project — only the text differs:
 top meta row (year · org / category tag), big serif title with one
 italic amber accent word, bottom hairline with the project domain.
-Renders an HTML template with headless Chrome into img/projects/<name>.jpg.
+Renders an HTML template with headless Chrome into static/img/projects/<name>.jpg.
 
-Usage: python3 img/projects/make_covers.py
-Original screenshots are backed up to img/projects/_screenshots/ on first run.
+Usage: python3 templates/project-covers.py
 """
-import shutil
 import subprocess
+import tempfile
 import sys
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+OUT = Path(__file__).resolve().parent.parent / "static/img/projects"
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 W, H = 1280, 720
 
@@ -67,14 +66,10 @@ body::after{{content:'';position:absolute;inset:0;background-image:url("data:ima
 
 
 def main():
-    backup = HERE / "_screenshots"
-    backup.mkdir(exist_ok=True)
-    tmp = HERE / "_cover_tmp.html"
+    tmp = Path(tempfile.mkdtemp()) / "cover.html"
 
     for name, label, title, tag, domain in PROJECTS:
-        out = HERE / f"{name}.jpg"
-        if out.exists() and not (backup / f"{name}.jpg").exists():
-            shutil.copy2(out, backup / f"{name}.jpg")
+        out = OUT / f"{name}.jpg"
 
         tmp.write_text(TEMPLATE.format(w=W, h=H, label=label, title=title,
                                        tag=tag, domain=domain))

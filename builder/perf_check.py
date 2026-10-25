@@ -13,9 +13,9 @@ hardware:
         is reported as a warning only.
 
 Usage:
-  python3 _design/perf_check.py                        # both form factors
-  python3 _design/perf_check.py --form-factor mobile
-  python3 _design/perf_check.py --runs 5 --reports out/
+  uv run builder perf                                  # both form factors
+  uv run builder perf --form-factor mobile
+  uv run builder perf --runs 5 --reports out/
 
 Needs Node (for `npx lighthouse`) and a Chrome/Chromium binary.
 """
