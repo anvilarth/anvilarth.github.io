@@ -2,75 +2,114 @@
 
 Communicate with the user in Russian. Keep repository instructions in English.
 
-## Scope and sources
+## Repository rules
 
-- `master` is the only branch; GitHub Pages publishes it. Do not create
-  long-lived branches. The pre-2026-10 `master` application history is kept only
-  as local tags `archive/master-*`. Check working changes before editing.
-- Preserve the existing design and unrelated content. Use scoped commits.
-- DPO's editorial source and builder live in the adjacent `tg_channel` project,
-  under `posts/preference_optimization/`. Follow that project's instructions if
-  editing its prose. After importing any rebuilt article, run this site's
-  publication build; do not publish the raw builder output directly.
-- Repository layout. Only these folders hold site sources:
-  - `posts/<slug>/` — one folder per article. `post.html` is published as
-    `/<slug>.html`, `post.md` / `post.en.md` as `/<slug>.md` / `/<slug>.en.md`
-    (Markdown mirrors for LLMs), every other file under `/assets/<slug>/`.
-    An empty `DRAFT` file keeps the post out of the build.
-  - `pages/` — hand-made pages (home, blog, projects, `about.md` profile),
-    published at the site root. `static/` — files copied to the root as is
-    (icons, fonts, robots, `llms.txt`, shared scripts, images). Some are used
-    without any link from the site, so keep them at their URLs: `favicon.ico`
-    (browsers request it), `googlef9829f193c6aa21c.html` (Search Console
-    ownership), the IndexNow key `b16ed2af….txt`, and `img/og/banner-2x.jpg`
-    (the GitHub profile README embeds it).
-  - `templates/` — never published: the shared longread template
-    (`longread/`) and the sources of generated images (`og.html` for social
-    cards, `apple-touch-icon.svg`, `project-covers.py` for project covers).
-    `builder/` — the Python build (`uv run builder ...`).
-- `dist/` is the build output: never edit or commit it. GitHub Actions builds it
-  and deploys it to Pages. `*.ru.html`, `sitemap.xml` and `llms-full.txt`
-  (the profile plus every Markdown mirror) exist only in `dist/`.
-- English `post.html` files hold the bilingual translation data and are the
-  source for localized output.
-- Do not create Markdown mirrors of articles unless the user asks for them.
-- Never commit credentials. `.env` is local, ignored, and must have mode `0600`.
-  Never echo its contents or private keys in logs, PRs or tool output.
+These rules are mandatory for every agent and session. `uv run builder check`
+enforces the mechanical ones locally and in CI. If a task seems to need an
+exception, stop and ask the user.
 
-## Required publication workflow
+### Layout
 
-Dependencies are managed with uv (`pyproject.toml`, committed `uv.lock`, plain
-PyPI). The build itself needs only the standard library.
+Every file has exactly one place:
 
-1. Edit the post in `posts/<slug>/`. For a new article, add its card to
-   `pages/blog.html`, register the page in `BASE_PAGES` in
-   `builder/gen_sitemap.py`, and register bilingual metadata in
-   `builder/locales.json` when both translations exist. Posts built in
-   `tg_channel` are synced by their `publish_build.py` into `posts/<slug>/`.
+| Path | Holds | Published as |
+|---|---|---|
+| `posts/<slug>/` | one article: `post.html`, optional Markdown mirrors `post.md` / `post.en.md`, the article's own files | `/<slug>.html`, `/<slug>.md`, `/<slug>.en.md`, `/assets/<slug>/…` |
+| `pages/` | hand-made pages: home, blog, projects, `about.md` profile | site root |
+| `static/` | files served as is: icons, fonts, `robots.txt`, `llms.txt`, shared scripts and styles, images used by pages | site root |
+| `templates/` | the shared longread template (`longread/`) and sources of generated images (`og.html`, `apple-touch-icon.svg`, `project-covers.py`) | never |
+| `builder/` | the build and its checks, run as `uv run builder …` | never |
+
+- The root holds only `AGENTS.md`, `CLAUDE.md`, `pyproject.toml`, `uv.lock`,
+  `.gitignore` and `.github/`. Do not add top-level files or folders, or a new
+  kind of content to these folders, without the user's approval.
+- A slug is lowercase words joined by hyphens, and it is the article's URL. An
+  empty `DRAFT` file in a post folder keeps the post out of the build.
+- Files used by a single article go into its folder. Images already in
+  `static/img/` stay there because their URLs are public.
+
+### Never commit
+
+- Build output: `dist/`, `*.ru.html`, `sitemap.xml`, `llms-full.txt`.
+- Leftovers: backups, old or alternative versions of a file, design sketches,
+  screenshots, notes, reports, logs, scratch scripts. Git history is the
+  archive; scratch work goes to a temporary directory outside the repository.
+- Local state: `.env`, `.venv/`, `__pycache__/`, `.DS_Store`, editor files.
+- Credentials and private keys. `.env` stays local with mode `0600`; never echo
+  its contents or private keys in logs, PRs or tool output. The IndexNow key
+  is public by design.
+- Unused files. When a change stops using a file, delete the file in the same
+  commit. The exception is files used from outside, which nothing on the site
+  links to; keep them at their URLs: `static/favicon.ico` (browsers request
+  it), `static/googlef9829f193c6aa21c.html` (Search Console ownership),
+  `static/b16ed2af9fe652f7c59f8cdc82697b13.txt` (IndexNow key) and
+  `static/img/og/banner-2x.jpg` (the GitHub profile README embeds it).
+
+### Editing
+
+- Published URLs are permanent. Do not rename, move or delete a published page,
+  Markdown mirror, image or other file without the user's approval.
+- Edit sources only, never `dist/` or generated output. The block between the
+  `<!-- shared-longread-template -->` markers in a post is replaced by the
+  build: change `templates/longread/` instead. The homepage Latest card is
+  derived by the build: never maintain it by hand.
+- DPO (`posts/preference_optimization/`) and RL for Diffusion
+  (`posts/rl_for_diffusion_part_1/`) are written and built in the adjacent
+  `tg_channel` project, then synced here by their `publish_build.py`. Edit
+  them there and follow that project's instructions; never hand-edit their
+  copies in `posts/`.
+- Preserve the existing design and unrelated content. Do not create Markdown
+  mirrors of articles unless the user asks for them.
+
+### Git
+
+- `master` is the only branch. Do not create branches or tags, force-push,
+  rewrite pushed history or use `[skip ci]`. The pre-2026-10 history is kept
+  only as the local tags `archive/master-*`.
+- Start every task with `git status`. Changes you did not make belong to
+  someone else: never stage, commit, revert, stash or overwrite them. Work
+  around them and tell the user.
+- One commit is one logical change. Stage files by name; never use
+  `git add -A`, `git add .` or `git commit -a`.
+- Before committing, run `uv run builder build`, `uv run builder check` and
+  `git diff --cached --check`. Never commit or push with a failing check, and
+  never weaken, skip or disable a check or CI job to get past it. If someone
+  else's uncommitted changes are in the tree, run the checks in a temporary
+  `git worktree add --detach` of `HEAD` with only your staged diff applied.
+- Pushing to `master` publishes the site. Push only when the user has
+  authorized publishing this change.
+
+### Dependencies
+
+The build uses only the Python standard library. A new package needs the
+user's approval: add it with `uv add --group <group>`, pinned to an exact
+version from plain PyPI, and commit `uv.lock` with it.
+
+## Publication workflow
+
+1. Edit the article in `posts/<slug>/`, or in `tg_channel` and sync it. For a
+   new article, add its card to `pages/blog.html`, register the page in
+   `BASE_PAGES` in `builder/gen_sitemap.py`, and register bilingual metadata in
+   `builder/locales.json` when both translations exist.
 2. Keep JSON-LD `datePublished` equal to the real first publication date.
    Change `dateModified` for substantive content changes only; template, analytics
    and language build changes must not pretend that the article was rewritten.
-3. Run `uv run builder build` (add `--drafts` to include draft posts), then
-   `uv run builder check` and `git diff --check`. The build applies the shared
-   template, bakes both languages, ensures one GoatCounter loader per public
-   page, derives the homepage Latest card from the newest article in the blog
-   (never maintain it by hand) and writes the sitemap. Preview with
-   `uv run builder serve`.
-4. Review the exact diff and stage only the intended files. Publication needs
-   user authorization; when already authorized in the conversation, proceed.
-5. Pushing to `master` publishes: the `Site` workflow builds `dist/`, deploys
-   it to Pages, runs Lighthouse, and submits the sitemap to Google and changed
-   URLs to IndexNow.
-6. After publishing, verify the deployed pages and assets, the live sitemap,
+3. Run `uv run builder build` (`--drafts` includes draft posts) and
+   `uv run builder check`; preview with `uv run builder serve`. The build
+   applies the shared template, bakes both languages, adds one GoatCounter
+   loader per page, derives the homepage Latest card from the newest article in
+   the blog, and writes the sitemap and `llms-full.txt`.
+4. Commit by the Git rules above. Pushing to `master` runs the `Site` workflow:
+   build, checks, deploy to Pages, sitemap submission to Google and IndexNow.
+   Lighthouse runs only when the workflow is started manually.
+5. After publishing, verify the deployed pages and assets, the live sitemap,
    Pages deployment and search-submission jobs. A successful API submission is
    not proof of crawling or indexing. Report these states separately.
 
 Sitemap `lastmod` comes from `dateModified` for articles and from Git history
-(ignoring pure renames) for other pages.
-Do not bypass failing checks.
-The user has paused test execution: do not run unit, integration, smoke or
-browser test suites unless explicitly requested. Structural/source checks above
-remain enabled. Do not disable existing CI as part of unrelated work.
+(ignoring pure renames) for other pages. The user has paused test execution:
+do not run unit, integration, smoke or browser test suites unless explicitly
+requested. The structural checks above stay on.
 
 ## Web interface rules
 
@@ -107,6 +146,8 @@ pages against them before publication.
 
 ## Language pages and tools
 
+- English `post.html` files hold the bilingual translation data and are the
+  source for localized output.
 - Keep existing English URLs stable. Russian variants use `.ru.html`, include
   fully baked Russian text/translated attributes, their own canonical and social
   metadata, and reciprocal `hreflang` links. Both variants belong in the sitemap.

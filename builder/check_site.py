@@ -5,20 +5,23 @@ Checks:
   2. every <loc> in the sitemap resolves to a file that exists
   3. every <lastmod> is a valid W3C datetime
   4. robots.txt advertises the same sitemap URL
-  5. no broken internal links in the published .html files
+  5. no broken internal links in the published .html and .css files
+  6. every published asset is referenced, unless it is used from outside
+  7. the repository follows the layout in AGENTS.md
 
 Exit code 1 on any error. Warnings do not fail the build.
 """
 
 import re
+import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-BASE = "https://anvilarth.github.io/"
-from .paths import DIST as ROOT
+from .paths import BASE, DIST as ROOT, ROOT as REPO
+
 NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
 
@@ -121,11 +124,12 @@ def check_robots() -> None:
 # --- 5. internal links -------------------------------------------------------
 
 LINK_RE = re.compile(r'(?:href|src)\s*=\s*["\']([^"\']+)["\']', re.I)
+URL_RE = re.compile(r'url\(\s*["\']?([^"\')\s]+)', re.I)
 SKIP_SCHEMES = ("http://", "https://", "//", "mailto:", "tel:", "data:", "javascript:")
 
 
 def check_links() -> None:
-    for html in sorted(ROOT.glob("*.html")):
+    for html in sorted(ROOT.glob("*.html")) + sorted(ROOT.rglob("*.css")):
         rel_name = html.relative_to(ROOT).as_posix()
         try:
             text = html.read_text(encoding="utf-8")
@@ -133,9 +137,11 @@ def check_links() -> None:
             warn(f"{rel_name}: not valid UTF-8, skipped link check")
             continue
 
-        for raw in LINK_RE.findall(text):
+        # CSS url() resolves against the file that contains it, like href/src.
+        links = URL_RE.findall(text) if html.suffix == ".css" else LINK_RE.findall(text) + URL_RE.findall(text)
+        for raw in links:
             link = raw.strip()
-            if not link or link.startswith("#") or link.lower().startswith(SKIP_SCHEMES):
+            if not link or link.startswith(("#", "%23")) or link.lower().startswith(SKIP_SCHEMES):
                 continue
             target_rel = urlsplit(link).path
             if not target_rel:
@@ -154,10 +160,62 @@ def check_links() -> None:
                 err(f"{rel_name}: broken internal link -> {link}")
 
 
+# --- 6. unused assets -------------------------------------------------------
+
+ASSETS = {".css", ".gif", ".ico", ".jpeg", ".jpg", ".js", ".json", ".mp4", ".pdf",
+          ".png", ".svg", ".ttf", ".webm", ".webp", ".woff", ".woff2"}
+TEXT = {".css", ".html", ".js", ".json", ".md", ".svg", ".txt", ".xml"}
+# Used from outside the site, so nothing on it links to them (see AGENTS.md).
+EXTERNAL = {"favicon.ico", "img/og/banner-2x.jpg"}
+
+
+def check_unused() -> None:
+    files = [p for p in ROOT.rglob("*") if p.is_file()]
+    text = "\n".join(p.read_text(encoding="utf-8", errors="ignore") for p in files if p.suffix in TEXT)
+    for path in files:
+        rel = path.relative_to(ROOT).as_posix()
+        if path.suffix in ASSETS and rel not in EXTERNAL and path.name not in text:
+            err(f"{rel}: published but never referenced; delete it in the same change")
+
+
+# --- 7. repository layout ----------------------------------------------------
+
+TOP_LEVEL = {".github", ".gitignore", "AGENTS.md", "CLAUDE.md", "builder", "pages",
+             "posts", "pyproject.toml", "static", "templates", "uv.lock"}
+GENERATED = re.compile(r"(^|/)(dist/|sitemap\.xml$|llms-full\.txt$)|\.ru\.html$")
+LEFTOVER = re.compile(r"(^|/)(\.DS_Store|__pycache__/|\.env)|\.(bak|orig|pyc|swp)$|~$")
+SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")
+
+
+def check_repo() -> None:
+    try:
+        tracked = subprocess.run(["git", "ls-files"], cwd=REPO, capture_output=True,
+                                 text=True, check=True).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        warn("git is unavailable, repository layout not checked")
+        return
+    for path in tracked:
+        if path.startswith("posts/") and path.count("/") == 1:
+            err(f"{path}: posts/ holds only post folders")
+        if path.split("/", 1)[0] not in TOP_LEVEL:
+            err(f"{path}: outside the repository layout in AGENTS.md")
+        if GENERATED.search(path):
+            err(f"{path}: build output must not be committed")
+        if LEFTOVER.search(path):
+            err(f"{path}: local or leftover file must not be committed")
+    for slug in sorted({p.split("/")[1] for p in tracked if p.startswith("posts/") and p.count("/") > 1}):
+        if not SLUG.fullmatch(slug):
+            err(f"posts/{slug}: a slug is lowercase words joined by hyphens")
+        if f"posts/{slug}/post.html" not in tracked:
+            err(f"posts/{slug}: missing post.html")
+
+
 def main() -> int:
     check_sitemap()
     check_robots()
     check_links()
+    check_unused()
+    check_repo()
 
     for w in warnings:
         print(f"warning: {w}")
