@@ -26,6 +26,7 @@ OUT = DIST / "sitemap.xml"
 # (advertised in robots.txt / llms.txt); listing them here makes Google
 # treat them as duplicate copies of the articles.
 BASE_PAGES = [
+    ("rl-for-diffusion-part-1.html", "rl-for-diffusion-part-1.html", "0.9"),
     ("preference-optimization.html", "preference-optimization.html", "0.9"),
     ("index.html",                     "",                              "1.0"),
     ("autoresearch.html",              "autoresearch.html",             "0.9"),

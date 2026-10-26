@@ -1,4 +1,8 @@
 {
+  "rl-for-diffusion-part-1": {
+    "title": "RL for Diffusion models: Part 1 — как довести reward до диффузионной модели",
+    "description": "Как довести reward до диффузионной модели: градиент через траекторию (ReFL, DRaFT, DRTune, ShortFT) и online policy gradient (Flow-GRPO, DiffusionNFT, AWM)."
+  },
   "preference-optimization": {
     "heading": "Direct Preference Optimization (DPO) для диффузионных моделей",
     "title": "Direct Preference Optimization (DPO) для диффузионных моделей: практическое руководство",
