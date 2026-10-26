@@ -9,6 +9,7 @@ import re
 from datetime import datetime
 
 from .bake_en import Finder, bake, load_T
+from .longread_enhance import enhance
 from .longread_template import apply_template, apply_tool_footer
 from .paths import BASE, DIST, ROOT
 
@@ -143,8 +144,8 @@ def build():
     for slug in LOCALES:
         name = slug + '.html'
         source = analytics(apply_template(language_runtime(pages[name]), slug))
-        pages[name] = localized(source, slug, 'en')
-        pages[slug + '.ru.html'] = localized(pages[name], slug, 'ru')
+        for lang, target in (('en', name), ('ru', slug + '.ru.html')):
+            pages[target] = enhance(localized(source, slug, lang), lang)
     tool = 'realtime-video-calculator.html'
     pages[tool] = apply_tool_footer(pages[tool])
     pages = {name: analytics(source) for name, source in pages.items()}

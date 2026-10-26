@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:'Literata';font-style:normal;font-weight:400 600;src:url(../static/fonts/literata-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2212}
+@font-face{font-family:'Literata';font-style:normal;font-weight:400 600;src:url(../static/fonts/literata-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+1E00-1EFF,U+2020}
+@font-face{font-family:'Literata';font-style:normal;font-weight:400 600;src:url(../static/fonts/literata-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 600;src:url(../static/fonts/jetbrains-mono-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+2122,U+2212}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 600;src:url(../static/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   width:1200px;height:630px;overflow:hidden;position:relative;
-  font-family:'Newsreader',Georgia,serif;color:#221d17;
+  font-family:'Literata',Georgia,serif;color:#221d17;
   background:#f7f4ee;
 }
 .bg{position:absolute;inset:0;background:
@@ -18,46 +20,63 @@ body{
   radial-gradient(68% 54% at 50% 112%, #eed9ae 0%, transparent 74%);
   opacity:.8}
 .grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E")}
-.frame{position:absolute;inset:36px;border:1px solid rgba(34,29,23,.14);border-radius:18px}
-.inner{position:absolute;inset:36px;padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between}
+.inner{position:absolute;inset:0;padding:60px 72px 56px;display:flex;flex-direction:column}
 .top{display:flex;justify-content:space-between;align-items:center}
-.label{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#c2552f}
-.site{font-family:'JetBrains Mono',monospace;font-size:20px;color:#5f574c}
-.site span{color:#c2552f}
-h1{font-weight:500;font-size:76px;line-height:1.08;letter-spacing:-.025em;max-width:980px}
-h1.long{font-size:58px}
+.label{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#c2552f}
+.site{font-family:'JetBrains Mono',monospace;font-size:19px;color:#5f574c}
+.main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 0}
+h1{font-weight:600;font-size:60px;line-height:1.08;letter-spacing:-.025em;max-width:1000px;text-wrap:balance}
+h1.long{font-size:50px}
+h1.longer{font-size:42px}
+.lead{margin-top:26px;font-size:28px;line-height:1.3;color:#5f574c;max-width:800px;text-wrap:pretty}
 .bottom{display:flex;justify-content:space-between;align-items:flex-end}
-.author{font-size:30px;font-weight:500}
-.author small{display:block;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:400;color:#5f574c;margin-top:8px}
-.mark{width:64px;height:64px;border-radius:16px;background:#c2552f;color:#f7f4ee;display:flex;align-items:center;justify-content:center}
+.author{font-size:24px;font-weight:400}
+.author small{display:block;font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:400;color:#5f574c;margin-top:8px}
+.foot{font-family:'JetBrains Mono',monospace;font-size:17px;color:#5f574c}
+.foot b{font-weight:600;color:#c2552f}
+.mark{display:none;width:64px;height:64px;border-radius:16px;background:#c2552f;color:#f7f4ee;align-items:center;justify-content:center}
 .mark svg{width:50px;height:50px;display:block}
+body.profile h1{font-size:76px}
+body.profile .mark{display:flex}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <div class="grain"></div>
-<div class="frame"></div>
 <div class="inner">
   <div class="top">
     <div class="label" id="label"></div>
-    <div class="site">anvilarth<span>.github.io</span></div>
+    <div class="site" id="site">anvilarth.github.io</div>
   </div>
-  <h1 id="title"></h1>
+  <div class="main">
+    <h1 id="title"></h1>
+    <p class="lead" id="lead"></p>
+  </div>
   <div class="bottom">
-    <div class="author">Andrei Filatov<small id="tagline"></small></div>
+    <div class="author"><span id="author">Andrei Filatov</span><small id="tagline"></small></div>
+    <div class="foot" id="foot"></div>
     <div class="mark"><svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><circle cx="8" cy="14" r="3" opacity=".34"/><circle cx="11" cy="33" r="3" opacity=".34"/><circle cx="8" cy="50" r="3" opacity=".34"/><circle cx="23" cy="18" r="3.5" opacity=".58"/><circle cx="25" cy="34" r="3.5" opacity=".58"/><circle cx="22" cy="48" r="3.5" opacity=".58"/><circle cx="38" cy="16" r="4" opacity=".82"/><circle cx="37" cy="32" r="4" opacity=".82"/><circle cx="38" cy="48" r="4" opacity=".82"/><rect x="49" y="9" width="8" height="46" rx="4"/></svg></div>
   </div>
 </div>
 <script>
+// Query parameters: title, lead, label, author, tagline, time (reading time), site, lang, scale.
 var q=new URLSearchParams(location.search);
 var s=parseFloat(q.get('scale')||'1');
 if(s!==1){document.body.style.zoom=s}
+document.documentElement.lang=q.get('lang')||'en';
 var t=q.get('title')||'Andrei Filatov';
-document.getElementById('title').textContent=t;
-if(t.length>60)document.getElementById('title').classList.add('long');
+var title=document.getElementById('title');
+title.textContent=t;
+if(t.length>70)title.classList.add('longer');else if(t.length>44)title.classList.add('long');
+document.getElementById('lead').textContent=q.get('lead')||'';
 document.getElementById('label').textContent=q.get('label')||'Research Scientist · ML/DL';
-document.getElementById('tagline').textContent=q.get('tagline')||'Member of Technical Staff @ Krea · Dubai';
-if(t==='Andrei Filatov'){var a=document.querySelector('.author');a.childNodes[0].remove();a.style.fontSize='1px'}
+document.getElementById('author').textContent=q.get('author')||'Andrei Filatov';
+document.getElementById('tagline').textContent=q.get('tagline')||'anvilarth';
+document.getElementById('site').textContent=q.get('site')||'anvilarth.github.io';
+var time=q.get('time')||'';
+var foot=document.getElementById('foot');
+if(time){var b=document.createElement('b');b.textContent=time;foot.append(b);}
+if(t==='Andrei Filatov'){document.body.classList.add('profile');var a=document.querySelector('.author');a.style.display='none'}
 </script>
 </body>
 </html>

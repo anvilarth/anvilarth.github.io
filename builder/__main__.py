@@ -32,7 +32,7 @@ def main() -> int:
         return 0
     if command == 'serve':
         return serve(args)
-    modules = {'check': 'check_site', 'perf': 'perf_check',
+    modules = {'check': 'check_site', 'perf': 'perf_check', 'og': 'og_cards',
                'submit-sitemap': 'submit_sitemap', 'indexnow': 'indexnow'}
     if command not in modules:
         print(__doc__)
