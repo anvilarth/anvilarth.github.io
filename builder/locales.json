@@ -1,4 +1,8 @@
 {
+  "rl-for-diffusion-part-2": {
+    "title": "RL for Diffusion models: Part 2 — reward-модели, которым можно доверять",
+    "description": "Reward-модели для RL диффузии: разметка, чеклисты да/нет, VLM-судьи, агентные критики и балансировка нескольких reward."
+  },
   "rl-for-diffusion-part-1": {
     "title": "RL for Diffusion models: Part 1 — как довести reward до диффузионной модели",
     "description": "Как довести reward до диффузионной модели: градиент через траекторию (ReFL, DRaFT, DRTune, ShortFT) и online policy gradient (Flow-GRPO, DiffusionNFT, AWM)."
