@@ -84,6 +84,9 @@ def localized(source, slug, lang):
     source = re.sub(r'<link rel="canonical" href="[^"]+">', f'<link rel="canonical" href="{url}">\n' + links.rstrip(), source)
     source = re.sub(r'(<meta property="og:url" content=")[^"]+', lambda m: m[1] + url, source)
     source = re.sub(r'(<meta property="og:locale" content=")[^"]+', lambda m: m[1] + ('ru_RU' if lang == 'ru' else 'en_US'), source)
+    # A Russian social card, when one is rendered (og-<slug>.ru.jpg), replaces the English one on the .ru page.
+    if lang == 'ru' and (ROOT / f'static/img/og/og-{slug}.ru.jpg').exists():
+        source = re.sub(rf'(/img/og/og-{re.escape(slug)})\.jpg', r'\1.ru.jpg', source)
     switch = '<div class="lang-switch">' + ''.join(
         f'<a class="lang-btn{" active" if code == lang else ""}" id="btn-{code}" data-language="{code}" '
         f'hreflang="{code}" lang="{code}" href="{slug}{suffix}"' + (' aria-current="page"' if code == lang else '') + f'>{code.upper()}</a>'
