@@ -1,11 +1,11 @@
-"""Submit sitemap.xml to Google Search Console after a deploy.
+"""Submit XML and text sitemaps to Google Search Console after a deploy.
 
 Usage (CI):
     GSC_SERVICE_ACCOUNT='<service account JSON>' uv run builder submit-sitemap
 
 Options:
-    --wait        poll the live site until the deployed sitemap.xml matches
-                  the one in the repo (GitHub Pages deploys asynchronously)
+    --wait        poll the live site until both deployed sitemaps match the
+                  build (GitHub Pages deploys asynchronously)
     --dry-run     authenticate and print what would be submitted, submit nothing
 
 Setup (once):
@@ -31,11 +31,10 @@ import os
 import sys
 import time
 import urllib.request
-from pathlib import Path
 from urllib.parse import quote
 
 SITE = "https://anvilarth.github.io/"
-SITEMAP = SITE + "sitemap.xml"
+SITEMAPS = ("sitemap.xml", "sitemap.txt")
 from .paths import DIST
 SCOPE = "https://www.googleapis.com/auth/webmasters"
 API = "https://www.googleapis.com/webmasters/v3/sites/{site}/sitemaps/{feed}"
@@ -43,25 +42,27 @@ API = "https://www.googleapis.com/webmasters/v3/sites/{site}/sitemaps/{feed}"
 
 def wait_for_deploy(timeout_s: int = 600, step_s: int = 20) -> bool:
     """Poll the live sitemap until it matches the repo copy."""
-    expected = (DIST / "sitemap.xml").read_text(encoding="utf-8")
+    expected = {name: (DIST / name).read_text(encoding="utf-8") for name in SITEMAPS}
     deadline = time.time() + timeout_s
     while True:
         try:
-            req = urllib.request.Request(
-                f"{SITEMAP}?nocache={int(time.time())}",
-                headers={"Cache-Control": "no-cache"},
-            )
-            with urllib.request.urlopen(req, timeout=30) as r:
-                live = r.read().decode("utf-8")
-            if live == expected:
-                print("live sitemap.xml matches the repo")
+            matches = True
+            for name, content in expected.items():
+                req = urllib.request.Request(
+                    f"{SITE}{name}?nocache={int(time.time())}",
+                    headers={"Cache-Control": "no-cache"},
+                )
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    matches = (r.read().decode("utf-8") == content) and matches
+            if matches:
+                print("live XML and text sitemaps match the build")
                 return True
-            print("live sitemap.xml differs from repo, waiting for Pages deploy...")
+            print("live sitemaps differ from the build, waiting for Pages deploy...")
         except Exception as exc:  # network hiccup: keep polling
             print(f"fetch failed ({exc}), retrying...")
         if time.time() >= deadline:
-            print("::warning::Pages deploy not visible after "
-                  f"{timeout_s}s; submitting anyway")
+            print("::error::Pages deploy not visible after "
+                  f"{timeout_s}s; no sitemaps submitted")
             return False
         time.sleep(step_s)
 
@@ -94,33 +95,50 @@ def main() -> int:
         info, scopes=[SCOPE])
     session = AuthorizedSession(creds)
 
-    if "--wait" in sys.argv:
-        wait_for_deploy()
-
-    url = API.format(site=quote(SITE, safe=""), feed=quote(SITEMAP, safe=""))
-    print(f"submitting {SITEMAP} as {info.get('client_email')}")
-    if "--dry-run" in sys.argv:
-        print("dry run: nothing submitted")
-        return 0
-
-    resp = session.put(url, timeout=30)
-    if resp.status_code in (200, 204):
-        print("sitemap submitted")
-    else:
-        print(f"::error::submit failed: HTTP {resp.status_code}: {resp.text[:500]}",
-              file=sys.stderr)
-        if resp.status_code == 403:
-            print("::error::give the service account Full (or Owner) access "
-                  f"to {SITE} in Search Console", file=sys.stderr)
+    if "--wait" in sys.argv and not wait_for_deploy():
         return 1
 
-    # Read back the status Google has for the sitemap (best effort).
-    info_resp = session.get(url, timeout=30)
-    if info_resp.ok:
+    if "--dry-run" in sys.argv:
+        print(f"dry run: would submit {', '.join(SITE + name for name in SITEMAPS)}")
+        return 0
+
+    summary = []
+    failed = False
+    for name in SITEMAPS:
+        sitemap = SITE + name
+        url = API.format(site=quote(SITE, safe=""), feed=quote(sitemap, safe=""))
+        resp = session.put(url, timeout=30)
+        if resp.status_code not in (200, 204):
+            print(f"::error::{name} submit failed: HTTP {resp.status_code}", file=sys.stderr)
+            summary.append(f"- `{name}`: submission failed (HTTP {resp.status_code}).")
+            failed = True
+            continue
+        print(f"{name}: submission accepted; this does not confirm fetching or indexing")
+        info_resp = session.get(url, timeout=30)
+        if not info_resp.ok:
+            print(f"::warning::{name}: status unavailable (HTTP {info_resp.status_code})")
+            summary.append(f"- `{name}`: submitted; processing status unavailable.")
+            continue
         d = info_resp.json()
         print(json.dumps({k: d.get(k) for k in (
             "path", "lastSubmitted", "lastDownloaded", "isPending",
             "errors", "warnings")}, indent=1))
+        if int(d.get('errors', 0)):
+            state = f"Google reports {d['errors']} errors"
+            failed = True
+            print(f"::error::{name}: {state}")
+        elif d.get('isPending') or not d.get('lastDownloaded'):
+            state = 'awaiting Google processing; fetch is NOT confirmed'
+            print(f"::warning::{name}: {state}")
+        else:
+            state = f"last downloaded {d['lastDownloaded']}; page indexing is separate"
+        summary.append(f"- `{name}`: {state}.")
+    summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary_path:
+        with open(summary_path, 'a', encoding='utf-8') as fh:
+            fh.write('### Google sitemap processing\n\n' + '\n'.join(summary) + '\n')
+    if failed:
+        return 1
     return 0
 
 

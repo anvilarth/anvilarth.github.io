@@ -36,3 +36,4 @@ User-agent: CCBot
 Allow: /
 
 Sitemap: https://anvilarth.github.io/sitemap.xml
+Sitemap: https://anvilarth.github.io/sitemap.txt

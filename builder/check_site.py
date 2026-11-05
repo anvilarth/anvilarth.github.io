@@ -119,6 +119,19 @@ def check_robots() -> None:
         err(f"robots.txt points at {declared} but the sitemap lives at {expected}")
     if re.search(r"(?im)^\s*Disallow:\s*/\s*$", text):
         err("robots.txt contains a blanket 'Disallow: /'")
+    # The fallback must always contain exactly the same URLs as the XML map.
+    fallback = ROOT / 'sitemap.txt'
+    if not fallback.exists():
+        err('sitemap.txt is missing')
+    elif BASE + 'sitemap.txt' not in declared:
+        err('robots.txt does not advertise sitemap.txt')
+    else:
+        try:
+            xml_urls = [e.text for e in ET.parse(ROOT / 'sitemap.xml').findall('.//sm:loc', NS)]
+        except (ET.ParseError, OSError):
+            return  # check_sitemap already reports a missing or invalid XML map.
+        if fallback.read_text(encoding='utf-8').splitlines() != xml_urls:
+            err('sitemap.txt does not match sitemap.xml')
 
 
 # --- 5. internal links -------------------------------------------------------

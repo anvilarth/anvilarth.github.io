@@ -96,5 +96,10 @@ def build(sources: dict[str, Path]) -> str:
 
 
 def write(sources: dict[str, Path]) -> None:
-    OUT.write_text(build(sources), encoding="utf-8")
+    xml = build(sources)
+    OUT.write_text(xml, encoding="utf-8")
+    # A second supported format gives Search Console a separate fetch target
+    # without removing the permanent XML URL or maintaining a second URL list.
+    urls = re.findall(r'<loc>([^<]+)</loc>', xml)
+    (DIST / 'sitemap.txt').write_text('\n'.join(urls) + '\n', encoding='utf-8')
     print(f"wrote {OUT.relative_to(ROOT)} ({len(PAGES)} urls)")
