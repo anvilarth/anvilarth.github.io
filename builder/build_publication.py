@@ -152,7 +152,10 @@ def build():
     tool = 'realtime-video-calculator.html'
     pages[tool] = apply_tool_footer(pages[tool])
     pages = {name: analytics(source) for name, source in pages.items()}
-    block = latest_block(pages['blog.html'], pages)
+    # The homepage lives at "/"; a link to "index.html" makes search engines
+    # crawl a duplicate URL. Articles synced from tg_channel still carry it.
+    pages = {name: source.replace('href="index.html"', 'href="/"') for name, source in pages.items()}
+    block =latest_block(pages['blog.html'], pages)
     pages['index.html'], count = re.subn(r'<div class="latest-post">.*?</div>', lambda m: block, pages['index.html'], flags=re.S)
     if count != 1:
         raise ValueError('Expected exactly one Latest block on the homepage')
