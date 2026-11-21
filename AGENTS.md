@@ -58,10 +58,10 @@ Every file has exactly one place:
   `tg_channel` project, then synced here by their `publish_build.py`. Edit
   them there and follow that project's instructions; never hand-edit their
   copies in `posts/`.
-- Read `templates/decisions.md` before changing `pages/`, `templates/` or the
-  site header; its accepted entries are constraints, and a new author request
-  is recorded there. The file is a local-only design log: it is untracked
-  (listed in `.git/info/exclude`); never commit or push it.
+- Read the site design decision log before changing `pages/`, `templates/` or
+  the site header: `../andrei-research-workflow/adr/anvilarth.github.io.md`
+  (private repository). Its accepted entries are constraints; record a new
+  author request there. Never copy the log into this repository.
 - Preserve the existing design and unrelated content. Do not create Markdown
   mirrors of articles unless the user asks for them.
 
