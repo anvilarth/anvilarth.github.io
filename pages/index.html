@@ -352,6 +352,10 @@ main.c{max-width:960px}
 .feed-kind{max-width:68ch}
 @media(min-width:900px){#projects.is-live .mo-ph__stage{width:min(68%,calc((100svh - 300px)*1.5))!important}
  #projects.is-live .mo-ph__panel{width:calc(100%*32/68 - 32px)}}
+/* Dark theme for long reading: softer text (12.6:1), weaker glow, no grain under text */
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}:root:not([data-theme=light]) .bg-gradient::after{display:none}}
+:root[data-theme=dark]{--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}
+:root[data-theme=dark] .bg-gradient::after{display:none}
 </style>
 </head>
 <body>

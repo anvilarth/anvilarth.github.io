@@ -191,6 +191,10 @@ nav .c{max-width:960px;min-height:29px}
 @media(max-width:380px){nav .c{gap:12px}.nav-links{gap:12px}}
 /* Projects page content on the header's 960px line */
 .c{max-width:960px}
+/* Dark theme for long reading: softer text (12.6:1), weaker glow, no grain under text */
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}:root:not([data-theme=light]) .bg-gradient::after{display:none}}
+:root[data-theme=dark]{--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}
+:root[data-theme=dark] .bg-gradient::after{display:none}
 </style>
 </head>
 <body>

@@ -403,6 +403,10 @@
 .share-calculation button:focus-visible,.share-calculation input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #share-status{font:12px/1.5 var(--sans);color:var(--ts)}
 #share-url{width:100%;box-sizing:border-box;padding:10px;color:var(--t);background:var(--card);border:1px solid var(--ll);border-radius:6px;font:12px var(--mono)}
+/* Dark theme for long reading: softer text (12.6:1), weaker glow, no grain under text */
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}:root:not([data-theme=light]) .bg-gradient::after{display:none}}
+:root[data-theme=dark]{--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}
+:root[data-theme=dark] .bg-gradient::after{display:none}
 </style>
 <!-- shared-agent-footer --><style>.md-link{max-width:none;margin:0 0 56px;padding:20px 0 0;border-top:1px solid var(--ll);font-family:var(--mono);font-size:13px;font-weight:400;line-height:1.7;color:var(--th);text-align:left}
 .md-link a{color:var(--th);text-decoration:none;border-bottom:1px solid var(--ll)}

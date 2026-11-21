@@ -333,3 +333,7 @@ html.lang-swap header,html.lang-swap #article,html.lang-swap .post-toc{opacity:0
 /* Menu in the logo's font, as on the other pages */
 .post-nav .nav-links>a,.post-nav .nav-links>a[aria-current=page]{font-family:'JetBrains Mono','JetBrains Mono Fallback',monospace;font-size:14px!important;font-weight:400;letter-spacing:-.01em}
 .post-nav .nav-logo{font-family:'JetBrains Mono','JetBrains Mono Fallback',monospace;letter-spacing:-.01em;line-height:22px}
+/* Dark theme for long reading: softer text (12.6:1), weaker glow, no grain under text */
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}:root:not([data-theme=light]) .bg-gradient::after{display:none}}
+:root[data-theme=dark]{--t:#dcd4c7;--l:#dcd4c7;--glow-op:.4}
+:root[data-theme=dark] .bg-gradient::after{display:none}
