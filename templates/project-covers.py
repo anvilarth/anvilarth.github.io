@@ -1,88 +1,56 @@
 #!/usr/bin/env python3
-"""Generate uniform project covers for the site.
+"""Project covers: one still-life photo series, same style for every project.
 
-Editorial layout, same for every project — only the text differs:
-top meta row (year · org / category tag), big serif title with one
-italic amber accent word, bottom hairline with the project domain.
-Renders an HTML template with headless Chrome into static/img/projects/<name>.jpg.
+Each cover is generated as a 1536x1024 image from STYLE + the project's subject
+(an object metaphor, never text or logos), then centre-cropped to 16:10 and
+written to static/img/projects/<name>.jpg at 1280x800.
 
-Usage: python3 templates/project-covers.py
+Usage: python3 templates/project-covers.py <dir with <name>.png files>
+Needs Pillow (not a build dependency): uv run --with pillow python3 ...
 """
-import subprocess
-import tempfile
 import sys
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "static/img/projects"
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-W, H = 1280, 720
+W, H = 1280, 800
 
-PROJECTS = [
-    # (output name, label, title_html, tag, domain)
-    ("krea3",         "2026 · Krea",            "<em>Krea</em> 3",                    "image editing",     "krea.ai"),
-    ("krea2",         "2026 · Krea",            "<em>Krea</em> 2",                    "foundation model",  "krea.ai"),
-    ("calculator",    "2026 · Interactive tool", "Realtime <em>Video</em> Calculator", "first-principles",  "anvilarth.github.io"),
-    ("flux",          "2024 · XLabs",            "XLabs <em>FLUX</em> LoRAs",          "style adapters",    "huggingface.co"),
-    ("esqa",          "2024 · Kandinsky Labs",   "<em>ESQA</em>",                      "benchmark",         "github.com"),
-    ("kandinsky",     "2023–24 · Kandinsky Labs", "Kandinsky <em>3 / 4</em>",          "t2i & t2v",         "ai-forever.github.io"),
-    ("taskdiscovery", "2022 · NeurIPS · EPFL",   "Task <em>Discovery</em>",            "paper",             "taskdiscovery.epfl.ch"),
-    ("baselines",     "2022 · EPFL",             "Simple Control <em>Baselines</em>",  "paper",             "transfer-controls.epfl.ch"),
-    ("course",        "2022 · Teaching",         "Deep Learning <em>Course</em>",      "course",            "github.com"),
-    ("linesearch",    "2021 · Paper",            "Fast <em>Line Search</em> for MTL",  "paper",             "arxiv.org"),
-]
+STYLE = (
+    "Editorial studio still-life photograph, medium-format film look, fine natural grain. "
+    "One object group centered, occupying about 40 percent of the frame width with generous "
+    "empty backdrop around it, camera at a 3/4 angle about 30 degrees above, 85mm lens, shallow "
+    "depth of field. Seamless matte paper backdrop in warm stone grey (#d9d2c7), soft diffused "
+    "daylight from the upper left, gentle long soft shadow to the lower right. Muted natural "
+    "colours with one rich colour accent from the object itself. No text, no letters, no "
+    "numbers, no logos, no people, no hands, no UI."
+)
 
-TEMPLATE = """<!DOCTYPE html>
-<html><head><meta charset="utf-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*{{margin:0;padding:0;box-sizing:border-box}}
-body{{width:{w}px;height:{h}px;overflow:hidden;position:relative;background:#0c0a09}}
-body::before{{content:'';position:absolute;inset:0;background:
-  radial-gradient(900px 500px at 85% 0%,rgb(245 158 11/.08),transparent 60%),
-  radial-gradient(700px 500px at 0% 100%,rgb(231 229 228/.03),transparent 55%)}}
-body::after{{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}}
-.frame{{position:absolute;inset:26px;border:1px solid #292524}}
-.stack{{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 96px}}
-.label{{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:19px;letter-spacing:.2em;text-transform:uppercase;color:#f59e0b;margin-bottom:34px}}
-.rule{{width:48px;height:1px;background:#292524;margin-bottom:34px}}
-.title{{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:80px;line-height:1.08;letter-spacing:-.02em;color:#e7e5e4}}
-.title em{{font-style:normal;font-weight:500;color:#e7e5e4}}
-.foot{{position:absolute;left:64px;right:64px;bottom:52px;text-align:center;
-  font-family:'JetBrains Mono',monospace;font-weight:400;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#78716c}}
-.foot::before{{content:'';position:absolute;left:0;right:0;top:-18px;height:1px;background:#292524}}
-</style></head>
-<body>
-<div class="frame"></div>
-<div class="stack">
-  <div class="label">{label}</div>
-  <div class="rule"></div>
-  <div class="title">{title}</div>
-</div>
-<div class="foot">{tag} · {domain}</div>
-</body></html>
-"""
+SUBJECTS = {
+    "krea3": "three identical small ceramic vases side by side, glazed cobalt blue, speckled cream and deep green.",
+    "krea2": "a small oval wooden artist palette with eight round dabs of oil paint in an arc, one flat brush across it.",
+    "calculator": "a vintage wooden slide rule lying diagonally beside a small chrome stopwatch.",
+    "flux": "a vintage 35mm film camera with a stack of coloured glass lens filters beside it.",
+    "esqa": "a long strip of cream punched paper tape curling in loose loops.",
+    "kandinsky": "a Bauhaus-style sculpture of painted wooden circles, a triangle and rods, a curl of film strip at its base.",
+    "taskdiscovery": "two shallow ceramic dishes of amber and blue glass marbles, a few marbles between them.",
+    "baselines": "a small brass balance scale, perfectly level, with polished brass calibration weights beside it.",
+    "course": "a blank black school slate in a wooden frame, a stick of white chalk and a felt eraser beside it.",
+    "linesearch": "a folding wooden carpenter's ruler partly unfolded in a zigzag, a brass compass divider next to it.",
+}
 
 
-def main():
-    tmp = Path(tempfile.mkdtemp()) / "cover.html"
-
-    for name, label, title, tag, domain in PROJECTS:
-        out = OUT / f"{name}.jpg"
-
-        tmp.write_text(TEMPLATE.format(w=W, h=H, label=label, title=title,
-                                       tag=tag, domain=domain))
-        url = "file://" + str(tmp)
-        subprocess.run(
-            [CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
-             f"--window-size={W},{H}", "--virtual-time-budget=6000",
-             f"--screenshot={out}", url],
-            check=True, capture_output=True)
-        print(f"ok {out.name}")
-
-    tmp.unlink(missing_ok=True)
+def main(src):
+    from PIL import Image
+    for name in SUBJECTS:
+        im = Image.open(Path(src) / f"{name}.png").convert("RGB")
+        w, h = im.size
+        ch = round(w * H / W)
+        top = (h - ch) // 2
+        im.crop((0, top, w, top + ch)).resize((W, H), Image.LANCZOS).save(
+            OUT / f"{name}.jpg", quality=82, optimize=True, progressive=True)
+        print(OUT / f"{name}.jpg")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    if len(sys.argv) != 2:
+        sys.exit(__doc__)
+    main(sys.argv[1])

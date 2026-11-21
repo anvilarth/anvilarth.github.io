@@ -51,8 +51,8 @@ Every file has exactly one place:
   Markdown mirror, image or other file without the user's approval.
 - Edit sources only, never `dist/` or generated output. The block between the
   `<!-- shared-longread-template -->` markers in a post is replaced by the
-  build: change `templates/longread/` instead. The homepage Latest card is
-  derived by the build: never maintain it by hand.
+  build: change `templates/longread/` instead. The homepage feed of the three
+  newest articles is derived by the build: never maintain it by hand.
 - DPO (`posts/preference_optimization/`) and RL for Diffusion
   (`posts/rl_for_diffusion_part_1/`) are written and built in the adjacent
   `tg_channel` project, then synced here by their `publish_build.py`. Edit
@@ -97,7 +97,7 @@ version from plain PyPI, and commit `uv.lock` with it.
 3. Run `uv run builder build` (`--drafts` includes draft posts) and
    `uv run builder check`; preview with `uv run builder serve`. The build
    applies the shared template, bakes both languages, adds one GoatCounter
-   loader per page, derives the homepage Latest card from the newest article in
+   loader per page, derives the homepage feed from the three newest articles in
    the blog, and writes the sitemap and `llms-full.txt`.
 4. Commit by the Git rules above. Pushing to `master` runs the `Site` workflow:
    build, checks, deploy to Pages, sitemap submission to Google and IndexNow.

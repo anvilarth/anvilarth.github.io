@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="Blog posts about ML, GPU architecture, inference, and deep learning">
 <title>Blog | Andrei Filatov</title>
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://anvilarth.github.io/blog.html">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
@@ -29,7 +31,7 @@
 <link rel="preconnect" href="https://gc.zgo.at">
 <link rel="preconnect" href="https://anvilarth.goatcounter.com">
 <script>
-(function(){try{var q=new URLSearchParams(location.search).get('theme');var t=(q==='dark'||q==='light')?q:localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+(function(){try{var q=new URLSearchParams(location.search).get('theme');var t=(q==='dark'||q==='light')?q:localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);function tc(t){var c=t==="dark"?"#16130f":t==="light"?"#f7f4ee":null;if(c)document.querySelectorAll("meta[name=theme-color]").forEach(function(m){m.content=c})};tc(t)}}catch(e){}})();
 </script>
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:400 600;font-display:swap;src:url(/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
@@ -109,22 +111,18 @@ nav .c{display:flex;justify-content:space-between;align-items:center;max-width:9
 /* ── Header ── */
 header{padding:150px 0 52px;position:relative}
 header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ll) 20%,var(--ll) 80%,transparent)}
-.section-label{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px}
 header h1{font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.5vw,48px);line-height:1.15;letter-spacing:-.025em;margin-bottom:16px}
 header p{color:var(--ts);font-size:16px}
 
 /* ── Posts ── */
-.posts{padding:48px 0;display:flex;flex-direction:column;gap:20px}
-.post-item{display:block;padding:26px 30px;position:relative;border:1px solid var(--ll);border-radius:14px;background:color-mix(in srgb,var(--card),transparent 25%);transition:all .3s ease}
-.post-item:hover{border-color:color-mix(in srgb,var(--accent),transparent 50%);transform:translateY(-2px);box-shadow:0 12px 32px -16px color-mix(in srgb,var(--t),transparent 80%)}
+.posts{padding:32px 0 48px;max-width:760px}
+.post-item{display:block;padding:26px 4px;border-bottom:1px solid var(--ll);color:var(--t)}
 .post-item:hover .post-title{color:var(--accent)}
-.post-date{font-family:var(--mono);font-size:11px;color:var(--th);letter-spacing:.04em;margin-bottom:10px;display:block}
-.post-title{font-family:var(--serif);font-weight:600;font-size:clamp(20px,3vw,24px);line-height:1.3;letter-spacing:-.015em;margin-bottom:8px;transition:color .2s}
-.post-desc{color:var(--ts);font-size:15px;line-height:1.65;margin-bottom:14px}
-.post-tags{display:flex;gap:8px;flex-wrap:wrap}
-.post-tag{font-family:var(--mono);font-size:11px;color:var(--th);padding:3px 10px;border:1px solid var(--ll);border-radius:5px}
-.post-arrow{position:absolute;right:26px;top:30px;color:var(--ll);transition:color .2s}
-.post-item:hover .post-arrow{color:var(--accent)}
+.post-date{font-size:13px;color:var(--th);margin-bottom:6px;display:block}
+.post-title{font-family:var(--serif);font-weight:600;font-size:clamp(20px,3vw,24px);line-height:1.3;letter-spacing:-.015em;margin-bottom:8px;transition:color .2s;text-wrap:balance}
+.post-desc{color:var(--ts);font-size:15px;line-height:1.65;margin-bottom:10px;text-wrap:pretty}
+.post-tags{display:flex;gap:6px 14px;flex-wrap:wrap}
+.post-tag{font-size:13px;color:var(--th)}
 
 /* ── Footer ── */
 footer{padding:48px 0;text-align:center;font-size:12px;color:var(--th);font-family:var(--mono);position:relative}
@@ -132,7 +130,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 @media(max-width:600px){
   header{padding:110px 0 40px}
-  .post-arrow{display:none}
 }
 
 /* ── Theme button ── */
@@ -147,9 +144,17 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 .md-link{max-width:720px;margin:56px auto 0;padding:20px 24px 40px;border-top:1px solid var(--ll);font-family:var(--mono),ui-monospace,monospace;font-size:13px;line-height:1.7;color:var(--th)}
 .md-link a{color:var(--th);text-decoration:none;border-bottom:1px solid var(--ll)}
 .md-link a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:12px;top:-60px;z-index:200;padding:8px 14px;border-radius:6px;background:var(--card);color:var(--t);border:1px solid var(--ll)}
+.skip:focus{top:12px}
+.theme-btn,nav a{touch-action:manipulation}
+@media(pointer:coarse){.theme-btn{padding:12px;margin:-12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
+
+<a class="skip" href="#main">Skip to content</a>
 
 <div class="bg-gradient"></div>
 
@@ -164,10 +169,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   </div>
 </nav>
 
-<main class="c">
+<main class="c" id="main">
 
 <header>
-  <p class="section-label">Writing</p>
   <h1>Blog</h1>
   <p>Interactive tools, long-reads, and deep dives into ML, GPU architecture, and inference</p>
 </header>
@@ -175,11 +179,10 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 <div class="posts">
 
   <a href="/rl-for-diffusion-part-2.html" class="post-item">
-    <span class="post-date">October 2026 · ~25 min read · RU/EN</span>
+    <span class="post-date">October 2026 · ~33 min read · RU/EN</span>
     <h2 class="post-title">RL for Diffusion Models: Part 2</h2>
     <p class="post-desc">Reward models for diffusion RL: annotation, yes/no checklists, VLM judges, agentic critics, and balancing several rewards in one advantage (GDPO, GD²PO, DAPO).</p>
     <div class="post-tags"><span class="post-tag">Diffusion</span><span class="post-tag">RL</span><span class="post-tag">Long-read</span></div>
-    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
 
   <a href="/rl-for-diffusion-part-1.html" class="post-item">
@@ -187,7 +190,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <h2 class="post-title">RL for Diffusion Models: Part 1</h2>
     <p class="post-desc">How to deliver a reward to a diffusion model: gradients through the trajectory (ReFL, DRaFT, DRTune, ShortFT) and online policy gradient (Flow-GRPO, DiffusionNFT, AWM).</p>
     <div class="post-tags"><span class="post-tag">Diffusion</span><span class="post-tag">RL</span><span class="post-tag">Long-read</span></div>
-    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
 
   <a href="/preference-optimization.html" class="post-item">
@@ -195,7 +197,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <h2 class="post-title">Direct Preference Optimization (DPO) for Diffusion Models</h2>
     <p class="post-desc">Teaching visual preferences to diffusion models: DPO pairs, FiFA, and training without losing generation quality.</p>
     <div class="post-tags"><span class="post-tag">Diffusion</span><span class="post-tag">Post-training</span><span class="post-tag">Long-read</span></div>
-    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
 
   <a href="/autoresearch.html" class="post-item">
@@ -207,7 +208,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <span class="post-tag">Research</span>
       <span class="post-tag">Long-read</span>
     </div>
-    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
 
   <a href="/gpu-story.html" class="post-item">
@@ -219,7 +219,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <span class="post-tag">Architecture</span>
       <span class="post-tag">Long-read</span>
     </div>
-    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
 
   <a href="/realtime-video-calculator.html" class="post-item">
@@ -231,7 +230,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <span class="post-tag">Compute</span>
       <span class="post-tag">Interactive</span>
     </div>
-    <svg class="post-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
 
 </div>
@@ -255,6 +253,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     var cur=root.getAttribute('data-theme')||(sysDark?'dark':'light');
     var next=cur==='dark'?'light':'dark';
     root.setAttribute('data-theme',next);
+    document.querySelectorAll('meta[name=theme-color]').forEach(function(m){m.content=next==='dark'?'#16130f':'#f7f4ee'});
     try{localStorage.setItem('theme',next)}catch(e){}
   });
 })();

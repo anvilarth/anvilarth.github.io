@@ -1,7 +1,7 @@
-"""Finish the pages in dist/: shared template, analytics, static language pages and Latest.
+"""Finish the pages in dist/: shared template, analytics, static language pages and the homepage feed.
 
 Runs on the copies in dist/, before the sitemap is generated.
-Blog cards supply Latest copy; article JSON-LD supplies publication dates.
+Blog cards supply the homepage feed copy; article JSON-LD supplies publication dates.
 """
 import html
 import json
@@ -114,7 +114,7 @@ def localized(source, slug, lang):
     return source
 
 
-def latest_block(blog, pages):
+def latest_feed(blog, pages, count=3):
     cards = re.findall(r'<a href="(/[^"]+\.html)" class="post-item">(.*?)</a>', blog, re.S)
     candidates = []
     for href, card in cards:
@@ -133,12 +133,13 @@ def latest_block(blog, pages):
             return match[1]
         candidates.append((date, href, field('post-date'), field('post-title'), field('post-desc')))
     if not candidates:
-        raise ValueError('No published articles found for Latest')
-    _, href, date_label, title, description = max(candidates)
-    return (f'<div class="latest-post">\n'
-            f'    <span class="latest-post-date">Latest · {date_label}</span>\n'
-            f'    <a href="{href}" class="latest-post-title">{title}</a>\n'
-            f'    <p class="latest-post-desc">{description}</p>\n  </div>')
+        raise ValueError('No published articles found for the homepage feed')
+    items = []
+    for _, href, date_label, title, description in sorted(candidates, reverse=True)[:count]:
+        meta = re.sub(r'\s*·\s*RU/EN\s*$', '', date_label.strip())
+        items.append(f'<a class="feed-item" href="{href}"><span class="feed-meta">{meta}</span>'
+                     f'<span class="feed-title">{title}</span><span class="feed-kind">{description}</span></a>')
+    return '<div class="feed-posts">\n    ' + '\n    '.join(items) + '\n    </div>'
 
 
 def build():
@@ -155,10 +156,10 @@ def build():
     # The homepage lives at "/"; a link to "index.html" makes search engines
     # crawl a duplicate URL. Articles synced from tg_channel still carry it.
     pages = {name: source.replace('href="index.html"', 'href="/"') for name, source in pages.items()}
-    block =latest_block(pages['blog.html'], pages)
-    pages['index.html'], count = re.subn(r'<div class="latest-post">.*?</div>', lambda m: block, pages['index.html'], flags=re.S)
+    block = latest_feed(pages['blog.html'], pages)
+    pages['index.html'], count = re.subn(r'<div class="feed-posts">.*?</div>', lambda m: block, pages['index.html'], flags=re.S)
     if count != 1:
-        raise ValueError('Expected exactly one Latest block on the homepage')
+        raise ValueError('Expected exactly one feed-posts block on the homepage')
     return pages
 
 
