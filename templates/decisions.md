@@ -28,14 +28,16 @@ https://claude.ai/artifact/9CJFGeXGJvccYPshSxdF7F. Опубликовано ко
 ### D001 · Одна шапка на всех страницах
 - Status: accepted · By: author-request · Date: 2026-11-21 · Scope: `pages/*.html`, `templates/longread/nav.html`, `site_nav` в `builder/build_publication.py`
 - Context: при переходе между страницами шапка менялась (Projects / Blog / Contact на главной, «Back to main» на остальных).
+- Update 2026-11-21: «andrei filatov позицию меняет в на основной projects и blog» — шапка на всех страницах одной ширины (960px) и высоты (62px), логотип стоит в одной точке до пикселя на главной, Blog, Projects и в статьях, на десктопе и на телефоне.
 - Decision: везде логотип слева, справа Projects, Blog (текущий раздел подчёркнут цветом акцента), переключатель темы; в статьях ещё иконка языка (D006). Пункта Contact нет, «Main» и иконок у пунктов нет — на главную ведёт логотип.
 - Consequences: новая страница или статья получает ту же шапку, а не свою. Значения — в «Приёмы → Шапка».
 
 ### D002 · Логотип в исходном шрифте
 - Status: accepted · By: author-request · Date: 2026-11-21 · Scope: `.nav-logo` на всех страницах
 - Context: «давай для andrei filatov в шапке оставим исходный шрифт»
-- Decision: «andrei filatov» — JetBrains Mono 14px, вес 400, на всех страницах. Это единственное место, где остался моноширинный шрифт.
-- Consequences: при унификации шрифтов логотип не трогать; font-face JetBrains Mono не удалять. Supersedes S07.
+- Decision: «andrei filatov» — JetBrains Mono 14px, вес 400, на всех страницах.
+- Update 2026-11-21: «давай вернем projects blog такой же шрифт как у andrei filatov» — пункты меню Projects / Blog тоже JetBrains Mono 14px, 400. Моноширинный шрифт — только в шапке (логотип и меню).
+- Consequences: при унификации шрифтов шапку не трогать; font-face JetBrains Mono не удалять. Supersedes S07.
 
 ### D003 · Один раздел Blog для постов и докладов
 - Status: accepted · By: author-request · Date: 2026-11-21 · Scope: главная, `pages/blog.html`
@@ -79,6 +81,7 @@ https://claude.ai/artifact/9CJFGeXGJvccYPshSxdF7F. Опубликовано ко
 
 ### D010 · Главная из трёх экранов, Projects — момент photo-chapters
 - Status: accepted · By: author-approved-text · Date: 2026-11-21 · Scope: `pages/index.html`, `static/moments/`
+- Update 2026-11-21: «на основной странице projects прокрутка может больше места занимать» — колонка главной расширена с 820 до 960px (на линию шапки), картинка проекта занимает 68% строки: на 1440×900 615×410 вместо 489×326.
 - Context: «мне не нравится что на первом экране типо projects как будто отрезанные», «хочется по сути иметь 3 слайда, про меня projects, blogs», «ну хочется чтобы было 3 как бы секции и такие переходы между ними» → «всё мне нравится»
 - Decision: три экрана — про меня, Projects, Blog; каждая секция ровно в высоту окна. Переход между ними держит Projects: секция стоит на месте, по прокрутке каждая следующая картинка проекта открывается поверх предыдущей (момент photo-chapters из taste skill). Над названием проекта строка «год · место» из `pages/projects.html`. В Blog на главной три пункта: два новейших поста и доклад.
 - Consequences: Supersedes S03, S04. Не добавлять scroll-snap, «доводчики» и появление секций при прокрутке (D016). Значения — в «Приёмы → Главная».
@@ -103,7 +106,7 @@ https://claude.ai/artifact/9CJFGeXGJvccYPshSxdF7F. Опубликовано ко
 ### D014 · Шрифты: два семейства и один моноширинный логотип
 - Status: accepted · By: author-approved-text · Date: 2026-11-21 · Scope: главная, Blog, Projects
 - Context: «и почему Andrei Filatov с засечками сделано», «не мне именно имя хочется шрифт поменять», «выбери сам шрифт по скиллам»; taste skill: на странице не больше двух шрифтов, подписи не меньше 13px, без капса.
-- Decision: заголовки секций и страниц — Literata (`--serif`); основной текст — Inter (`--sans`); имя на главной — Inter 600, трекинг −0,04em; пункты шапки — Literata 16px/500; мелкий текст (Resume, футер, строка «For agents and LLMs») — Inter 13–14px; `--mono` на страницах указывает на Inter. Моноширинный — только логотип (D002).
+- Decision: заголовки секций и страниц — Literata (`--serif`); основной текст — Inter (`--sans`); имя на главной — Inter 600, трекинг −0,04em; пункты шапки — JetBrains Mono 14px (D002, до 2026-11-21 были Literata 16px/500); мелкий текст (Resume, футер, строка «For agents and LLMs») — Inter 13–14px; `--mono` на страницах указывает на Inter. Моноширинный — только шапка (D002).
 - Consequences: Supersedes S06. Новый шрифт не добавлять без просьбы автора.
 
 ### D015 · Отступы по одной шкале, межсекционный отступ меньше, чем в skill
@@ -138,8 +141,9 @@ https://claude.ai/artifact/9CJFGeXGJvccYPshSxdF7F. Опубликовано ко
 Как устроено то, что решено выше, и какими значениями. Меняя значение, меняй и эту запись.
 
 ### Шапка (D001, D002, D008)
-- Логотип: `font-family:'JetBrains Mono'…; 14px; 400; letter-spacing:-.01em`, знак-«точки» слева (на статьях ≤440px знак скрыт).
-- Пункты: `var(--serif)` 16px/500, `letter-spacing:-.005em`, цвет `--ts`, при наведении `--accent`; зазор 24px (≤600px: 15px и 16px; в статьях ≤440px 12px, ≤400px 10px).
+- Одна линия: `nav .c` / `.post-nav-inner` — `max-width:960px`, поля 28px, высота строки 29px, отступы 16px; итого 62px. Логотип на 1440 стоит на x=268, y=19,5 на всех страницах. Блок «Shared header» в конце `<style>` каждой страницы и в конце `templates/longread/style.css` — меняй их вместе.
+- Логотип: `font-family:'JetBrains Mono'…; 14px; 400; letter-spacing:-.01em; line-height:22px`, знак-«точки» слева, зазор 9px (в статьях знак скрыт только ≤379px, где не помещается иконка языка).
+- Пункты: тот же JetBrains Mono 14px/400, цвет `--ts`, при наведении `--accent`; зазор 24px (≤600px 16px; ≤380px 12px и 12px между логотипом и меню; в статьях ≤440px 12px, ≤400px 10px).
 - Текущая страница: `aria-current="page"`, цвет `--t`, подчёркивание `--accent` толщиной 2px со сдвигом 8px.
 - Статьи: `.post-nav` с отступами 16px и внутренней высотой 29px (итого 62px), ширина 960px. Старый `.lang-switch` с `#btn-ru` / `#btn-en` остаётся в разметке с `hidden` — на эти кнопки опирается `setLang` статей.
 - Иконка языка `.lang-toggle`: 16px, отступ 6px с таким же отрицательным полем; при `pointer: coarse` 14px (цель 44px); `touch-action: manipulation`, `:focus-visible` контур цвета акцента.
@@ -151,10 +155,11 @@ https://claude.ai/artifact/9CJFGeXGJvccYPshSxdF7F. Опубликовано ко
 - `language-links.js` дописывает к ссылке текущий якорь раздела, поэтому и обычный переход сохраняет место.
 
 ### Главная (D009, D010, D014, D015, D016, D017)
+- Колонка: `main.c{max-width:960px}` — на линии шапки; описания постов в ленте `max-width:68ch`.
 - Секции: `main>section{height:100svh}` (на телефоне 100lvh), отступы 120/72px, первый экран 112/64px (на телефоне 96/48px), содержимое по центру по вертикали, без линий между секциями.
 - Строка заголовка: `.section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 24px}`; ссылка `.link` 15px цвета текста, линия `--ll` снизу, при наведении слева направо прорисовывается линия цвета текста (`background-size` 0 → 100%, 0,25 с).
 - Контакты: `.hero-note` 16px, цвет `--ts`, ссылки `--accent` с полупрозрачной линией.
-- Момент photo-chapters: секция `#projects[data-moment="photo-chapters"]` со списком `ol.mo-ph__list > li.mo-ph__ch` (`figure.mo-ph__pic > img`, `p.mo-ph__meta` «2026 · Krea», `h3 > a`, `p`). JS и CSS момента — `static/moments/` (не `assets/`, чтобы не пересечься с `/assets/<slug>/` статей), подключение — `modulepreload` + `<script type="module" src="moments/moments.js">`, классы `mo-js` / `mo-safe` на `html`. Десктоп (≥900px): картинка 3:2 на 64% ширины слева, текст справа; телефон: картинка целиком, текст под ней.
+- Момент photo-chapters: секция `#projects[data-moment="photo-chapters"]` со списком `ol.mo-ph__list > li.mo-ph__ch` (`figure.mo-ph__pic > img`, `p.mo-ph__meta` «2026 · Krea», `h3 > a`, `p`). JS и CSS момента — `static/moments/` (не `assets/`, чтобы не пересечься с `/assets/<slug>/` статей), подключение — `modulepreload` + `<script type="module" src="moments/moments.js">`, классы `mo-js` / `mo-safe` на `html`. Десктоп (≥900px): картинка 3:2 на 68% ширины слева (не выше `(100svh − 300px)·1,5`), текст справа; телефон: картинка целиком, текст под ней.
 - Описания постов в Blog на телефоне обрезаются до двух строк (`-webkit-line-clamp:2`).
 
 ### Лента и карточки (D003, D004)
@@ -162,6 +167,7 @@ https://claude.ai/artifact/9CJFGeXGJvccYPshSxdF7F. Опубликовано ко
 - Карточка поста: `«October 2026 · 33 min read»`. Карточка доклада: `«2026 · Talk · 35 min · Data Fest, Belgrade»`, теги «Video Generation», «Talk».
 
 ### Страницы Blog и Projects (D005, D011)
+- Projects: `.c{max-width:960px}` — сетка на линии шапки (3 колонки на десктопе). Blog — колонка 720px (P03).
 - Шапка страницы: `main>header::after{display:none}`, `padding-bottom:48px`, у одиночного h1 нет нижнего поля.
 - Обложки: `.proj-img{aspect-ratio:3/2; object-fit:contain; background:#f6e4d2}`, у `img` всегда `width="1536" height="1024"` и `alt`, описывающий иллюстрацию («Illustration: …»).
 - Генерация: `templates/project-covers.py` хранит STYLE (плоская редакционная иллюстрация, бумага #f3ede4, ржавый #b5452b, тёмный #1f1a17, песок #d9c7ad, бирюза #3f6f6a, персик #f0c7a8, без текста и лиц) и SUBJECTS — идею каждого проекта. Картинки генерировались через Codex, скрипт сохраняет их без кропа, при другой пропорции дополняет до 3:2 цветом бумаги.

@@ -341,6 +341,17 @@ main #projects.is-live>.mo-ph{grid-template-rows:auto auto 1fr!important;align-c
 .projects-grid{margin-top:48px;gap:32px 24px}
 .feed{margin-top:48px}
 @media(max-width:600px){.hero{padding:96px 0 48px}.projects-grid,.feed{margin-top:32px}}
+/* Shared header: one 960px line on every page, menu in the logo's font (templates/decisions.md D001, D002) */
+nav .c{max-width:960px;min-height:29px}
+.nav-logo{font-size:14px;gap:9px;line-height:22px}
+.nav-links{font-family:'JetBrains Mono','JetBrains Mono Fallback',monospace;font-size:14px;font-weight:400;letter-spacing:-.01em;gap:24px}
+@media(max-width:600px){.nav-links{font-size:14px;gap:16px}}
+@media(max-width:380px){nav .c{gap:12px}.nav-links{gap:12px}}
+/* Home: every section on the header's 960px line; Projects stage takes most of the row */
+main.c{max-width:960px}
+.feed-kind{max-width:68ch}
+@media(min-width:900px){#projects.is-live .mo-ph__stage{width:min(68%,calc((100svh - 300px)*1.5))!important}
+ #projects.is-live .mo-ph__panel{width:calc(100%*32/68 - 32px)}}
 </style>
 </head>
 <body>
