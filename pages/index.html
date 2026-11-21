@@ -93,6 +93,8 @@
 <script>
 (function(){try{var q=new URLSearchParams(location.search).get('theme');var t=(q==='dark'||q==='light')?q:localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);function tc(t){var c=t==="dark"?"#16130f":t==="light"?"#f7f4ee":null;if(c)document.querySelectorAll("meta[name=theme-color]").forEach(function(m){m.content=c})};tc(t)}}catch(e){}})();
 </script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="moments/moments.js"><link rel="modulepreload" href="moments/lib.js"><link rel="modulepreload" href="moments/photo-chapters/moment.js">
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:400 600;font-display:swap;src:url(/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 @font-face{font-family:'Inter';font-style:normal;font-weight:400 600;font-display:swap;src:url(/fonts/inter-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
@@ -117,7 +119,7 @@
   --glow-op:.8;
   --serif:'Literata','Literata Fallback',Georgia,serif;
   --sans:'Inter','Inter Fallback',-apple-system,sans-serif;
-  --mono:'JetBrains Mono','JetBrains Mono Fallback',monospace;
+  --mono:var(--sans);
   --grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E")
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){
@@ -269,6 +271,76 @@ section[id]{scroll-margin-top:72px}
 .theme-btn,nav a{touch-action:manipulation}
 @media(pointer:coarse){.theme-btn{padding:12px;margin:-12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+.nav-links{display:flex;align-items:center}
+.nav-links a{color:var(--ts);transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+/* ── Shared header ── */
+.nav-logo{font-family:'JetBrains Mono','JetBrains Mono Fallback',monospace;font-size:14px;font-weight:400;letter-spacing:-.01em}
+.nav-links{font-family:var(--serif);font-size:16px;font-weight:500;letter-spacing:-.005em;gap:24px}
+.nav-links a[aria-current=page]{color:var(--t);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:8px}
+.hero-note{color:var(--ts);font-size:16px;margin:-18px 0 30px;max-width:580px}
+.hero-note a{color:var(--accent);border-bottom:1px solid color-mix(in srgb,var(--accent),transparent 60%)}
+.hero-note a:hover{border-color:var(--accent)}
+.hero-contact{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0 0 30px;font-size:17px}
+.hero-contact a{color:var(--accent);border-bottom:1px solid color-mix(in srgb,var(--accent),transparent 60%)}
+.hero-contact a:hover{border-color:var(--accent)}
+.section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 24px;margin-bottom:8px}
+.section-head h2{margin-bottom:0}
+.link{font-size:15px;color:var(--t);background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;border-bottom:1px solid var(--ll);transition:background-size .25s ease,color .2s}
+.link:hover{color:var(--t);background-size:100% 1px}
+@media(prefers-reduced-motion:reduce){.link{transition:none}}
+.btn{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:0}
+footer{font-family:var(--sans);font-size:13px;letter-spacing:0}
+.md-link{font-family:var(--sans)!important;font-size:13px}
+@media(max-width:600px){.nav-links .nav-contact{display:none}.nav-links{font-size:15px;gap:16px}}
+
+/* ── Rhythm on the 4-8-12-16-24-32-48-64-96 scale ── */
+section{padding:48px 0}
+/* taste skill layout-v4 2: every section exactly one screen (photo-chapters: its own 4 screens live) */
+html{scroll-snap-type:none;scroll-padding-top:0;scroll-behavior:auto}
+main{display:block!important;gap:0!important;padding-top:0!important;padding-bottom:0!important}
+main>section{height:100vh;height:100svh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;margin:0;padding:120px 0 72px}
+main>section.hero{padding:112px 0 64px}
+main>section+section{border-top:0!important}
+main hr,main .divider{display:none}
+@media(max-width:639px){main>section{padding:96px 0 48px}main>section:not(.hero){height:100lvh}.feed-kind{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
+:root{--ink:var(--t);--muted:var(--ts);--line:var(--ll);--surface:var(--card);--font-text:var(--sans);--font-display:var(--serif);--display-weight:500;--display-tracking:-.01em;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:24px;--s-6:32px;--s-7:48px;--r-md:10px;--r-lg:14px;--t-small:14px;--t-lead:18px;--t-h3:26px;--nav:64px}
+#projects{display:block}
+#projects .mo-ph__head{max-width:none;gap:8px}
+#projects .mo-ph__head .section-head{margin:0}
+#projects .mo-ph__head .lede{margin:0}
+@media(max-width:639px){
+ main #projects.is-live>.mo-ph{grid-template-rows:auto auto 1fr!important;align-content:start!important}
+ #projects.is-live .mo-ph__stage{aspect-ratio:16/10;overflow:visible!important;border-radius:10px}
+ #projects.is-live .mo-ph__stage>.mo-ph__pic{border-radius:10px;overflow:hidden}
+ #projects.is-live .mo-ph__panel{left:0!important;right:0!important;bottom:auto!important;top:calc(100% + 8px);background:transparent!important;padding:16px 0!important}
+}
+#projects .mo-ph__pic>img{object-fit:contain!important;aspect-ratio:3/2!important;max-height:none!important}
+main #projects.is-live>.mo-ph{grid-template-rows:auto auto 1fr!important;align-content:start!important}
+#projects.is-live .mo-ph__stage{aspect-ratio:3/2!important;height:auto!important;width:min(100%,calc((100svh - 470px)*1.5))!important;overflow:visible!important;border-radius:10px;background:transparent!important}
+#projects.is-live .mo-ph__stage>.mo-ph__pic{border-radius:10px;overflow:hidden}
+#projects.is-live .mo-ph__panel{left:0!important;right:0!important;bottom:auto!important;top:calc(100% + 8px);background:transparent!important;box-shadow:none!important;padding:16px 0!important;max-width:62ch}
+@media(max-width:899px){#projects.is-live .mo-ph__stage{width:min(100%,calc((100svh - 500px)*1.5))!important}}
+@media(max-width:639px){#projects.is-live .mo-ph__stage{width:min(100%,max(260px,calc((100svh - 500px)*1.5)))!important}#projects.is-live .mo-ph__panel{right:auto!important;width:calc(100vw - 56px)}}
+@media(max-width:639px) and (max-height:720px){#projects.is-live .mo-ph__panel{padding:8px 0!important}#projects .mo-ph__words p:not(.mo-ph__meta){font-size:15px;line-height:1.5}#projects .mo-ph__words h3{font-size:22px}}
+@media(min-width:900px){#projects.is-live .mo-ph__stage{width:min(64%,calc((100svh - 300px)*1.5))!important;align-self:center!important}
+ main #projects.is-live>.mo-ph{align-content:stretch!important}
+ #projects.is-live .mo-ph__panel{top:0!important;left:calc(100% + 32px)!important;right:auto!important;width:calc(100%*36/64 - 32px);max-width:none;padding:0!important}}
+#projects .mo-ph__meta{margin:0;font-size:14px;color:var(--ts)}
+#projects .mo-ph__ch h3 a{color:inherit;text-decoration:none}
+#projects .mo-ph__ch h3 a:hover{color:var(--accent)}
+.hero h1{font-family:var(--sans)}
+.hero h1{font-weight:600;letter-spacing:-.04em}
+.hero{padding:112px 0 64px;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+.hero h1{margin-bottom:16px}
+.hero-role{margin-bottom:24px}
+.hero-desc{margin-bottom:24px}
+.hero-note{margin:0 0 32px}
+.section-head{margin-bottom:8px}
+.projects-grid{margin-top:48px;gap:32px 24px}
+.feed{margin-top:48px}
+@media(max-width:600px){.hero{padding:96px 0 48px}.projects-grid,.feed{margin-top:32px}}
 </style>
 </head>
 <body>
@@ -283,7 +355,6 @@ section[id]{scroll-margin-top:72px}
     <div class="nav-links">
       <a href="projects.html">Projects</a>
       <a href="blog.html">Blog</a>
-      <a href="#contact" class="nav-contact">Contact</a>
       <button class="theme-btn" id="theme-btn" aria-label="Toggle theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
     </div>
   </div>
@@ -296,6 +367,7 @@ section[id]{scroll-margin-top:72px}
   <h1>Andrei Filatov</h1>
   <p class="hero-role"><strong>Member of Technical Staff at Krea</strong> · Dubai</p>
   <p class="hero-desc">I work on generative computer vision. Before Krea: <a href="https://kandinskylab.ai/" target="_blank" rel="noreferrer">Kandinsky Labs</a>, <a href="https://vilab.epfl.ch/" target="_blank" rel="noreferrer">VILAB, EPFL</a> and the <a href="https://research.samsung.com/aicenter_moscow" target="_blank" rel="noreferrer">Samsung AI Center</a>, six years across generative models, computer vision, NLP and meta-learning. I teach a deep learning course and write long-reads about ML, GPUs and inference.</p>
+  <p class="hero-note" id="contact">Happy to help with a consultation, or just write to talk: <a href="mailto:filatovandreiv@gmail.com">email</a> or <a href="https://t.me/anvilarth" target="_blank" rel="noreferrer">Telegram</a>.</p>
   <div class="hero-actions">
     <a href="https://drive.google.com/file/d/1_yudui9m5TRWGtD9XvKc7eTBAn0hblvv/view?usp=sharing" target="_blank" rel="noreferrer" class="btn">Resume</a>
     <div class="social-links">
@@ -311,7 +383,7 @@ section[id]{scroll-margin-top:72px}
     <a href="https://scholar.google.com/citations?user=xRNTrdcAAAAJ&hl=en" target="_blank" rel="noreferrer me" aria-label="Google Scholar">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l4 2.18v6.32L12 21l7-3.5v-6.32l2-1.09V16h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM7 15.5l5 2.5 5-2.5v-2.11l-5 2.5-5-2.5v2.11z"/></svg>
     </a>
-    <a href="https://t.me/awesome_dl" target="_blank" rel="noreferrer me" aria-label="Telegram channel">
+    <a href="https://t.me/awesome_dl" target="_blank" rel="noreferrer me" aria-label="Telegram channel" title="Telegram channel">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
     </a>
   </div>
@@ -319,53 +391,52 @@ section[id]{scroll-margin-top:72px}
 </section>
 
 <!-- ── Projects ── -->
-<section id="projects">
-  <h2>Projects</h2>
-  <p class="lede">Models I built or co-authored.</p>
-  <div class="projects-grid">
-    <a class="pcard" href="https://www.krea.ai/blog/introducing-krea-3" target="_blank" rel="noreferrer">
-      <div class="pcard-frame"><img class="pcard-img" src="img/projects/krea3.jpg" alt="Three identical ceramic vases, each glazed differently" width="1280" height="800" loading="lazy"></div>
-      <h3>Krea 3</h3>
-      <p>Image editing that keeps products, logos and characters consistent across up to six references, natively at 2K, most edits under 8 seconds.</p>
-    </a>
-    <a class="pcard" href="https://www.krea.ai/blog/krea-2-technical-report" target="_blank" rel="noreferrer">
-      <div class="pcard-frame"><img class="pcard-img" src="img/projects/krea2.jpg" alt="Wooden artist palette with dabs of oil paint" width="1280" height="800" loading="lazy"></div>
-      <h3>Krea 2</h3>
-      <p>Open-weights text-to-image model trained from scratch. Second worldwide on style fidelity; the technical report covers data, DiT architecture and training.</p>
-    </a>
-    <a class="pcard" href="https://huggingface.co/XLabs-AI/flux-lora-collection" target="_blank" rel="noreferrer">
-      <div class="pcard-frame"><img class="pcard-img" src="img/projects/flux.jpg" alt="Film camera with a stack of coloured lens filters" width="1280" height="800" loading="lazy"></div>
-      <h3>XLabs FLUX LoRAs</h3>
-      <p>Open LoRA adapters for FLUX.1-dev with training and inference code. The top adapter passed 500k downloads in its first month.</p>
-    </a>
-    <a class="pcard" href="https://ai-forever.github.io/Kandinsky-4/K40/" target="_blank" rel="noreferrer">
-      <div class="pcard-frame"><img class="pcard-img" src="img/projects/kandinsky.jpg" alt="Bauhaus-style sculpture of painted wooden shapes with a strip of film" width="1280" height="800" loading="lazy"></div>
-      <h3>Kandinsky 3 and 4</h3>
-      <p>Text-to-image and text-to-video models. Co-author of the Kandinsky 3.0 report and the EMNLP 2024 framework paper; 3.1 runs about 20× faster.</p>
-    </a>
+<section id="projects" data-moment="photo-chapters" aria-labelledby="projects-h">
+  <div class="mo-ph">
+    <div class="mo-ph__head"><div class="section-head"><h2 id="projects-h">Projects</h2><a class="link" href="projects.html">See all projects</a></div>
+  <p class="lede">Models I built or co-authored.</p></div>
+    <ol class="mo-ph__list">
+      <li class="mo-ph__ch">
+        <figure class="mo-ph__pic"><img src="img/projects/krea3.jpg" alt="Illustration: the same perfume bottle kept identical across a beach, a night city and a studio" width="1536" height="1024" loading="lazy"></figure>
+        <p class="mo-ph__meta">2026 · Krea</p>
+        <h3><a href="https://www.krea.ai/blog/introducing-krea-3" target="_blank" rel="noreferrer">Krea 3</a></h3>
+        <p>Image editing that keeps products, logos and characters consistent across up to six references, natively at 2K, most edits under 8 seconds.</p>
+      </li>
+      <li class="mo-ph__ch">
+        <figure class="mo-ph__pic"><img src="img/projects/krea2.jpg" alt="Illustration: one horse drawn in five different styles" width="1536" height="1024" loading="lazy"></figure>
+        <p class="mo-ph__meta">2026 · Krea</p>
+        <h3><a href="https://www.krea.ai/blog/krea-2-technical-report" target="_blank" rel="noreferrer">Krea 2</a></h3>
+        <p>Open-weights text-to-image model trained from scratch. Second worldwide on style fidelity; the technical report covers data, DiT architecture and training.</p>
+      </li>
+      <li class="mo-ph__ch">
+        <figure class="mo-ph__pic"><img src="img/projects/flux.jpg" alt="Illustration: small style cartridges plugged into one model, the same landscape coming out in four styles" width="1536" height="1024" loading="lazy"></figure>
+        <p class="mo-ph__meta">2024 · XLabs</p>
+        <h3><a href="https://huggingface.co/XLabs-AI/flux-lora-collection" target="_blank" rel="noreferrer">XLabs FLUX LoRAs</a></h3>
+        <p>Open LoRA adapters for FLUX.1-dev with training and inference code. The top adapter passed 500k downloads in its first month.</p>
+      </li>
+      <li class="mo-ph__ch">
+        <figure class="mo-ph__pic"><img src="img/projects/kandinsky.jpg" alt="Illustration: one geometric picture becoming both an image and a film strip" width="1536" height="1024" loading="lazy"></figure>
+        <p class="mo-ph__meta">2023–2024 · Kandinsky Labs</p>
+        <h3><a href="https://ai-forever.github.io/Kandinsky-4/K40/" target="_blank" rel="noreferrer">Kandinsky 3 and 4</a></h3>
+        <p>Text-to-image and text-to-video models. Co-author of the Kandinsky 3.0 report and the EMNLP 2024 framework paper; 3.1 runs about 20× faster.</p>
+      </li>
+    </ol>
   </div>
-  <a href="projects.html" class="more">All projects</a>
 </section>
 
 <!-- ── Writing ── -->
 <section id="writing">
-  <h2>Writing and talks</h2>
-  <p class="lede">Long-reads on diffusion post-training, GPUs and inference, in English and Russian.</p>
+  <div class="section-head"><h2>Blog</h2><a class="link" href="blog.html">See all posts</a></div>
+  <p class="lede">Long-reads and talks on diffusion post-training, GPUs and inference.</p>
   <div class="feed">
     <div class="feed-posts"></div>
     <a class="feed-item" href="https://www.youtube.com/watch?v=LBk1_0ei9m4" target="_blank" rel="noreferrer"><span class="feed-meta">2026 · Talk · 35 min</span><span class="feed-title">Real-time video generation: where we are and what comes next</span><span class="feed-kind">Invited talk, Data Fest, Belgrade</span></a>
   </div>
-  <a href="blog.html" class="more">All posts</a>
 </section>
 
-<!-- ── Contact ── -->
-<section id="contact" class="contact">
-  <h2>Contact</h2>
-  <p class="lede">Write about diffusion training, RL for generative models, GPU inference, or a talk or course.</p>
-  <div class="contact-links"><a href="mailto:filatovandreiv@gmail.com">filatovandreiv@gmail.com</a><a href="https://t.me/awesome_dl" target="_blank" rel="noreferrer">Telegram channel</a></div>
-</section>
 
 </main>
+<script type="module" src="moments/moments.js"></script>
 
 <footer>
   <div class="c">
