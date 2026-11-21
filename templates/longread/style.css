@@ -330,6 +330,6 @@ html.lang-swap header,html.lang-swap #article,html.lang-swap .post-toc{opacity:0
 @media(max-width:440px){.post-nav .nav-links{gap:12px}.post-nav .nav-links>a{font-size:15px}}
 @media(max-width:379px){.post-nav .nav-logo .mark{display:none}}
 @media(max-width:400px){.post-nav .nav-links{gap:10px!important}.post-nav .nav-links>a{font-size:15px!important}}
-/* Menu in the logo's font, as on the other pages (templates/decisions.md D002) */
+/* Menu in the logo's font, as on the other pages */
 .post-nav .nav-links>a,.post-nav .nav-links>a[aria-current=page]{font-family:'JetBrains Mono','JetBrains Mono Fallback',monospace;font-size:14px!important;font-weight:400;letter-spacing:-.01em}
 .post-nav .nav-logo{font-family:'JetBrains Mono','JetBrains Mono Fallback',monospace;letter-spacing:-.01em;line-height:22px}

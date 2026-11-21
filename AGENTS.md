@@ -17,7 +17,7 @@ Every file has exactly one place:
 | `posts/<slug>/` | one article: `post.html`, optional Markdown mirrors `post.md` / `post.en.md`, the article's own files | `/<slug>.html`, `/<slug>.md`, `/<slug>.en.md`, `/assets/<slug>/…` |
 | `pages/` | hand-made pages: home, blog, projects, `about.md` profile | site root |
 | `static/` | files served as is: icons, fonts, `robots.txt`, `llms.txt`, shared scripts and styles, images used by pages | site root |
-| `templates/` | the shared longread template (`longread/`), sources of generated images (`og.html`, `apple-touch-icon.svg`, `project-covers.py`) and the site design decision log (`decisions.md`) | never |
+| `templates/` | the shared longread template (`longread/`), sources of generated images (`og.html`, `apple-touch-icon.svg`, `project-covers.py`) | never |
 | `builder/` | the build and its checks, run as `uv run builder …` | never |
 
 - The root holds only `AGENTS.md`, `CLAUDE.md`, `pyproject.toml`, `uv.lock`,
@@ -60,7 +60,8 @@ Every file has exactly one place:
   copies in `posts/`.
 - Read `templates/decisions.md` before changing `pages/`, `templates/` or the
   site header; its accepted entries are constraints, and a new author request
-  is recorded there in the same commit.
+  is recorded there. The file is a local-only design log: it is untracked
+  (listed in `.git/info/exclude`); never commit or push it.
 - Preserve the existing design and unrelated content. Do not create Markdown
   mirrors of articles unless the user asks for them.
 
