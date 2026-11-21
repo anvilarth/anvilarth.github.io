@@ -4,7 +4,8 @@ All published longreads use this template: GPU Story, Autoresearch, Preference O
 
 - `footer.html` and `footer.css`: identical bilingual agent-links block for all four blog articles, including the realtime video calculator. No per-article Markdown links.
 - `style.css`: common fonts, palette, navigation, typography, chapters, callouts, sources and footer.
-- `nav.html`: navigation markup for new article builders; preserve `setLang`, `btn-ru`, `btn-en`, `theme-btn` when wiring controls.
+- `nav.html`: navigation markup for new article builders; preserve `setLang`, `btn-ru`, `btn-en`, `theme-btn` when wiring controls. The build hides the RU/EN switch and adds the language icon link (`site_nav` in `builder/build_publication.py`).
+- `lang-toggle.js`: in-place language switch behind that icon; keeps the reading position, falls back to the plain link.
 - `post-toc.js` and `post-toc.css`: sidebar with chapters and sources; the current chapter's h3 subsections unfold under it. The same script adds a `#` anchor to every h2/h3 (visible on hover, click copies the section URL) and marks display equations that overflow sideways so the template can fade their right edge.
 - `../../builder/longread_enhance.py`: build-time additions that need no author markup. Stable heading ids (from `data-i18n` keys or the text), `eq-N` ids on `.equation` blocks and the `eq-numbered` body class when a post has three or more (CSS then numbers them), `fig-N` ids on captioned figures (`.fig .figc`, `figure figcaption`; captions get a `Fig. N.` / `Рис. N.` prefix in the page's language), `data-label` on table cells for the phone card layout, the compact `.post-contents` list before chapter 1 on phones, and the light theme by default (the system scheme no longer picks dark; the switch and `?theme=` still do).
 - `../og.html` and `../../builder/og_cards.py`: social cards rendered from article metadata, `uv run builder og`.

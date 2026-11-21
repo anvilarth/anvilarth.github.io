@@ -11,7 +11,7 @@ from datetime import datetime
 from .bake_en import Finder, bake, load_T
 from .longread_enhance import enhance
 from .longread_template import apply_template, apply_tool_footer
-from .paths import BASE, DIST, ROOT
+from .paths import BASE, DIST, ROOT, TEMPLATE
 
 LOCALES = json.loads((ROOT / 'builder/locales.json').read_text())
 ANALYTICS = '<script data-goatcounter="https://anvilarth.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>'
@@ -70,6 +70,28 @@ class AttributeTranslations(Finder):
         super().handle_starttag(tag, attrs)
 
 
+LANG_ICON = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+             '<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>')
+
+
+def site_nav(source, slug, lang):
+    """Site header on longreads: Projects, Blog, one language link (a real link to the other page), theme."""
+    nav = {'en': ('Projects', 'Blog'), 'ru': ('Проекты', 'Блог')}[lang]
+    links = f'<a href="projects.html">{nav[0]}</a><a href="blog.html" aria-current="page">{nav[1]}</a>'
+    source, n = re.subn(r'(<div class="nav-links">).*?(?=<div class="lang-switch">)', lambda m: m[1] + links, source, count=1, flags=re.S)
+    if n != 1:
+        raise ValueError(f'{slug}: expected nav links before the language switch')
+    source = source.replace('<div class="lang-switch">', '<div class="lang-switch" hidden>', 1)
+    other, suffix, label = ('en', '.html', 'Read in English') if lang == 'ru' else ('ru', '.ru.html', 'Читать на русском')
+    toggle = (f'<a class="lang-toggle" id="lang-toggle" data-language="{other}" hreflang="{other}" lang="{other}" '
+              f'href="{slug}{suffix}" aria-label="{label}" title="{label}">{LANG_ICON}</a>')
+    source, n = re.subn(r'<button class="theme-btn"', lambda m: toggle + m[0], source, count=1)
+    if n != 1:
+        raise ValueError(f'{slug}: expected a theme button')
+    script = '<script data-template="lang-toggle">' + (TEMPLATE / 'lang-toggle.js').read_text() + '</script>\n'
+    return source.replace('</body>', script + '</body>', 1)
+
+
 def localized(source, slug, lang):
     source, _ = bake(source, lang)
     parser = AttributeTranslations(source, load_T(source), lang)
@@ -94,6 +116,7 @@ def localized(source, slug, lang):
     source, n = re.subn(r'<div class="lang-switch">.*?</div>', lambda m: switch, source, flags=re.S)
     if n != 1:
         raise ValueError(f'{slug}: expected one language switch')
+    source = site_nav(source, slug, lang)
     if lang == 'ru':
         meta = LOCALES[slug]
         if 'heading' in meta:
@@ -109,7 +132,6 @@ def localized(source, slug, lang):
                 obj.update(headline=meta['title'], description=meta['description'], inLanguage='ru', mainEntityOfPage=url)
             return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False) + '</script>'
         source = re.sub(r'<script type="application/ld\+json">(.*?)</script>', schema, source, flags=re.S)
-        source = source.replace('</svg>Main</a>', '</svg>Главная</a>').replace('</svg>Blog</a>', '</svg>Блог</a>')
         source = source.replace('aria-label="Toggle theme"', 'aria-label="Переключить тему"').replace('title="Toggle theme"', 'title="Переключить тему"')
     return source
 
@@ -156,7 +178,7 @@ def build():
     # The homepage lives at "/"; a link to "index.html" makes search engines
     # crawl a duplicate URL. Articles synced from tg_channel still carry it.
     pages = {name: source.replace('href="index.html"', 'href="/"') for name, source in pages.items()}
-    block = latest_feed(pages['blog.html'], pages)
+    block = latest_feed(pages["blog.html"], pages, count=2)  # two newest posts; the talk follows in pages/index.html
     pages['index.html'], count = re.subn(r'<div class="feed-posts">.*?</div>', lambda m: block, pages['index.html'], flags=re.S)
     if count != 1:
         raise ValueError('Expected exactly one feed-posts block on the homepage')
