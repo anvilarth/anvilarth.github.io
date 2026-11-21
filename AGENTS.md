@@ -17,7 +17,7 @@ Every file has exactly one place:
 | `posts/<slug>/` | one article: `post.html`, optional Markdown mirrors `post.md` / `post.en.md`, the article's own files | `/<slug>.html`, `/<slug>.md`, `/<slug>.en.md`, `/assets/<slug>/…` |
 | `pages/` | hand-made pages: home, blog, projects, `about.md` profile | site root |
 | `static/` | files served as is: icons, fonts, `robots.txt`, `llms.txt`, shared scripts and styles, images used by pages | site root |
-| `templates/` | the shared longread template (`longread/`) and sources of generated images (`og.html`, `apple-touch-icon.svg`, `project-covers.py`) | never |
+| `templates/` | the shared longread template (`longread/`), sources of generated images (`og.html`, `apple-touch-icon.svg`, `project-covers.py`) and the site design decision log (`decisions.md`) | never |
 | `builder/` | the build and its checks, run as `uv run builder …` | never |
 
 - The root holds only `AGENTS.md`, `CLAUDE.md`, `pyproject.toml`, `uv.lock`,
@@ -51,13 +51,16 @@ Every file has exactly one place:
   Markdown mirror, image or other file without the user's approval.
 - Edit sources only, never `dist/` or generated output. The block between the
   `<!-- shared-longread-template -->` markers in a post is replaced by the
-  build: change `templates/longread/` instead. The homepage feed of the three
-  newest articles is derived by the build: never maintain it by hand.
+  build: change `templates/longread/` instead. The homepage feed (the two newest
+  articles, followed by the hand-written talk) is derived by the build: never maintain it by hand.
 - DPO (`posts/preference_optimization/`) and RL for Diffusion
   (`posts/rl_for_diffusion_part_1/`) are written and built in the adjacent
   `tg_channel` project, then synced here by their `publish_build.py`. Edit
   them there and follow that project's instructions; never hand-edit their
   copies in `posts/`.
+- Read `templates/decisions.md` before changing `pages/`, `templates/` or the
+  site header; its accepted entries are constraints, and a new author request
+  is recorded there in the same commit.
 - Preserve the existing design and unrelated content. Do not create Markdown
   mirrors of articles unless the user asks for them.
 
@@ -97,7 +100,7 @@ version from plain PyPI, and commit `uv.lock` with it.
 3. Run `uv run builder build` (`--drafts` includes draft posts) and
    `uv run builder check`; preview with `uv run builder serve`. The build
    applies the shared template, bakes both languages, adds one GoatCounter
-   loader per page, derives the homepage feed from the three newest articles in
+   loader per page, derives the homepage feed from the two newest articles in
    the blog, and writes the sitemap and `llms-full.txt`.
 4. Commit by the Git rules above. Pushing to `master` runs the `Site` workflow:
    build, checks, deploy to Pages, sitemap submission to Google and IndexNow.
