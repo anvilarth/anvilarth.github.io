@@ -5,7 +5,7 @@ _Source: https://anvilarth.github.io/ · Machine-readable profile for AI agents 
 Andrei Filatov (Андрей Филатов) is a research scientist and ML/DL engineer working on
 generative computer vision. He is a Member of Technical Staff at [Krea](https://www.krea.ai/) and previously worked at
 [Kandinsky Labs](https://kandinskylab.ai/), [VILAB, EPFL](https://vilab.epfl.ch/) and the
-[Samsung AI Center](https://research.samsung.com/aicenter_moscow). Based in Dubai.
+[Samsung AI Center](https://research.samsung.com/aicenter_moscow).
 
 - Website: https://anvilarth.github.io/
 - Blog: https://anvilarth.github.io/blog.html
